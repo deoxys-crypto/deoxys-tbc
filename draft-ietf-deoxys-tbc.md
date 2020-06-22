@@ -1,7 +1,7 @@
 ---
 title: "Deoxys Tweakable Block Ciphers" 
 abbrev: "Deoxys-TBC" 
-docname: draft-ietf-deoxys-TBC-latest 
+docname: draft-ietf-deoxys-tbc-latest 
 category: Informational 
 
 ipr: trust200902 
