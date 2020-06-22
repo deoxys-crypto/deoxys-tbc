@@ -1,12 +1,12 @@
 ---
-title: "TODO - Your title"
-abbrev: "TODO - Abbreviation"
-docname: draft-todo-your-name-here
-category: info
+title: "Deoxys Tweakable Block Ciphers"
+abbrev: "Deoxys-TBC"
+docname: draft-ietf-deoxys-TBC-latest
+category: Informational
 
 ipr: trust200902
 area: General
-workgroup: TODO Working Group
+workgroup: Internet Research Task Force (IRTF)
 keyword: Internet-Draft
 
 stand_alone: yes
@@ -14,10 +14,10 @@ pi: [toc, sortrefs, symrefs]
 
 author:
  -
-    ins: H. Tschofenig
-    name: Hannes Tschofenig
-    organization: Arm Limited
-    email: hannes.tschofenig@arm.com
+    ins: T. Peyrin
+    name: Thomas Peyrin
+    organization: Nanyang Technological University
+    email: thomas.peyrin@gmail.com
 
 normative:
   RFC2119:
