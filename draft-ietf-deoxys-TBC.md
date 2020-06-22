@@ -1,13 +1,13 @@
 ---
-title: "Deoxys Tweakable Block Ciphers"
-abbrev: "Deoxys-TBC"
-docname: draft-ietf-deoxys-TBC-latest
-category: Informational
+title: "Deoxys Tweakable Block Ciphers" 
+abbrev: "Deoxys-TBC" 
+docname: draft-ietf-deoxys-TBC-latest 
+category: Informational 
 
-ipr: trust200902
-area: General
-workgroup: Internet Research Task Force (IRTF)
-keyword: Internet-Draft
+ipr: trust200902 
+area: General 
+workgroup: Internet Research Task Force (IRTF) 
+keyword: Internet-Draft 
 
 stand_alone: yes
 pi: [toc, sortrefs, symrefs]
