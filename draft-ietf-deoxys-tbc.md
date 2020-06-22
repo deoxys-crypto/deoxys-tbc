@@ -1,23 +1,24 @@
 ---
-title: "Deoxys Tweakable Block Ciphers"
-abbrev: "TODO - Abbreviation"
-docname: draft-ietf-deoxys-tbc-latest
-category: info
+title: "Deoxys Tweakable Block Ciphers" 
+abbrev: "Deoxys-TBC" 
+docname: draft-ietf-deoxys-tbc-latest 
+category: info 
 
-ipr: trust200902
-area: General
-workgroup: TODO Working Group
-keyword: Internet-Draft
+ipr: trust200902 
+area: General 
+workgroup: Internet Research Task Force (IRTF) 
+keyword: Internet-Draft 
 
 stand_alone: yes
+coding: UTF-8
 pi: [toc, sortrefs, symrefs]
 
 author:
  -
-    ins: H. Tschofenig
-    name: Hannes Tschofenig
-    organization: Arm Limited
-    email: hannes.tschofenig@arm.com
+    ins: T. Peyrin
+    name: Thomas Peyrin
+    organization: Nanyang Technological University
+    email: thomas.peyrin@gmail.com
 
 normative:
   RFC2119:
@@ -62,3 +63,4 @@ This document has no IANA actions.
 {:numbered="false"}
 
 TODO acknowledge.
+
