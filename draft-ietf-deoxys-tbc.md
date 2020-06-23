@@ -17,7 +17,7 @@ author:
  -
     ins: T. Peyrin
     name: Thomas Peyrin
-    organization: Nanyang Technological University
+    organization: Nanyang Technological University, Singapore
     email: thomas.peyrin@gmail.com
 
 normative:
