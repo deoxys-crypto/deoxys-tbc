@@ -64,10 +64,10 @@ Deoxys-TBC-256 and Deoxys-TBC-384 propose a so-called tweakey input that can be 
 
 
 Deoxys-TBC operate on blocks of 128 bits seen as a (4×4) matrix of bytes which are numbered  
-\[ 0  4  8 12 \]  
-\[ 1  5  9 13 \]  
-\[ 2  6 10 14 \]  
-\[ 3  7 11 15 \]  
+\[ 0  4  8 12 \]  
+\[ 1  5  9 13 \]  
+\[ 2  6 10 14 \]  
+\[ 3  7 11 15 \]  
  
 and a tweakey length of size 256 bits (for Deoxys-TBC-256) or 384 bits (for Deoxys-TBC-384). For Deoxys-TBC-256 the tweakey consists of a key of size k ≥ 128 and a tweak of size t ≤ 256-k. For Deoxys-TBC-384 the tweakey consists of a key of size k ≥ 128 and a tweak of size t ≤ 384-k. 
 
