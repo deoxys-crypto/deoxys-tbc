@@ -63,7 +63,7 @@ The following notations are used throughout the document:
 Deoxys-TBC-256 and Deoxys-TBC-384 propose a so-called tweakey input that can be utilized as key and/or tweak material, up to the user needs. Therefore, the user can freely choose which part of the tweakey is dedicated to key and/or tweak material. However, whatever combination of key/tweak size chosen by the user, it SHALL be such that the key size is at least 128 bits and at most 256 bits. This document describes the configuration where the tweakey input is loaded with the tweak first (least significant portion of the tweakey), and the key material after (most significant portion of the tweakey), i.e. tweakey = key || tweak.
 
 
-Deoxys-TBC operate on blocks of 128 bits seen as a (4×4) matrix of bytes which are numbered
+Deoxys-TBC operate on blocks of 128 bits seen as a (4×4) matrix of bytes which are numbered  
 \[ 0  4  8 12 \]  
 \[ 1  5  9 13 \]  
 \[ 2  6 10 14 \]  
@@ -73,7 +73,7 @@ and a tweakey length of size 256 bits (for Deoxys-TBC-256) or 384 bits (for Deox
 
 ## Deoxys-TBC encryption
 
-Let the composition MixBytes(ShiftRows(SubBytes(X))) represent an unkeyed AES round on a state X and we denote it AES_R(X). The encryption with Deoxys-TBC of a 128-bit plaintext P gives a 128-bit ciphertext C that is defined as: 
+Let the composition MixBytes(ShiftRows(SubBytes(X))) represent an unkeyed AES round on a state X and we denote it AES_R(X). The encryption with Deoxys-TBC of a 128-bit plaintext P gives a 128-bit ciphertext C that is defined as:  
 
 X\[0\] ← P  
 X\[i+1\] ← AES_R(AddRoundTweakey(X\[i\] , STK\[i\])) for i in \[0, ... , Nr-1\]  
@@ -83,7 +83,7 @@ where AddRoundTweakey(X, STK) is the operating consisting of XORing the 128-bit 
 
 ## Deoxys-TBC decryption
 
-Let the composition SubBytesInv(ShiftRowsInv(MixBytesInv(X))) represent an unkeyed AES inverse round on a state X and we denote it AES_R-1(X). The decryption with Deoxys-TBC of a 128-bit ciphertext C gives a 128-bit plaintext P that is defined as: 
+Let the composition SubBytesInv(ShiftRowsInv(MixBytesInv(X))) represent an unkeyed AES inverse round on a state X and we denote it AES_R-1(X). The decryption with Deoxys-TBC of a 128-bit ciphertext C gives a 128-bit plaintext P that is defined as:  
 
 X\[0\] ← C  
 X\[i+1\] ← AES_R-1(AddRoundTweakey(X\[i\] , STK\[Nr-i\])) for i in \[0, ... , Nr-1\]  
@@ -96,22 +96,22 @@ We denote TK the input tweakey state and we divide it into words of 128 bits. Mo
 STK\[i\] = TK1\[i\]  ⊕ TK2\[i\]  ⊕ RC\[i\]  
 whereas for the case of Deoxys-TBC-384 it is defined as:
 STK\[i\] = TK1\[i\]  ⊕ TK2\[i\]  ⊕ TK3\[i\]  ⊕ RC\[i\]  
-The 128-bit words TK1\[i\], TK2\[i\], TK3\[i\] are outputs produced by a tweakey schedule algorithm, initialized with TK1\[0\]=W1 and TK2\[0\]=W2 for Deoxys-TBC-256 (TK3\[i\] is ignored for Deoxys-TBC-256) and with TK1\[0\]=W1, TK2\[0\]=W2 and TK3\[0\]=W3 for Deoxys-TBC-384. The tweakey schedule algorithm uses two Linear-Feedback Shift Registers (LFSR) and is defined as:
+The 128-bit words TK1\[i\], TK2\[i\], TK3\[i\] are outputs produced by a tweakey schedule algorithm, initialized with TK1\[0\]=W1 and TK2\[0\]=W2 for Deoxys-TBC-256 (TK3\[i\] is ignored for Deoxys-TBC-256) and with TK1\[0\]=W1, TK2\[0\]=W2 and TK3\[0\]=W3 for Deoxys-TBC-384. The tweakey schedule algorithm uses two Linear-Feedback Shift Registers (LFSR) and is defined as:  
 TK1\[i+1\] = h(TK1\[i\]),  
-TK2\[i+1\] = LFSR2(h(TK2\[i\])), 
-TK3\[i+1\] = LFSR3(h(TK3\[i\])) in the case of Deoxys-TBC-384
-where the byte permutation h is defined as:
+TK2\[i+1\] = LFSR2(h(TK2\[i\])),  
+TK3\[i+1\] = LFSR3(h(TK3\[i\])) in the case of Deoxys-TBC-384  
+where the byte permutation h is defined as:  
 
 \[ 0  4  8 12 \]        \[ 1  5  9 13 \]  
 \[ 1  5  9 13 \]        \[ 6 10 14  2 \]  
 \[ 2  6 10 14 \]  --->  \[11 15  3  7 \]  
 \[ 3  7 11 15 \]        \[12  0  4  8 \]  
 
-The LFSR2 and LFSR3 functions are the application of an LFSR to each of the 16 bytes of a tweakey 128-bit word. More precisely, the two LFSRs used are given below (x0 stands for the LSB of the cell and x7 for the MSB):
-- LFSR2: (x7||x6||x5||x4||x3||x2||x1||x0) -->  (x6||x5||x4||x3||x2||x1||x0||x7⊕x5)  
+The LFSR2 and LFSR3 functions are the application of an LFSR to each of the 16 bytes of a tweakey 128-bit word. More precisely, the two LFSRs used are given below (x0 stands for the LSB of the cell and x7 for the MSB):  
+- LFSR2: (x7||x6||x5||x4||x3||x2||x1||x0) -->  (x6||x5||x4||x3||x2||x1||x0||x7⊕x5)   
 - LFSR3: (x7||x6||x5||x4||x3||x2||x1||x0) -->  (x0⊕x6||x7||x6||x5||x4||x3||x2||x1)  
 
-Finally, RC\[i\] are the key schedule round constants, and are defined as:
+Finally, RC\[i\] are the key schedule round constants, and are defined as:  
           \[ 1  RCON\[i\]  0  0 \]   
           \[ 2  RCON\[i\]  0  0 \]   
 RC\[i\] = \[ 4  RCON\[i\]  0  0 \]   
