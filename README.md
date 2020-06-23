@@ -1,10 +1,10 @@
 # Deoxys Tweakable Block Ciphers
 
-This is the working area for the IETF [DEOXYS Working Group](https://datatracker.ietf.org/wg/deoxys/documents/) Internet-Draft, "Deoxys Tweakable Block Ciphers".
+This is the working area for the individual Internet-Draft, "Deoxys Tweakable Block Ciphers".
 
-* [Editor's Copy](https://deoxys-crypto.github.io/deoxys-tbc/#go.draft-ietf-deoxys-tbc.html)
-* [Working Group Draft](https://tools.ietf.org/html/draft-ietf-deoxys-tbc)
-* [Compare Editor's Copy to Working Group Draft](https://deoxys-crypto.github.io/deoxys-tbc/#go.draft-ietf-deoxys-tbc.diff)
+* [Editor's Copy](https://deoxys-crypto.github.io/deoxys-tbc/#go.draft-irtf-cfrg-deoxys-tbc.html)
+* [Individual Draft](https://tools.ietf.org/html/draft-irtf-cfrg-deoxys-tbc)
+* [Compare Editor's Copy to Individual Draft](https://deoxys-crypto.github.io/deoxys-tbc/#go.draft-irtf-cfrg-deoxys-tbc.diff)
 
 ## Building the Draft
 
