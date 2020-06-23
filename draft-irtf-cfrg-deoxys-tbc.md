@@ -58,16 +58,16 @@ The following notations are used throughout the document:
 - ||:		concatenation of bit strings.
 - a ← b:    replace the value of the variable a with the value of the variable b .
 - ⊕:       	bitwise exclusive-OR operation.
-- [i, … , j]: sequence of integers starting from i included, ending at j included, with a step of 1.
+- \[i, ... , j\]: sequence of integers starting from i included, ending at j included, with a step of 1.
 
 Deoxys-TBC-256 and Deoxys-TBC-384 propose a so-called tweakey input that can be utilized as key and/or tweak material, up to the user needs. Therefore, the user can freely choose which part of the tweakey is dedicated to key and/or tweak material. However, whatever combination of key/tweak size chosen by the user, it SHALL be such that the key size is at least 128 bits and at most 256 bits. This document describes the configuration where the tweakey input is loaded with the tweak first (least significant portion of the tweakey), and the key material after (most significant portion of the tweakey), i.e. tweakey = key || tweak.
 
 
 Deoxys-TBC operate on blocks of 128 bits seen as a (4×4) matrix of bytes which are numbered  
-\[ 0  4  8 12 \]  
-\[ 1  5  9 13 \]  
-\[ 2  6 10 14 \]  
-\[ 3  7 11 15 \]  
+\[ 0  4  8 12 \]  
+\[ 1  5  9 13 \]  
+\[ 2  6 10 14 \]  
+\[ 3  7 11 15 \]  
  
 and a tweakey length of size 256 bits (for Deoxys-TBC-256) or 384 bits (for Deoxys-TBC-384). For Deoxys-TBC-256 the tweakey consists of a key of size k ≥ 128 and a tweak of size t ≤ 256-k. For Deoxys-TBC-384 the tweakey consists of a key of size k ≥ 128 and a tweak of size t ≤ 384-k. 
 
