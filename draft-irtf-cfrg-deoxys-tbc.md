@@ -51,13 +51,13 @@ document are to be interpreted as described in BCP 14 {{RFC2119}} {{!RFC8174}}
 when, and only when, they appear in all capitals, as shown here.
 
 The following notations are used throughout the document:
-- n:		plaintext/ciphertext bit-length of the tweakable block cipher. In the case of Deoxys-TBC, we have n=128.
-- k:		key bit-length of the tweakable block cipher. In the case of Deoxys-TBC, we have 128 ≤ k ≤ 256.
-- t:		tweak bit-length of the tweakable block cipher. 
-- Nr:	the number of rounds of the tweakable block cipher. In the case of Deoxys-TBC-256 we have Nr=14, while for Deoxys-TBC-384 we have Nr=16.
-- ||:		concatenation of bit strings.
-- a ← b:    replace the value of the variable a with the value of the variable b .
-- ⊕:       	bitwise exclusive-OR operation.
+- n: plaintext/ciphertext bit-length of the tweakable block cipher. In the case of Deoxys-TBC, we have n=128.
+- k: key bit-length of the tweakable block cipher. In the case of Deoxys-TBC, we have 128 ≤ k ≤ 256.
+- t: tweak bit-length of the tweakable block cipher. 
+- Nr: the number of rounds of the tweakable block cipher. In the case of Deoxys-TBC-256 we have Nr=14, while for Deoxys-TBC-384 we have Nr=16.
+- ||: concatenation of bit strings.
+- a ← b: replace the value of the variable a with the value of the variable b .
+- ⊕: bitwise exclusive-OR operation.
 - \[i, ... , j\]: sequence of integers starting from i included, ending at j included, with a step of 1.
 
 Deoxys-TBC-256 and Deoxys-TBC-384 propose a so-called tweakey input that can be utilized as key and/or tweak material, up to the user needs. Therefore, the user can freely choose which part of the tweakey is dedicated to key and/or tweak material. However, whatever combination of key/tweak size chosen by the user, it SHALL be such that the key size is at least 128 bits and at most 256 bits. This document describes the configuration where the tweakey input is loaded with the tweak first (least significant portion of the tweakey), and the key material after (most significant portion of the tweakey), i.e. tweakey = key || tweak.
