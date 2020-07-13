@@ -123,6 +123,7 @@ The following notations are used throughout the document:
 * (i)\_b: the encoding of the integer i on b bits.
 * TBC_K\[T\](P): encryption with a tweakable block cipher of plaintext P with tweak T and key K.
 * TBC-1_K\[T\](C): decryption with a tweakable block cipher of ciphertext C with tweak T and key K.
+* ozpad\_i(X): padding of the bitstring X (with 0<|X|≤i), such that ozpad\_i(X) = X if |X|=i, ozpad\_i(X) = X || (1)\_1 || (0)\_(i-\|X\|-1) otherwise.
 
 # The Deoxys-TBC Tweakable Block Ciphers
 
@@ -334,9 +335,6 @@ This single-pass nonce-based AEAD mode is an adaptation of the Deoxys-I AEAD ope
 
 This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext C and a tag of size tau<=128.
 
-We denote by A the associated data 
-
-We denote 
 
 ## Deoxys-I\* encryption
 
@@ -350,13 +348,13 @@ deoxys_I*_encrypt(K, N, A, M):
   Auth = 0
   for i = 0 upto a-1
      A_L || A_R <- A[i+1] with |A_L|=|A_R|=128
-     Auth ^= TBC_K[(2)_8||(i)_120||A_L](A_R)       
+     Auth ^= TBC_K[A_L||(2)_8||(i)_120](A_R)       
      end
 
   #if padded block
   if |A*| != 0 then 
-     A_L || A_R <- ozpad(A*) with |A_L|=|A_R|=128
-     Auth ^= TBC_K[(6)_8||(a)_120||A_L](A_R)
+     A_L || A_R <- ozpad_256(A*) with |A_L|=|A_R|=128
+     Auth ^= TBC_K[A_L||(6)_8||(a)_120](A_R)
      end
 
   # Message
@@ -365,18 +363,18 @@ deoxys_I*_encrypt(K, N, A, M):
   Csum = 0
   for i = 0 upto m-1
      Csum ^= M[i+1]
-     C[i+1] = TBC_K[(0)_8||(i)_120||N](M[i+1])       
+     C[i+1] = TBC_K[N||(0)_8||(i)_120](M[i+1])       
      end
 
   #if padded block
   if |M*| == 0 then 
-     Final = TBC_K[(1)_8||(m)_120||N](Csum)
+     Final = TBC_K[N||(1)_8||(m)_120](Csum)
      C* = epsilon
   else
-     Csum ^= ozpad(M*)
-     Pad = TBC_K[(4)_8||(m)_120||N]((0)_128)
+     Csum ^= ozpad_128(M*)
+     Pad = TBC_K[N||(4)_8||(m)_120]((0)_128)
      C* = M* ^ trunc_|M*|(Pad)
-     Final = TBC_K[(5)_8||(m+1)_120||N](Csum)
+     Final = TBC_K[N||(5)_8||(m+1)_120](Csum)
      end
 
   # Tag Generation
@@ -395,33 +393,33 @@ deoxys_I*_decrypt(K, N, A, C, tag):
   Auth = 0
   for i = 0 upto a-1
      A_L || A_R <- A[i+1] with |A_L|=|A_R|=128
-     Auth ^= TBC_K[(2)_8||(i)_120||A_L](A_R)       
+     Auth ^= TBC_K[A_L||(2)_8||(i)_120](A_R)       
      end
 
   #if padded block
   if |A*| != 0 then 
-     A_L || A_R <- ozpad(A*) with |A_L|=|A_R|=128
-     Auth ^= TBC_K[(6)_8||(a)_120||A_L](A_R)
+     A_L || A_R <- ozpad_256(A*) with |A_L|=|A_R|=128
+     Auth ^= TBC_K[A_L||(6)_8||(a)_120](A_R)
      end
 
   # Ciphertext
-  C[1] || ... || C[m] || C* <- M with |C[i]|=128 and |C*|<128
+  C[1] || ... || C[m] || C* <- C with |C[i]|=128 and |C*|<128
 
   Csum = 0
   for i = 0 upto m-1
-     M[i+1] = TBC-1_K[(0)_8||(i)_120||N](C[i+1])
+     M[i+1] = TBC-1_K[N||(0)_8||(i)_120](C[i+1])
      Csum ^= M[i+1]       
      end
 
   #if padded block
   if |C*| == 0 then 
-     Final = TBC_K[(1)_8||(m)_120||N](Csum)
+     Final = TBC_K[N||(1)_8||(m)_120](Csum)
      M* = epsilon
   else     
-     Pad = TBC_K[(4)_8||(m)_120||N]((0)_128)
+     Pad = TBC_K[N||(4)_8||(m)_120]((0)_128)
      M* = C* ^ trunc_|C*|(Pad)
-     Csum ^= ozpad(M*)
-     Final = TBC_K[(5)_8||(m+1)_120||N](Csum)
+     Csum ^= ozpad_128(M*)
+     Final = TBC_K[N||(5)_8||(m+1)_120](Csum)
      end
 
   # Tag Verification
@@ -433,11 +431,9 @@ deoxys_I*_decrypt(K, N, A, C, tag):
      end
 ~~~
 
-
-## Deoxys-I\* pseudocode
-
 ## Deoxys-I\* test vectors
 
+TODO
 
 
 # The Deoxys-II\* AEAD Operating Mode
@@ -448,14 +444,117 @@ This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle
 
 Note that the decryption is actually one-pass.
 
+
 ## Deoxys-II\* encryption
+
+~~~
+deoxys_II*_encrypt(K, N, A, M):
+  # Associated Data
+  A[1] || ... || A[a] || A* <- A with |A[i]|=256 and |A*|<256
+
+  Auth = 0
+  for i = 0 upto a-1
+     A_L || A_R <- A[i+1] with |A_L|=|A_R|=128
+     Auth ^= TBC_K[A_L||(2)_8||(i)_120](A_R)       
+     end
+
+  #if padded block
+  if |A*| != 0 then 
+     A_L || A_R <- ozpad_256(A*) with |A_L|=|A_R|=128
+     Auth ^= TBC_K[A_L||(6)_8||(a)_120](A_R)
+     end
+
+  # Message Authentication
+  M[1] || ... || M[m] || M* <- M with |M[i]|=256 and |M*|<256
+
+  for i = 0 upto m-1
+     M_L || M_R <- M[i+1] with |M_L|=|M_R|=128
+     Auth ^= TBC_K[M_L||(0)_8||(i)_120](M_R)       
+     end
+
+  #if padded block
+  if |M*| != 0 then 
+     M_L || M_R <- ozpad_256(M*) with |M_L|=|M_R|=128
+     Auth ^= TBC_K[M_L||(4)_8||(m)_120](M_R)
+     end
+
+  # Tag Generation
+  tag = TBC_K[N||(1)_8||(0)_120](Auth)
+
+  # Message Encryption
+  M[1] || ... || M[m'] || M* <- M with |M[i]|=128 and |M*|<128
+
+  for i = 0 upto m'-1    
+     C[i+1] = M[i+1] ^ TBC_K[tag||(3)_8||(i)_120](N)       
+     end
+
+  #if padded block
+  if |M*| != 0 then      
+     C* = M* ^ trunc_|M*|(TBC_K[tag||(7)_8||(m')_120](N))
+     end
+
+  return (C[1] || ... || C[m'] || C* , tag)
+~~~
 
 ## Deoxys-II\* decryption
 
-## Deoxys-II\* pseudocode
+~~~
+deoxys_II*_decrypt(K, N, A, C, tag):
+  # Message Decryption
+  C[1] || ... || C[m'] || C* <- C with |C[i]|=128 and |C*|<128
+
+  for i = 0 upto m'-1
+     M[i+1] = C[i+1] ^ TBC_K[tag||(3)_8||(i)_120](N)          
+     end
+
+  #if padded block
+  if |C*| != 0 then      
+     M* = C* ^ trunc_|C*|(TBC_K[tag||(7)_8||(m')_120](N))
+     end
+
+  # Associated Data
+  A[1] || ... || A[a] || A* <- A with |A[i]|=256 and |A*|<256
+
+  Auth = 0
+  for i = 0 upto a-1
+     A_L || A_R <- A[i+1] with |A_L|=|A_R|=128
+     Auth ^= TBC_K[A_L||(2)_8||(i)_120](A_R)       
+     end
+
+  #if padded block
+  if |A*| != 0 then 
+     A_L || A_R <- ozpad_256(A*) with |A_L|=|A_R|=128
+     Auth ^= TBC_K[A_L||(6)_8||(a)_120](A_R)
+     end
+
+  # Message Authentication
+  M <- M[1] || ... || M[m'] || M* 
+  M[1] || ... || M[m] || M* <- M with |M[i]|=256 and |M*|<256
+
+  for i = 0 upto m-1
+     M_L || M_R <- M[i+1] with |M_L|=|M_R|=128
+     Auth ^= TBC_K[M_L||(0)_8||(i)_120](M_R)       
+     end
+
+  #if padded block
+  if |M*| != 0 then 
+     M_L || M_R <- ozpad_256(M*) with |M_L|=|M_R|=128
+     Auth ^= TBC_K[M_L||(4)_8||(m)_120](M_R)
+     end
+
+  # Tag Verification
+  tag' = TBC_K[N||(1)_8||(0)_120](Auth)
+  if tag' == tag then 
+     return M
+  else 
+     return invalid
+     end
+~~~
+
 
 ## Deoxys-II\* test vectors
 
+TODO
 
 
 # The Deoxys-III\* AEAD Operating Mode
@@ -468,9 +567,9 @@ This mode takes a secret key of 128 bits, nonces of 128 bits and can handle asso
 
 ## Deoxys-III\* decryption
 
-## Deoxys-III\* pseudocode
-
 ## Deoxys-III\* test vectors
+
+TODO
 
 
 # Optional Features
