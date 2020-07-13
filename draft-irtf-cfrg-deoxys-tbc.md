@@ -496,6 +496,7 @@ deoxys_II*_encrypt(K, N, A, M):
   return (C[1] || ... || C[m'] || C* , tag)
 ~~~
 
+
 ## Deoxys-II\* decryption
 
 ~~~
@@ -574,21 +575,50 @@ TODO
 
 # Optional Features
 
-For Deoxys-I\* and Deoxys-II\*, we propose two optional features: a weak leakage-resilient key protection mechanism and a nonce-hiding mechanism. TODO 
+## Weak Leakage-Resilient Key Protection Mechanism
+
+For Deoxys-I\* and Deoxys-II\*, one can simply first compute a temporary key K' = TBC\_K\[N \|\|(8)\_8\|\|(0)\_120 \] that will be used as secret key input for the AEAD mode. Note that the tweak input is ensured to be unique when the nonce is not repeating, as (8)\_8 is a domain separation reserved for that feature only. This precomputation allows a weak form of leakage resilience. TODO: give reference. 
+
+
+## Nonce-Protection Mechanism
+
+For Deoxys-I\* and Deoxys-II\*, one can protect the nonce by two constructions (basically TBC-based variations of the schemes proposed by Bellare et al. at CRYPTO 2019). TODO
+
+
+## Forgery-Damage Limiting Protection Mechanism
+
+In the very unlikely event where a forgery is found, this forgery could be reused to directly create new forgeries in the case of Deoxys-I\* and Deoxys-II\*. One can tame this effect by using the nonce in the tweak inputs of each TBC calls in the authentication part (this can be viewed as a layer on top of Deoxys-I\* and Deoxys-II\*, where we simply take the nonce N as associated data or message input every two 128-bit block). With this protection enabled, a forgery for a given nonce will not provide any advantage in creating a forgery for a different nonce, as all TBC calls will be totally new and independent. Of course, in the nonce-misuse scenario, this protection does not improve the situation. The disadvantage is that the authentication part would become slower as less associated data or message blocks can be handled per TBC call. 
+
+
+## Maximum Input Length / Efficiency Trade-off
+
+A 128-bit counter is used in the authentication part of Deoxys-I\* and Deoxys-II\*. If for an application, the user is ensured that the associated data and message inputs are limited to at most 2^x blocks, then the 128-x most significant bits from the counter can be reclaimed to handle more AD/M input in the authentication part, which provide efficiency improvement. 
+
 
 
 # Security Considerations
-
-
-## Deoxys-TBC
-
 
 
 ## Deoxys AEAD Operating Modes
 
 We give below a table providing the bounds for all modes, in the various settings. TODO
 
-TODO Security
+### Deoxys-I\*
+
+Security of Deoxys-I\* in the nonce-respecting scenario is very strong: confidentiality is perfectly guaranteed and the forgery probability is 2^(-tau), independently of the number of blocks of data in encryption/decryption queries made by the adversary. This is simply managed by ensuring that only unique tweaks are used as long at the nonce is not repeating. In the nonce-misuse scenario, no security is claimed for Deoxys-I\*.
+
+### Deoxys-II\*
+
+TODO
+
+### Deoxys-III\*
+
+TODO 
+
+
+## Deoxys-TBC
+
+The AES and AES-type ciphers have already been the subject of extensive analysis. As a result, the security of these ciphers against the most popular forms of cryptanalysis, the differential and the linear attacks (as well as their more advanced variants), is well understood. Deoxys-TBC naturally leverages these cryptanalysis efforts (see Deoxys-JoC article TODO) and the new analysis conducted on Deoxys-TBC concentrated on the main difference between AES and Deoxys-TBC: the tweakey schedule. The best attack at time of writing could only reach 11 of the 14 rounds of Deoxys-TBC-256 and 14 of the 16 rounds of Deoxys-TBC-384. If we consider a time complexity upper limit of 2^128 (since 128-bit keys are used), only 10 of the 14 rounds of Deoxys-TBC-256 can be attacked and only 12 of the 16 rounds of Deoxys-TBC-384. These attacks only consider the internal TBC primitive and even less rounds can be reached if one considers the entire AEAD scheme. This leaves a very confortable security margin for all AEAD modes proposed here. 
 
 
 # IANA Considerations
