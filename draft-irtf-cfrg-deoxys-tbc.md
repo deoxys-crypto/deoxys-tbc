@@ -113,16 +113,20 @@ The following notations are used throughout the document:
 * k: key bit-length of the tweakable block cipher. In the case of Deoxys-TBC, we have 128 ≤ k ≤ 256.
 * t: tweak bit-length of the tweakable block cipher.
 * Nr: the number of rounds of the tweakable block cipher. In the case of Deoxys-TBC-256 we have Nr=14, while for Deoxys-TBC-384 we have Nr=16.
-* \|\|: concatenation of bit strings.
+* X\|\|Y: concatenation of bit strings X and Y.
+* \|X\|: bit length of a string X.
+* epsilon: empty string.
+* trunc\_i(X): truncation of the bitstring X to the first i bits.
 * a ← b: replace the value of the variable a with the value of the variable b.
 * XOR: bitwise exclusive-OR operation.
 * \[i, ... , j\]: sequence of integers starting from i included, ending at j included, with a step of 1.
-
-
+* (i)\_b: the encoding of the integer i on b bits.
+* TBC_K\[T\](P): encryption with a tweakable block cipher of plaintext P with tweak T and key K.
+* TBC-1_K\[T\](C): decryption with a tweakable block cipher of ciphertext C with tweak T and key K.
 
 # The Deoxys-TBC Tweakable Block Ciphers
 
-We describe here the Deoxys-TBC tweakable block ciphers, as published in \[[JNP14](JNP14)\] and JNPS14. Deoxys-TBC-256 and Deoxys-TBC-384 propose a so-called tweakey input that can be utilized as key and/or tweak material, up to the user needs. Therefore, the user can freely choose which part of the tweakey is dedicated to key and/or tweak material. However, whatever combination of key/tweak size chosen by the user, it SHALL be such that the key size is at least 128 bits and at most 256 bits. This document describes the configuration where the tweakey input is loaded with the tweak first (least significant portion of the tweakey), and the key material after (most significant portion of the tweakey), i.e. tweakey = key \|\| tweak.
+We describe here the Deoxys-TBC tweakable block ciphers, as published in \[[JNP14](JNP14)\] and JNPS14. Deoxys-TBC-256 and Deoxys-TBC-384 propose a so-called tweakey input that can be utilized as key and/or tweak material, up to the user needs. Therefore, the user can freely choose which part of the tweakey is dedicated to key and/or tweak material. However, whatever combination of key/tweak size chosen by the user, it SHALL be such that the key size is at least 128 bits and at most 256 bits (if different tweak/key configurations or placements are to be allowed, proper separation of these versions are to be ensured at protocol level in order to avoid trivial related-cipher attacks). This document describes the default configuration where the tweakey input is loaded with the tweak first (least significant portion of the tweakey), and the key material after (most significant portion of the tweakey), i.e. tweakey = key \|\| tweak.
 
 Deoxys-TBC operate on blocks of 128 bits seen as a (4×4) matrix of bytes which are numbered
 
@@ -326,13 +330,109 @@ Ciphertext:  e94c5c6df7c19474bbdd292baa2555fd
 
 # The Deoxys-I\* AEAD Operating Mode
 
-This mode is an adaptation of the Deoxys-I AEAD operating mode from \[[JNPS14](JNPS14)\], the only difference being that Deoxys-TBC-384 is used instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, allowing longer nonce and longer maximum data size. 
+This single-pass nonce-based AEAD mode is an adaptation of the Deoxys-I AEAD operating mode from \[[JNPS14](JNPS14)\], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, allowing longer nonce and longer maximum data size. 
 
-This mode takes a secret key of 128 bits, nonces of 128 bits and can handle associated data and message inputs of size up to 2^128 bits. It generates the corresponding ciphertext and a tag of size tau<=128.
+This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext C and a tag of size tau<=128.
+
+We denote by A the associated data 
+
+We denote 
 
 ## Deoxys-I\* encryption
 
+The mode is divided into two independant parts: one part handling the authentication of the associated data and one part handling the authentication and encryption of the message blocks. The mode is created in such a way that all TBC calls will use a different tweak.
+
+~~~
+deoxys_I*_encrypt(K, N, A, M):
+  # Associated Data
+  A[1] || ... || A[a] || A* <- A with |A[i]|=256 and |A*|<256
+
+  Auth = 0
+  for i = 0 upto a-1
+     A_L || A_R <- A[i+1] with |A_L|=|A_R|=128
+     Auth ^= TBC_K[(2)_8||(i)_120||A_L](A_R)       
+     end
+
+  #if padded block
+  if |A*| != 0 then 
+     A_L || A_R <- ozpad(A*) with |A_L|=|A_R|=128
+     Auth ^= TBC_K[(6)_8||(a)_120||A_L](A_R)
+     end
+
+  # Message
+  M[1] || ... || M[m] || M* <- M with |M[i]|=128 and |M*|<128
+
+  Csum = 0
+  for i = 0 upto m-1
+     Csum ^= M[i+1]
+     C[i+1] = TBC_K[(0)_8||(i)_120||N](M[i+1])       
+     end
+
+  #if padded block
+  if |M*| == 0 then 
+     Final = TBC_K[(1)_8||(m)_120||N](Csum)
+     C* = epsilon
+  else
+     Csum ^= ozpad(M*)
+     Pad = TBC_K[(4)_8||(m)_120||N]((0)_128)
+     C* = M* ^ trunc_|M*|(Pad)
+     Final = TBC_K[(5)_8||(m+1)_120||N](Csum)
+     end
+
+  # Tag Generation
+  tag = Final ^ Auth
+  return (C[1] || ... || C[m] || C* , tag)
+~~~
+
+
 ## Deoxys-I\* decryption
+
+~~~
+deoxys_I*_decrypt(K, N, A, C, tag):
+  # Associated Data
+  A[1] || ... || A[a] || A* <- A with |A[i]|=256 and |A*|<256
+
+  Auth = 0
+  for i = 0 upto a-1
+     A_L || A_R <- A[i+1] with |A_L|=|A_R|=128
+     Auth ^= TBC_K[(2)_8||(i)_120||A_L](A_R)       
+     end
+
+  #if padded block
+  if |A*| != 0 then 
+     A_L || A_R <- ozpad(A*) with |A_L|=|A_R|=128
+     Auth ^= TBC_K[(6)_8||(a)_120||A_L](A_R)
+     end
+
+  # Ciphertext
+  C[1] || ... || C[m] || C* <- M with |C[i]|=128 and |C*|<128
+
+  Csum = 0
+  for i = 0 upto m-1
+     M[i+1] = TBC-1_K[(0)_8||(i)_120||N](C[i+1])
+     Csum ^= M[i+1]       
+     end
+
+  #if padded block
+  if |C*| == 0 then 
+     Final = TBC_K[(1)_8||(m)_120||N](Csum)
+     M* = epsilon
+  else     
+     Pad = TBC_K[(4)_8||(m)_120||N]((0)_128)
+     M* = C* ^ trunc_|C*|(Pad)
+     Csum ^= ozpad(M*)
+     Final = TBC_K[(5)_8||(m+1)_120||N](Csum)
+     end
+
+  # Tag Verification
+  tag' = Final ^ Auth
+  if tag' == tag then 
+     return (M[1] || ... || M[m] || M*)
+  else 
+     return invalid
+     end
+~~~
+
 
 ## Deoxys-I\* pseudocode
 
@@ -342,9 +442,11 @@ This mode takes a secret key of 128 bits, nonces of 128 bits and can handle asso
 
 # The Deoxys-II\* AEAD Operating Mode
 
-This mode is an adaptation of the Deoxys-II AEAD operating mode from \[[JNPS14](JNPS14)\], the only difference being that Deoxys-TBC-384 is used instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, while getting better security bounds.  
+This two-pass nonce-based AEAD mode is an adaptation of the Deoxys-II AEAD operating mode from \[[JNPS14](JNPS14)\], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, while getting better security bounds.  
 
-This mode takes a secret key of 128 bits, nonces of 128 bits and can handle associated data and message inputs of size up to 2^128 bits. It generates the corresponding ciphertext and a tag of size tau<=128.
+This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext C and a tag of size tau<=128.
+
+Note that the decryption is actually one-pass.
 
 ## Deoxys-II\* encryption
 
@@ -360,7 +462,7 @@ This mode takes a secret key of 128 bits, nonces of 128 bits and can handle asso
 
 This mode is an adaptation of the TEDT AEAD operating mode from \[[BGPPS19](BGPPS19)\], the only difference being that Deoxys-TBC-384 is used instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, allowing longer nonce and longer maximum data size.  
 
-This mode takes a secret key of 128 bits, nonces of 128 bits and can handle associated data and message inputs of size up to 2^128 bits. It generates the corresponding ciphertext and a tag of size tau<=128.
+This mode takes a secret key of 128 bits, nonces of 128 bits and can handle associated data and message inputs of size up to ? bits. It generates the corresponding ciphertext and a tag of size tau<=128.
 
 ## Deoxys-III\* encryption
 
