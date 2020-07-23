@@ -579,13 +579,18 @@ TODO
 
 For Deoxys-I\* and Deoxys-II\*, one can simply first compute a temporary key K' = TBC\_K\[N \|\|(8)\_8\|\|(0)\_120 \] that will be used as secret key input for the AEAD mode. Note that the tweak input is ensured to be unique when the nonce is not repeating, as (8)\_8 is a domain separation reserved for that feature only. This precomputation allows a weak form of leakage resilience. TODO: give reference. 
 
+## Increasing Multi-Users Security
+
+One can increase the multi-users security of Deoxys-I\*, Deoxys-II\* and Deoxys-III\* by selecting a public-key value PK, with \|PK\|= L_PK and 0< L_PK <=128, and incorporating PK as tweak input to every call to the TBC during the encryption phase. This will effectivelly increase the multi-users security by x/2 bits.  
 
 ## Nonce-Protection Mechanism
 
 For Deoxys-I\* and Deoxys-II\*, one can protect the nonce by two constructions (basically TBC-based variations of the schemes proposed by Bellare et al. at CRYPTO 2019). TODO
 
+This can be used to protect the public-key for increased multi-users security as well. 
 
-## Forgery-Damage Limiting Protection Mechanism
+
+## Forgery-Reuse Protection Mechanism
 
 In the very unlikely event where a forgery is found, this forgery could be reused to directly create new forgeries in the case of Deoxys-I\* and Deoxys-II\*. One can tame this effect by using the nonce in the tweak inputs of each TBC calls in the authentication part (this can be viewed as a layer on top of Deoxys-I\* and Deoxys-II\*, where we simply take the nonce N as associated data or message input every two 128-bit block). With this protection enabled, a forgery for a given nonce will not provide any advantage in creating a forgery for a different nonce, as all TBC calls will be totally new and independent. Of course, in the nonce-misuse scenario, this protection does not improve the situation. The disadvantage is that the authentication part would become slower as less associated data or message blocks can be handled per TBC call. 
 
@@ -594,6 +599,9 @@ In the very unlikely event where a forgery is found, this forgery could be reuse
 
 A 128-bit counter is used in the authentication part of Deoxys-I\* and Deoxys-II\*. If for an application, the user is ensured that the associated data and message inputs are limited to at most 2^x blocks, then the 128-x most significant bits from the counter can be reclaimed to handle more AD/M input in the authentication part, which provide efficiency improvement. 
 
+## Larger Keys
+
+One can use larger keys than 128 bits for Deoxys-I\* and Deoxys-II\* by using a TBC version with a larger tweakey size. 
 
 
 # Security Considerations
