@@ -137,7 +137,7 @@ The following notations are used throughout the document:
 * (i)\_b: the encoding of the integer i on b bits.
 * TBC_K\[T\](P): encryption with a tweakable block cipher of plaintext P with tweak T and key K.
 * TBC-1_K\[T\](C): decryption with a tweakable block cipher of ciphertext C with tweak T and key K.
-* ozpad\_i(X): padding of the bitstring X (with 0<|X|≤i), such that ozpad\_i(X) = X if |X|=i, ozpad\_i(X) = X || (1)\_1 || (0)\_(i-\|X\|-1) otherwise.
+* ozpad\_i(X): padding of the bitstring X (with 0<\|X\|≤i), such that ozpad\_i(X) = X if \|X\|=i, ozpad\_i(X) = X \|\| (1)\_1 \|\| (0)\_(i-\|X\|-1) otherwise.
 
 # The Deoxys-TBC Tweakable Block Ciphers
 
@@ -715,7 +715,7 @@ It is well known that, authenticated encryptions suffer from the so-called multi
 
 One can increase the multi-user security of Deoxys-I\* and Deoxys-II\* by randomly selecting an 128-bit public-key value PK and incorporating PK as tweak input to every call to the TBC during the encryption phase. This will effectivelly increase the multi-users security by approximately x/2 bits.
 
-One can increase the multi-user security of Deoxys-III\* by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, b = 1, and U = A || N || C || PK. For a system using this Deoxys-III\* variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.
+One can increase the multi-user security of Deoxys-III\* by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, b = 1, and U = A \|\| N \|\| C \|\| PK. For a system using this Deoxys-III\* variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.
 
 
 ## Nonce-Protection Mechanism
