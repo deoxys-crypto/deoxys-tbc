@@ -576,7 +576,7 @@ TODO
 
 This mode is an adaptation of the TEDT AEAD operating mode from \[[BGPPS19](BGPPS19)\], the only difference being that Deoxys-TBC-384 is used instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, allowing longer nonce and longer maximum data size.  
 
-This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^128 bits. It generates the corresponding ciphertext and a tag of size tau=128.
+This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext and a tag of size tau=128.
 
 ## Deoxys-III\* encryption
 
@@ -587,26 +587,31 @@ The mode is divided into two independant parts: the first part handling the encr
 deoxys_III*_encrypt(K, PK, N, A, M):
 
   P = (0)_128
-  b = 0
+  con1 = (0)_8
+  con2 = (1)_8
+  con3 = (2)_8
+  con4 = (3)_8
 
   # 1. Message Encryption
   M[1] || ... || M[m] || M* <- M with |M[i]|=128 and |M*|<128
-  S = TBC_K[P || b || 0 || (0)_126](N)
+  S = TBC_K[P || con3 || (0)_120](N)
+  
+  
   for i = 1 upto m-1
-     C[i] = TBC_S[P || b || 1 || (0)_127](N) ^ M[i]
-     S = TBC_S[P || b || 0 || (0)_127](N)
+     C[i] = TBC_N[(0)_128 || con2 || (i-1)_120](S) ^ M[i]
+     S = TBC_N[(0)_128 || con1 || (i-1)_120](S)
      end
 
   #if incomplete block
   if |M*| == 0 then
-     C[m] = TBC_S[P || b || 1 || (m)_127](N) ^ M[m]
+     C[i] = TBC_N[(0)_128 || con2 || (m-1)_120](S) ^ M[m]
      C* = epsilon
      end
   else
-     C[m] = TBC_S[P || b || 1 || (m)_127](N) ^ M[m]
-     S = TBC_S[P || b || 0 || (m)_127](N)
+     C[m] = TBC_N[(0)_128 || con2 || (m-1)_120](S) ^ M[m]
+     S = TBC_N[(0)_128 || con1 || (m-1)_120](S)
      len = |M*|
-     C* = trunc_len( TBC_B[P || b || 1 || (m+1)_127](N) ) ^ M*
+     C* = trunc_len( TBC_N[(0)_128 || con2 || (m)_120](S) ) ^ M*
      end
 
   # 2. Hashing Associated Data & Ciphertext
@@ -632,7 +637,7 @@ deoxys_III*_encrypt(K, PK, N, A, M):
   g = TBC_g[tail](h ^ (1)_128) ^ h ^ (1)_128
 
   # 3. Tag Generation
-  tag = TBC_K[g || b || 1 || (0)_126](h)
+  tag = TBC_K[g || con4 || (0)_120](h)
   return (C[1] || ... || C[m] || C* , tag)
 
 ~~~
@@ -644,26 +649,30 @@ deoxys_III*_encrypt(K, PK, N, A, M):
 deoxys_III*_decrypt(K, PK, N, A, C, tag):
 
   P = (0)_128
-  b = 0
+  con1 = (0)_8
+  con2 = (1)_8
+  con3 = (2)_8
+  con4 = (3)_8
   
   # 1. Decryption
   C[1] || ... || C[m] || C* <- C with |C[i]|=128 and |C*|<128
-  S = TBC_K[P || b || 0 || (0)_126](N)
+  S = TBC_K[P || con3 || (0)_120](N)
+  
   for i = 1 upto m-1
-     M[i] = TBC_S[P || b || 1 || (i)_126](N) ^ C[i]
-     S = TBC_S[P || b || 0 || (i)_126](N)
+     M[i] = TBC_N[(0)_128 || con2 || (i-1)_120](S) ^ C[i]
+     S = TBC_N[(0)_128 || con1 || (i-1)_120](S)
      end
 
   #if incomplete block
   if |C*| == 0 then
-     M[m] = TBC_S[P || b || 1 || (m)_126](N) ^ C[m]
+     M[m] = TBC_N[(0)_128 || con2 || (m-1)_120](S) ^ C[m]
      M* = epsilon
      end
   else
-     M[m] = TBC_S[P || b || 1 || (m)_126](N) ^ C[m]
-     S = TBC_S[P || b || 0 || (m)_126](N)
+     M[m] = TBC_N[(0)_128 || con2 || (m-1)_120](S) ^ C[m]
+     S = TBC_N[(0)_128 || con1 || (m-1)_120](S)
      len = |C*|
-     M* = trunc_len( TBC_B[ P || b || 1 || (m+1)_126](N) ) ^ C*
+     M* = trunc_len( TBC_N[(0)_128 || con2 || (m)_120](S) ) ^ C*
      end
 
   # 2. Hashing Associated Data & Ciphertext
@@ -689,7 +698,7 @@ deoxys_III*_decrypt(K, PK, N, A, C, tag):
   g = TBC_g[tail](h ^ (1)_128) ^ h ^ (1)_128
 
   # 3. Verification
-  h' = TBC_K-1[g || b || 1 || (0)_126](tag)
+  h' = TBC_K-1[g || con4 || (0)_120](tag)
   if h' == h then
      return (M[1] || ... || M[m] || M*)
   else
@@ -715,7 +724,7 @@ It is well known that, authenticated encryptions suffer from the so-called multi
 
 One can increase the multi-user security of Deoxys-I\* and Deoxys-II\* by randomly selecting an 128-bit public-key value PK and incorporating PK as tweak input to every call to the TBC during the encryption phase. This will effectivelly increase the multi-users security by approximately x/2 bits.
 
-One can increase the multi-user security of Deoxys-III\* by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, b = 1, and U = A \|\| N \|\| C \|\| PK. For a system using this Deoxys-III\* variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.
+One can increase the multi-user security of Deoxys-III\* by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, con1 = (4)\_8, con2 = (5)\_8, con3 = (6)\_8, con4 = (7)\_8, and U = A \|\| N \|\| C \|\| PK. For a system using this Deoxys-III\* variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.
 
 
 ## Nonce-Protection Mechanism
@@ -756,7 +765,9 @@ TODO
 
 ### Deoxys-III\*
 
-TODO 
+In the nonce-respecting scenario, confidentiality and integrity are guaranteed as long as less than 2^112 blocks of data are processed and less than 2^112 computations are performed by the adversary.
+
+When nonce are reused, confidentiality for messages encrypted by reused nonces disappear, while confidentiality for messages encrypted by unique nonces remains up to 2^112 data and time complexities. On the other hand, integrity remains for all nonces, up to 2^112 data and time complexities.
 
 
 ## Deoxys-TBC

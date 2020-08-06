@@ -805,7 +805,7 @@ address div.right {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Peyrin</td>
-<td class="center">Expires 5 February 2021</td>
+<td class="center">Expires 7 February 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -818,12 +818,12 @@ address div.right {
 <dd class="internet-draft">draft-irtf-cfrg-deoxys-tbc-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-08-04" class="published">4 August 2020</time>
+<time datetime="2020-08-06" class="published">6 August 2020</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-02-05">5 February 2021</time></dd>
+<dd class="expires"><time datetime="2021-02-07">7 February 2021</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -869,7 +869,7 @@ address div.right {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 5 February 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 February 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1618,7 +1618,7 @@ deoxys_II*_decrypt(K, N, A, C, tag):
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-the-deoxys-iii-aead-operati" class="section-name selfRef">The Deoxys-III* AEAD Operating Mode</a>
       </h2>
 <p id="section-6-1">This mode is an adaptation of the TEDT AEAD operating mode from [<a href="BGPPS19">BGPPS19</a>], the only difference being that Deoxys-TBC-384 is used instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, allowing longer nonce and longer maximum data size.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^128 bits. It generates the corresponding ciphertext and a tag of size tau=128.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-2">This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext and a tag of size tau=128.<a href="#section-6-2" class="pilcrow">¶</a></p>
 <div id="deoxys-iii-encryption">
 <section id="section-6.1">
         <h3 id="name-deoxys-iii-encryption">
@@ -1630,26 +1630,31 @@ deoxys_II*_decrypt(K, N, A, C, tag):
 deoxys_III*_encrypt(K, PK, N, A, M):
 
   P = (0)_128
-  b = 0
+  con1 = (0)_8
+  con2 = (1)_8
+  con3 = (2)_8
+  con4 = (3)_8
 
   # 1. Message Encryption
   M[1] || ... || M[m] || M* &lt;- M with |M[i]|=128 and |M*|&lt;128
-  S = TBC_K[P || b || 0 || (0)_126](N)
+  S = TBC_K[P || con3 || (0)_120](N)
+
+
   for i = 1 upto m-1
-     C[i] = TBC_S[P || b || 1 || (0)_127](N) ^ M[i]
-     S = TBC_S[P || b || 0 || (0)_127](N)
+     C[i] = TBC_N[(0)_128 || con2 || (i-1)_120](S) ^ M[i]
+     S = TBC_N[(0)_128 || con1 || (i-1)_120](S)
      end
 
   #if incomplete block
   if |M*| == 0 then
-     C[m] = TBC_S[P || b || 1 || (m)_127](N) ^ M[m]
+     C[i] = TBC_N[(0)_128 || con2 || (m-1)_120](S) ^ M[m]
      C* = epsilon
      end
   else
-     C[m] = TBC_S[P || b || 1 || (m)_127](N) ^ M[m]
-     S = TBC_S[P || b || 0 || (m)_127](N)
+     C[m] = TBC_N[(0)_128 || con2 || (m-1)_120](S) ^ M[m]
+     S = TBC_N[(0)_128 || con1 || (m-1)_120](S)
      len = |M*|
-     C* = trunc_len( TBC_B[P || b || 1 || (m+1)_127](N) ) ^ M*
+     C* = trunc_len( TBC_N[(0)_128 || con2 || (m)_120](S) ) ^ M*
      end
 
   # 2. Hashing Associated Data &amp; Ciphertext
@@ -1675,7 +1680,7 @@ deoxys_III*_encrypt(K, PK, N, A, M):
   g = TBC_g[tail](h ^ (1)_128) ^ h ^ (1)_128
 
   # 3. Tag Generation
-  tag = TBC_K[g || b || 1 || (0)_126](h)
+  tag = TBC_K[g || con4 || (0)_120](h)
   return (C[1] || ... || C[m] || C* , tag)
 
 </pre><a href="#section-6.1-2" class="pilcrow">¶</a>
@@ -1692,26 +1697,30 @@ deoxys_III*_encrypt(K, PK, N, A, M):
 deoxys_III*_decrypt(K, PK, N, A, C, tag):
 
   P = (0)_128
-  b = 0
+  con1 = (0)_8
+  con2 = (1)_8
+  con3 = (2)_8
+  con4 = (3)_8
 
   # 1. Decryption
   C[1] || ... || C[m] || C* &lt;- C with |C[i]|=128 and |C*|&lt;128
-  S = TBC_K[P || b || 0 || (0)_126](N)
+  S = TBC_K[P || con3 || (0)_120](N)
+
   for i = 1 upto m-1
-     M[i] = TBC_S[P || b || 1 || (i)_126](N) ^ C[i]
-     S = TBC_S[P || b || 0 || (i)_126](N)
+     M[i] = TBC_N[(0)_128 || con2 || (i-1)_120](S) ^ C[i]
+     S = TBC_N[(0)_128 || con1 || (i-1)_120](S)
      end
 
   #if incomplete block
   if |C*| == 0 then
-     M[m] = TBC_S[P || b || 1 || (m)_126](N) ^ C[m]
+     M[m] = TBC_N[(0)_128 || con2 || (m-1)_120](S) ^ C[m]
      M* = epsilon
      end
   else
-     M[m] = TBC_S[P || b || 1 || (m)_126](N) ^ C[m]
-     S = TBC_S[P || b || 0 || (m)_126](N)
+     M[m] = TBC_N[(0)_128 || con2 || (m-1)_120](S) ^ C[m]
+     S = TBC_N[(0)_128 || con1 || (m-1)_120](S)
      len = |C*|
-     M* = trunc_len( TBC_B[ P || b || 1 || (m+1)_126](N) ) ^ C*
+     M* = trunc_len( TBC_N[(0)_128 || con2 || (m)_120](S) ) ^ C*
      end
 
   # 2. Hashing Associated Data &amp; Ciphertext
@@ -1737,7 +1746,7 @@ deoxys_III*_decrypt(K, PK, N, A, C, tag):
   g = TBC_g[tail](h ^ (1)_128) ^ h ^ (1)_128
 
   # 3. Verification
-  h' = TBC_K-1[g || b || 1 || (0)_126](tag)
+  h' = TBC_K-1[g || con4 || (0)_120](tag)
   if h' == h then
      return (M[1] || ... || M[m] || M*)
   else
@@ -1778,7 +1787,7 @@ deoxys_III*_decrypt(K, PK, N, A, C, tag):
         </h3>
 <p id="section-7.2-1">It is well known that, authenticated encryptions suffer from the so-called multi-user security degradation[<a href="BT16">BT16</a>]. The concrete interpretation is that, in a security system maintaining u encrypted session using different keys, one needs around 2^128/u data and times complexities to break the confidentiality and authenticity for one of the u sessions. Note that this does not contradict the single-user interpretation, that is, to break the confidentiality and authenticity for a specific encrypted session, one needs around 2^128 data and times complexities. Therefore, to select an encryption algorithm for a security protocol, one may want to consider variants with better multi-user security.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
 <p id="section-7.2-2">One can increase the multi-user security of Deoxys-I* and Deoxys-II* by randomly selecting an 128-bit public-key value PK and incorporating PK as tweak input to every call to the TBC during the encryption phase. This will effectivelly increase the multi-users security by approximately x/2 bits.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
-<p id="section-7.2-3">One can increase the multi-user security of Deoxys-III* by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, b = 1, and U = A || N || C || PK. For a system using this Deoxys-III* variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+<p id="section-7.2-3">One can increase the multi-user security of Deoxys-III* by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, con1 = (4)_8, con2 = (5)_8, con3 = (6)_8, con4 = (7)_8, and U = A || N || C || PK. For a system using this Deoxys-III* variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="nonce-protection-mechanism">
@@ -1848,7 +1857,8 @@ deoxys_III*_decrypt(K, PK, N, A, C, tag):
           <h4 id="name-deoxys-iii">
 <a href="#section-8.1.3" class="section-number selfRef">8.1.3. </a><a href="#name-deoxys-iii" class="section-name selfRef">Deoxys-III*</a>
           </h4>
-<p id="section-8.1.3-1">TODO<a href="#section-8.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.1.3-1">In the nonce-respecting scenario, confidentiality and integrity are guaranteed as long as less than 2^112 blocks of data are processed and less than 2^112 computations are performed by the adversary.<a href="#section-8.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.1.3-2">When nonce are reused, confidentiality for messages encrypted by reused nonces disappear, while confidentiality for messages encrypted by unique nonces remains up to 2^112 data and time complexities. On the other hand, integrity remains for all nonces, up to 2^112 data and time complexities.<a href="#section-8.1.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
