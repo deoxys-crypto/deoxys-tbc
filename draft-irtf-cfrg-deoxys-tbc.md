@@ -343,19 +343,19 @@ Ciphertext:  e94c5c6df7c19474bbdd292baa2555fd
 ~~~~ 
 
 
-# The Deoxys-I\* AEAD Operating Mode
+# The Deoxys-AE1 AEAD Operating Mode
 
 This single-pass nonce-based AEAD mode is an adaptation of the Deoxys-I AEAD operating mode from \[[JNPS14](JNPS14)\], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, allowing longer nonce and longer maximum data size. 
 
 This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext C and a tag of size tau<=128.
 
 
-## Deoxys-I\* encryption
+## Deoxys-AE1 encryption
 
 The mode is divided into two independant parts: one part handling the authentication of the associated data and one part handling the authentication and encryption of the message blocks. The mode is created in such a way that all TBC calls will use a different tweak.
 
 ~~~
-deoxys_I*_encrypt(K, N, A, M):
+deoxys_AE1_encrypt(K, N, A, M):
   # Associated Data
   A[1] || ... || A[a] || A* <- A with |A[i]|=256 and |A*|<256
 
@@ -397,10 +397,10 @@ deoxys_I*_encrypt(K, N, A, M):
 ~~~
 
 
-## Deoxys-I\* decryption
+## Deoxys-AE1 decryption
 
 ~~~
-deoxys_I*_decrypt(K, N, A, C, tag):
+deoxys_AE1_decrypt(K, N, A, C, tag):
   # Associated Data
   A[1] || ... || A[a] || A* <- A with |A[i]|=256 and |A*|<256
 
@@ -445,12 +445,12 @@ deoxys_I*_decrypt(K, N, A, C, tag):
      end
 ~~~
 
-## Deoxys-I\* test vectors
+## Deoxys-AE1 test vectors
 
 TODO
 
 
-# The Deoxys-II\* AEAD Operating Mode
+# The Deoxys-AE2 AEAD Operating Mode
 
 This two-pass nonce-based AEAD mode is an adaptation of the Deoxys-II AEAD operating mode from \[[JNPS14](JNPS14)\], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, while getting better security bounds.  
 
@@ -459,10 +459,10 @@ This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle
 Note that the decryption is actually one-pass.
 
 
-## Deoxys-II\* encryption
+## Deoxys-AE2 encryption
 
 ~~~
-deoxys_II*_encrypt(K, N, A, M):
+deoxys_AE2_encrypt(K, N, A, M):
   # Associated Data
   A[1] || ... || A[a] || A* <- A with |A[i]|=256 and |A*|<256
 
@@ -511,10 +511,10 @@ deoxys_II*_encrypt(K, N, A, M):
 ~~~
 
 
-## Deoxys-II\* decryption
+## Deoxys-AE2 decryption
 
 ~~~
-deoxys_II*_decrypt(K, N, A, C, tag):
+deoxys_AE2_decrypt(K, N, A, C, tag):
   # Message Decryption
   C[1] || ... || C[m'] || C* <- C with |C[i]|=128 and |C*|<128
 
@@ -567,24 +567,24 @@ deoxys_II*_decrypt(K, N, A, C, tag):
 ~~~
 
 
-## Deoxys-II\* test vectors
+## Deoxys-AE2 test vectors
 
 TODO
 
 
-# The Deoxys-III\* AEAD Operating Mode
+# The Deoxys-AE3 AEAD Operating Mode
 
 This mode is an adaptation of the TEDT AEAD operating mode from \[[BGPPS19](BGPPS19)\], the only difference being that Deoxys-TBC-384 is used instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, allowing longer nonce and longer maximum data size.  
 
 This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext and a tag of size tau=128.
 
-## Deoxys-III\* encryption
+## Deoxys-AE3 encryption
 
 The mode is divided into two independant parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data.
 
 ~~~
 
-deoxys_III*_encrypt(K, PK, N, A, M):
+deoxys_AE3_encrypt(K, PK, N, A, M):
 
   P = (0)_128
   con1 = (0)_8
@@ -643,10 +643,10 @@ deoxys_III*_encrypt(K, PK, N, A, M):
 ~~~
 
 
-## Deoxys-III\* decryption
+## Deoxys-AE3 decryption
 
 ~~~
-deoxys_III*_decrypt(K, PK, N, A, C, tag):
+deoxys_AE3_decrypt(K, PK, N, A, C, tag):
 
   P = (0)_128
   con1 = (0)_8
@@ -707,7 +707,7 @@ deoxys_III*_decrypt(K, PK, N, A, C, tag):
 
 ~~~
 
-## Deoxys-III\* test vectors
+## Deoxys-AE3 test vectors
 
 TODO
 
@@ -716,36 +716,36 @@ TODO
 
 ## Weak Leakage-Resilient Key Protection Mechanism
 
-For Deoxys-I\* and Deoxys-II\*, one can simply first compute a temporary key K' = TBC\_K\[N \|\|(8)\_8\|\|(0)\_120 \] that will be used as secret key input for the AEAD mode. Note that the tweak input is ensured to be unique when the nonce is not repeating, as (8)\_8 is a domain separation reserved for that feature only. This precomputation allows a weak form of leakage resilience. TODO: give reference. 
+For Deoxys-AE1 and Deoxys-AE2, one can simply first compute a temporary key K' = TBC\_K\[N \|\|(8)\_8\|\|(0)\_120 \] that will be used as secret key input for the AEAD mode. Note that the tweak input is ensured to be unique when the nonce is not repeating, as (8)\_8 is a domain separation reserved for that feature only. This precomputation allows a weak form of leakage resilience. TODO: give reference. 
 
 ## Increasing Multi-User Security
 
 It is well known that, authenticated encryptions suffer from the so-called multi-user security degradation\[[BT16](BT16)\]. The concrete interpretation is that, in a security system maintaining u encrypted session using different keys, one needs around 2^128/u data and times complexities to break the confidentiality and authenticity for one of the u sessions. Note that this does not contradict the single-user interpretation, that is, to break the confidentiality and authenticity for a specific encrypted session, one needs around 2^128 data and times complexities. Therefore, to select an encryption algorithm for a security protocol, one may want to consider variants with better multi-user security.
 
-One can increase the multi-user security of Deoxys-I\* and Deoxys-II\* by randomly selecting an 128-bit public-key value PK and incorporating PK as tweak input to every call to the TBC during the encryption phase. This will effectivelly increase the multi-users security by approximately x/2 bits.
+One can increase the multi-user security of Deoxys-AE1 and Deoxys-AE2 by randomly selecting an 128-bit public-key value PK and incorporating PK as tweak input to every call to the TBC during the encryption phase. This will effectivelly increase the multi-users security by approximately x/2 bits.
 
-One can increase the multi-user security of Deoxys-III\* by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, con1 = (4)\_8, con2 = (5)\_8, con3 = (6)\_8, con4 = (7)\_8, and U = A \|\| N \|\| C \|\| PK. For a system using this Deoxys-III\* variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.
+One can increase the multi-user security of Deoxys-AE3 by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, con1 = (4)\_8, con2 = (5)\_8, con3 = (6)\_8, con4 = (7)\_8, and U = A \|\| N \|\| C \|\| PK. For a system using this Deoxys-III\* variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.
 
 
 ## Nonce-Protection Mechanism
 
-For Deoxys-I\* and Deoxys-II\*, one can protect the nonce by two constructions (basically TBC-based variations of the schemes proposed by Bellare et al. at CRYPTO 2019). TODO
+For Deoxys-AE1 and Deoxys-AE2, one can protect the nonce by two constructions (basically TBC-based variations of the schemes proposed by Bellare et al. at CRYPTO 2019). TODO
 
 This can be used to protect the public-key for increased multi-users security as well. 
 
 
 ## Forgery-Reuse Protection Mechanism
 
-In the very unlikely event where a forgery is found, this forgery could be reused to directly create new forgeries in the case of Deoxys-I\* and Deoxys-II\*. One can tame this effect by using the nonce in the tweak inputs of each TBC calls in the authentication part (this can be viewed as a layer on top of Deoxys-I\* and Deoxys-II\*, where we simply take the nonce N as associated data or message input every two 128-bit block). With this protection enabled, a forgery for a given nonce will not provide any advantage in creating a forgery for a different nonce, as all TBC calls will be totally new and independent. Of course, in the nonce-misuse scenario, this protection does not improve the situation. The disadvantage is that the authentication part would become slower as less associated data or message blocks can be handled per TBC call. 
+In the very unlikely event where a forgery is found, this forgery could be reused to directly create new forgeries in the case of Deoxys-AE1 and Deoxys-AE2. One can tame this effect by using the nonce in the tweak inputs of each TBC calls in the authentication part (this can be viewed as a layer on top of Deoxys-AE1 and Deoxys-AE2, where we simply take the nonce N as associated data or message input every two 128-bit block). With this protection enabled, a forgery for a given nonce will not provide any advantage in creating a forgery for a different nonce, as all TBC calls will be totally new and independent. Of course, in the nonce-misuse scenario, this protection does not improve the situation. The disadvantage is that the authentication part would become slower as less associated data or message blocks can be handled per TBC call. 
 
 
 ## Maximum Input Length / Efficiency Trade-off
 
-A 128-bit counter is used in the authentication part of Deoxys-I\* and Deoxys-II\*. If for an application, the user is ensured that the associated data and message inputs are limited to at most 2^x blocks, then the 128-x most significant bits from the counter can be reclaimed to handle more AD/M input in the authentication part, which provide efficiency improvement. 
+A 128-bit counter is used in the authentication part of Deoxys-AE1 and Deoxys-AE2. If for an application, the user is ensured that the associated data and message inputs are limited to at most 2^x blocks, then the 128-x most significant bits from the counter can be reclaimed to handle more AD/M input in the authentication part, which provide efficiency improvement. 
 
 ## Larger Keys
 
-One can use larger keys than 128 bits for Deoxys-I\* and Deoxys-II\* by using a TBC version with a larger tweakey size. 
+One can use larger keys than 128 bits for Deoxys-AE1 and Deoxys-AE2 by using a TBC version with a larger tweakey size. 
 
 
 # Security Considerations
@@ -755,15 +755,15 @@ One can use larger keys than 128 bits for Deoxys-I\* and Deoxys-II\* by using a 
 
 We give below a table providing the bounds for all modes, in the various settings. TODO
 
-### Deoxys-I\*
+### Deoxys-AE1
 
-Security of Deoxys-I\* in the nonce-respecting scenario is very strong: confidentiality is perfectly guaranteed and the forgery probability is 2^(-tau), independently of the number of blocks of data in encryption/decryption queries made by the adversary. This is simply managed by ensuring that only unique tweaks are used as long at the nonce is not repeating. In the nonce-misuse scenario, no security is claimed for Deoxys-I\*.
+Security of Deoxys-AE1 in the nonce-respecting scenario is very strong: confidentiality is perfectly guaranteed and the forgery probability is 2^(-tau), independently of the number of blocks of data in encryption/decryption queries made by the adversary. This is simply managed by ensuring that only unique tweaks are used as long at the nonce is not repeating. In the nonce-misuse scenario, no security is claimed for Deoxys-AE1.
 
-### Deoxys-II\*
+### Deoxys-AE2
 
 TODO
 
-### Deoxys-III\*
+### Deoxys-AE3
 
 In the nonce-respecting scenario, confidentiality and integrity are guaranteed as long as less than 2^112 blocks of data are processed and less than 2^112 computations are performed by the adversary.
 
