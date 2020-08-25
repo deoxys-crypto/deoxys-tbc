@@ -619,22 +619,23 @@ deoxys_AE3_encrypt(K, PK, N, A, M):
   U[1] || ... || U[u] || U* <- U with |U[i]|=256 and |U*|<=256
   h = (0)_128
   g = (0)_128
+  theta = (1)_8 || (0)_120
   for i = 1 upto u
      h = TBC_g[U[i]](h) ^ h
-     g = TBC_g[U[i]](h ^ (1)_128) ^ h ^ (1)_128
+     g = TBC_g[U[i]](h ^ theta) ^ h ^ theta
      end
 
   #if incomplete block
   if |U*| != 0 then
      U** <- ozpad_256(U*)
      h = TBC_g[U**](h) ^ h
-     g = TBC_g[U**](h ^ (1)_128) ^ h ^ (1)_128
+     g = TBC_g[U**](h ^ theta) ^ h ^ theta
      end
 
-  #The length
+  #The length in little-endianness encoding
   tail = (|A| - 1)_128 || (|M| - 1)_128
   h = TBC_g[tail](h) ^ h
-  g = TBC_g[tail](h ^ (1)_128) ^ h ^ (1)_128
+  g = TBC_g[tail](h ^ theta) ^ h ^ theta
 
   # 3. Tag Generation
   tag = TBC_K[g || con4 || (0)_120](h)
@@ -654,7 +655,36 @@ deoxys_AE3_decrypt(K, PK, N, A, C, tag):
   con3 = (2)_8
   con4 = (3)_8
   
-  # 1. Decryption
+  # 1. Hashing Associated Data & Ciphertext for verification
+  U <- A || N || C
+  U[1] || ... || U[u] || U* <- U with |U[i]|=256 and |U*|<256
+  h = (0)_128
+  g = (0)_128
+  theta = (1)_8 || (0)_120
+  for i = 1 upto u
+     h = TBC_g[U[i]](h) ^ h
+     g = TBC_g[U[i]](h ^ theta) ^ h ^ theta
+     end
+
+  #if incomplete block
+  if |U*| != 0 then
+     U** <- ozpad_256(U*)
+     h = TBC_g[U**](h) ^ h
+     g = TBC_g[U**](h ^ theta) ^ h ^ theta
+     end
+
+  #The length in little-endianness encoding
+  tail = (|A| - 1)_128 || (|M| - 1)_128
+  h = TBC_g[tail](h) ^ h
+  g = TBC_g[tail](h ^ theta) ^ h ^ theta
+
+  # 2. Verification
+  h' = TBC_K-1[g || con4 || (0)_120](tag)
+  if h' != h then
+     return invalid
+     end 
+  
+  # 3. Decryption when h' == h
   C[1] || ... || C[m] || C* <- C with |C[i]|=128 and |C*|<128
   S = TBC_K[P || con3 || (0)_120](N)
   
@@ -673,36 +703,6 @@ deoxys_AE3_decrypt(K, PK, N, A, C, tag):
      S = TBC_N[(0)_128 || con1 || (m-1)_120](S)
      len = |C*|
      M* = trunc_len( TBC_N[(0)_128 || con2 || (m)_120](S) ) ^ C*
-     end
-
-  # 2. Hashing Associated Data & Ciphertext
-  U <- A || N || C
-  U[1] || ... || U[u] || U* <- U with |U[i]|=256 and |U*|<256
-  h = (0)_128
-  g = (0)_128
-  for i = 1 upto u
-     h = TBC_g[U[i]](h) ^ h
-     g = TBC_g[U[i]](h ^ (1)_128) ^ h ^ (1)_128
-     end
-
-  #if incomplete block
-  if |U*| != 0 then
-     U** <- ozpad_256(U*)
-     h = TBC_g[U**](h) ^ h
-     g = TBC_g[U**](h ^ (1)_128) ^ h ^ (1)_128
-     end
-
-  #The length
-  tail = (|A| - 1)_128 || (|M| - 1)_128
-  h = TBC_g[tail](h) ^ h
-  g = TBC_g[tail](h ^ (1)_128) ^ h ^ (1)_128
-
-  # 3. Verification
-  h' = TBC_K-1[g || con4 || (0)_120](tag)
-  if h' == h then
-     return (M[1] || ... || M[m] || M*)
-  else
-     return invalid
      end
 
 ~~~
