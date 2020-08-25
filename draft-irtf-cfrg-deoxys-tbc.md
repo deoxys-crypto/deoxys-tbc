@@ -633,7 +633,7 @@ deoxys_AE3_encrypt(K, PK, N, A, M):
      end
 
   #The length in little-endianness encoding
-  tail = (|A| - 1)_128 || (|M| - 1)_128
+  tail = (|A|)_128 || (|M|)_128
   h = TBC_g[tail](h) ^ h
   g = TBC_g[tail](h ^ theta) ^ h ^ theta
 
@@ -674,7 +674,7 @@ deoxys_AE3_decrypt(K, PK, N, A, C, tag):
      end
 
   #The length in little-endianness encoding
-  tail = (|A| - 1)_128 || (|M| - 1)_128
+  tail = (|A|)_128 || (|M|)_128
   h = TBC_g[tail](h) ^ h
   g = TBC_g[tail](h ^ theta) ^ h ^ theta
 
