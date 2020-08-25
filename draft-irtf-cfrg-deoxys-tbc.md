@@ -765,9 +765,9 @@ TODO
 
 ### Deoxys-AE3
 
-In the nonce-respecting scenario, confidentiality and integrity are guaranteed as long as less than 2^112 blocks of data are processed and less than 2^112 computations are performed by the adversary. The security guarantees depend on the underlying TBC being secure against chosen-tweakey attacks. Thus, it is safe to use Deoxys-AE3 with Deoxys-TBC-384. On the other hand, if Deoxys-AE3 is used with a TBC that is not chosen-tweakey secure, the security guarantees vanish.
+In the nonce-respecting scenario, the probability to break confidentiality and integrity is roughly D/2^112+T/2^112, where D is the number of processed data blocks and T is the amount of offline computations. The security guarantees depend on the underlying TBC being secure against chosen-tweakey attacks. Thus, it is safe to use Deoxys-AE3 with Deoxys-TBC-384. On the other hand, if Deoxys-AE3 is used with a TBC that is not chosen-tweakey secure, the security guarantees vanish.
 
-For a certain message encrypted by a certain nonce, confidentiality disappears if this nonce got reused, while integrity remains up to 2^112 data blocks and 2^112 computations. However, when nonces are reused, confidentiality (as well as integrity) of messages encrypted by unique (i.e., non-reused) nonces remains up to 2^112 data blocks and 2^112 computations.
+For a certain message encrypted by a certain nonce, confidentiality disappears if this nonce got reused, while the probability to break integrity remains roughly D/2^112+T/2^112. However, when nonces are reused, the probability to break confidentiality (as well as integrity) of messages encrypted by unique (i.e., non-reused) nonces remains roughly D/2^112+T/2^112.
 
 
 ## Deoxys-TBC
