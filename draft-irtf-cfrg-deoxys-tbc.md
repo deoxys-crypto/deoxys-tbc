@@ -129,6 +129,7 @@ The following notations are used throughout the document:
 * Nr: the number of rounds of the tweakable block cipher. In the case of Deoxys-TBC-256 we have Nr=14, while for Deoxys-TBC-384 we have Nr=16.
 * X\|\|Y: concatenation of bit strings X and Y.
 * \|X\|: bit length of a string X.
+* \|\|X\|\|: bytet length of a string X.
 * epsilon: empty string.
 * trunc\_i(X): truncation of the bitstring X to the first i bits.
 * a ← b: replace the value of the variable a with the value of the variable b.
@@ -632,8 +633,8 @@ deoxys_AE3_encrypt(K, PK, N, A, M):
      g = TBC_g[U**](h ^ theta) ^ h ^ theta
      end
 
-  #The length in little-endianness encoding
-  tail = (|A|)_128 || (|M|)_128
+  #The byte length in little-endianness encoding
+  tail = (||A||)_128 || (||M||)_128
   h = TBC_g[tail](h) ^ h
   g = TBC_g[tail](h ^ theta) ^ h ^ theta
 
@@ -674,7 +675,7 @@ deoxys_AE3_decrypt(K, PK, N, A, C, tag):
      end
 
   #The length in little-endianness encoding
-  tail = (|A|)_128 || (|M|)_128
+  tail = (||A||)_128 || (||M||)_128
   h = TBC_g[tail](h) ^ h
   g = TBC_g[tail](h ^ theta) ^ h ^ theta
 
