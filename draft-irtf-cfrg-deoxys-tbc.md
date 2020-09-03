@@ -20,6 +20,11 @@ author:
     organization: Nanyang Technological University, Singapore
     email: thomas.peyrin@gmail.com
 
+    ins: C. Guo
+    name: Chun Guo
+    organization: School of Cyber Science and Technology, Shandong University, China
+    email: chun.guo.sc@gmail.com
+
 normative:
   RFC2119:
 
@@ -710,7 +715,51 @@ deoxys_AE3_decrypt(K, PK, N, A, C, tag):
 
 ## Deoxys-AE3 test vectors
 
-TODO
+We provide below some test vectors for Deoxys-AE3, in hexadecimal display.
+
+~~~~ 
+Key:        00000000 00000000 00000000 00000000
+Nonce:      00000000 00000000 00000000 00000000
+AD:
+plaintext:
+ciphertext:
+tag:        6589c196 48fe06f1 1d78636f 2134f5a8
+
+Key:        00000000 00000000 00000000 00000000
+Nonce:      00000000 00000000 00000000 00000000
+AD:         55ecdd23 867c4336 007893f7 2a381799
+plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
+ciphertext: c2d28d2c 05000e2b 359f4b5c 7d786d1d
+tag:        0c98bdce a58d14c0 0713ef37 a8fea714
+
+Key:        00000000 00000000 00000000 00000000
+Nonce:      00000000 00000000 00000000 00000000
+AD:         55ecdd23 867c4336 007893f7 2a381799 37
+plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94
+ciphertext: c2d28d2c 05000e2b 359f4b5c 7d786d1d 01
+tag:        898626e9 9f0be189 048fe6fa 9ed9a61f
+
+Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+AD:
+Plaintext:
+Ciphertext:
+Tag:        491b0520 00e0b331 a21af68e 12a1d0c0
+
+Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+AD:         55ecdd23 867c4336 007893f7 2a381799
+plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
+ciphertext: 4aab810c 1e02c509 f0817ba1 c1d94b2e
+tag:        53d5460f 470e7e78 5bc71365 15688e2f
+
+Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+AD:         55ecdd23 867c4336 007893f7 2a381799 37b3
+Plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f4
+Ciphertext: 4aab810c 1e02c509 f0817ba1 c1d94b2e f903
+Tag:        3a7ef930 db7247d7 cd4e9e84 564696b1
+~~~~ 
 
 
 # Optional Features
