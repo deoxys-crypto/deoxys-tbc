@@ -19,7 +19,8 @@ author:
     name: Thomas Peyrin
     organization: Nanyang Technological University, Singapore
     email: thomas.peyrin@gmail.com
-
+    
+ -
     ins: C. Guo
     name: Chun Guo
     organization: School of Cyber Science and Technology, Shandong University, China

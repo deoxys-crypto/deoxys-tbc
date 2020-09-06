@@ -6,6 +6,7 @@
 <meta content="initial-scale=1.0" name="viewport">
 <title>Deoxys Tweakable Block Ciphers</title>
 <meta content="Thomas Peyrin" name="author">
+<meta content="Chun Guo" name="author">
 <meta content="
        This document defines the Deoxys-TBC tweakable block ciphers, which comes in two versions Deoxys-TBC-256 (256 bits of key and tweak material) and Deoxys-TBC-384 (384 bits of key and tweak material). They are based on the Advanced Encryption Standard round function to benefit from previous security analysis and deployed hardware acceleration. 
        This document builds up on the definitions of the Advanced Encryption Standard in [ FIPS-197 ], and is meant to serve as a stable reference and an implementation guide. 
@@ -801,11 +802,11 @@ address div.right {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Deoxys-TBC</td>
-<td class="right">August 2020</td>
+<td class="right">September 2020</td>
 </tr></thead>
 <tfoot><tr>
-<td class="left">Peyrin</td>
-<td class="center">Expires 26 February 2021</td>
+<td class="left">Peyrin &amp; Guo</td>
+<td class="center">Expires 10 March 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -818,17 +819,21 @@ address div.right {
 <dd class="internet-draft">draft-irtf-cfrg-deoxys-tbc-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-08-25" class="published">25 August 2020</time>
+<time datetime="2020-09-06" class="published">6 September 2020</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-02-26">26 February 2021</time></dd>
-<dt class="label-authors">Author:</dt>
+<dd class="expires"><time datetime="2021-03-10">10 March 2021</time></dd>
+<dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
       <div class="author-name">T. Peyrin</div>
 <div class="org">Nanyang Technological University, Singapore</div>
+</div>
+<div class="author">
+      <div class="author-name">C. Guo</div>
+<div class="org">School of Cyber Science and Technology, Shandong University, China</div>
 </div>
 </dd>
 </dl>
@@ -869,7 +874,7 @@ address div.right {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 26 February 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 10 March 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1045,7 +1050,7 @@ address div.right {
             <p id="section-toc.1-1.11.1"><a href="#section-appendix.a" class="xref"></a><a href="#name-acknowledgments" class="xref">Acknowledgments</a><a href="#section-toc.1-1.11.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-appendix.b" class="xref"></a><a href="#name-authors-address" class="xref">Author's Address</a><a href="#section-toc.1-1.12.1" class="pilcrow">¶</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#section-appendix.b" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a><a href="#section-toc.1-1.12.1" class="pilcrow">¶</a></p>
 </li>
 </ul>
 </nav>
@@ -1084,23 +1089,25 @@ when, and only when, they appear in all capitals, as shown here.<a href="#sectio
 </li>
 <li id="section-2-3.6">|X|: bit length of a string X.<a href="#section-2-3.6" class="pilcrow">¶</a>
 </li>
-<li id="section-2-3.7">epsilon: empty string.<a href="#section-2-3.7" class="pilcrow">¶</a>
+<li id="section-2-3.7">||X||: bytet length of a string X.<a href="#section-2-3.7" class="pilcrow">¶</a>
 </li>
-<li id="section-2-3.8">trunc_i(X): truncation of the bitstring X to the first i bits.<a href="#section-2-3.8" class="pilcrow">¶</a>
+<li id="section-2-3.8">epsilon: empty string.<a href="#section-2-3.8" class="pilcrow">¶</a>
 </li>
-<li id="section-2-3.9">a &lt;-- b: replace the value of the variable a with the value of the variable b.<a href="#section-2-3.9" class="pilcrow">¶</a>
+<li id="section-2-3.9">trunc_i(X): truncation of the bitstring X to the first i bits.<a href="#section-2-3.9" class="pilcrow">¶</a>
 </li>
-<li id="section-2-3.10">XOR: bitwise exclusive-OR operation.<a href="#section-2-3.10" class="pilcrow">¶</a>
+<li id="section-2-3.10">a &lt;-- b: replace the value of the variable a with the value of the variable b.<a href="#section-2-3.10" class="pilcrow">¶</a>
 </li>
-<li id="section-2-3.11">[i, ... , j]: sequence of integers starting from i included, ending at j included, with a step of 1.<a href="#section-2-3.11" class="pilcrow">¶</a>
+<li id="section-2-3.11">XOR: bitwise exclusive-OR operation.<a href="#section-2-3.11" class="pilcrow">¶</a>
 </li>
-<li id="section-2-3.12">(i)_b: the encoding of the integer i on b bits.<a href="#section-2-3.12" class="pilcrow">¶</a>
+<li id="section-2-3.12">[i, ... , j]: sequence of integers starting from i included, ending at j included, with a step of 1.<a href="#section-2-3.12" class="pilcrow">¶</a>
 </li>
-<li id="section-2-3.13">TBC_K[T](P): encryption with a tweakable block cipher of plaintext P with tweak T and key K.<a href="#section-2-3.13" class="pilcrow">¶</a>
+<li id="section-2-3.13">(i)_b: the encoding of the integer i on b bits.<a href="#section-2-3.13" class="pilcrow">¶</a>
 </li>
-<li id="section-2-3.14">TBC-1_K[T](C): decryption with a tweakable block cipher of ciphertext C with tweak T and key K.<a href="#section-2-3.14" class="pilcrow">¶</a>
+<li id="section-2-3.14">TBC_K[T](P): encryption with a tweakable block cipher of plaintext P with tweak T and key K.<a href="#section-2-3.14" class="pilcrow">¶</a>
 </li>
-<li id="section-2-3.15">ozpad_i(X): padding of the bitstring X (with 0&lt;|X|&lt;=i), such that ozpad_i(X) = X if |X|=i, ozpad_i(X) = X || (1)_1 || (0)_(i-|X|-1) otherwise.<a href="#section-2-3.15" class="pilcrow">¶</a>
+<li id="section-2-3.15">TBC-1_K[T](C): decryption with a tweakable block cipher of ciphertext C with tweak T and key K.<a href="#section-2-3.15" class="pilcrow">¶</a>
+</li>
+<li id="section-2-3.16">ozpad_i(X): padding of the bitstring X (with 0&lt;|X|&lt;=i), such that ozpad_i(X) = X if |X|=i, ozpad_i(X) = X || (1)_1 || (0)_(i-|X|-1) otherwise.<a href="#section-2-3.16" class="pilcrow">¶</a>
 </li>
 </ul>
 </section>
@@ -1662,22 +1669,23 @@ deoxys_AE3_encrypt(K, PK, N, A, M):
   U[1] || ... || U[u] || U* &lt;- U with |U[i]|=256 and |U*|&lt;=256
   h = (0)_128
   g = (0)_128
+  theta = (1)_8 || (0)_120
   for i = 1 upto u
      h = TBC_g[U[i]](h) ^ h
-     g = TBC_g[U[i]](h ^ (1)_128) ^ h ^ (1)_128
+     g = TBC_g[U[i]](h ^ theta) ^ h ^ theta
      end
 
   #if incomplete block
   if |U*| != 0 then
      U** &lt;- ozpad_256(U*)
      h = TBC_g[U**](h) ^ h
-     g = TBC_g[U**](h ^ (1)_128) ^ h ^ (1)_128
+     g = TBC_g[U**](h ^ theta) ^ h ^ theta
      end
 
-  #The length
-  tail = (|A| - 1)_128 || (|M| - 1)_128
+  #The byte length in little-endianness encoding
+  tail = (||A||)_128 || (||M||)_128
   h = TBC_g[tail](h) ^ h
-  g = TBC_g[tail](h ^ (1)_128) ^ h ^ (1)_128
+  g = TBC_g[tail](h ^ theta) ^ h ^ theta
 
   # 3. Tag Generation
   tag = TBC_K[g || con4 || (0)_120](h)
@@ -1702,7 +1710,36 @@ deoxys_AE3_decrypt(K, PK, N, A, C, tag):
   con3 = (2)_8
   con4 = (3)_8
 
-  # 1. Decryption
+  # 1. Hashing Associated Data &amp; Ciphertext for verification
+  U &lt;- A || N || C
+  U[1] || ... || U[u] || U* &lt;- U with |U[i]|=256 and |U*|&lt;256
+  h = (0)_128
+  g = (0)_128
+  theta = (1)_8 || (0)_120
+  for i = 1 upto u
+     h = TBC_g[U[i]](h) ^ h
+     g = TBC_g[U[i]](h ^ theta) ^ h ^ theta
+     end
+
+  #if incomplete block
+  if |U*| != 0 then
+     U** &lt;- ozpad_256(U*)
+     h = TBC_g[U**](h) ^ h
+     g = TBC_g[U**](h ^ theta) ^ h ^ theta
+     end
+
+  #The length in little-endianness encoding
+  tail = (||A||)_128 || (||M||)_128
+  h = TBC_g[tail](h) ^ h
+  g = TBC_g[tail](h ^ theta) ^ h ^ theta
+
+  # 2. Verification
+  h' = TBC_K-1[g || con4 || (0)_120](tag)
+  if h' != h then
+     return invalid
+     end
+
+  # 3. Decryption when h' == h
   C[1] || ... || C[m] || C* &lt;- C with |C[i]|=128 and |C*|&lt;128
   S = TBC_K[P || con3 || (0)_120](N)
 
@@ -1723,36 +1760,6 @@ deoxys_AE3_decrypt(K, PK, N, A, C, tag):
      M* = trunc_len( TBC_N[(0)_128 || con2 || (m)_120](S) ) ^ C*
      end
 
-  # 2. Hashing Associated Data &amp; Ciphertext
-  U &lt;- A || N || C
-  U[1] || ... || U[u] || U* &lt;- U with |U[i]|=256 and |U*|&lt;256
-  h = (0)_128
-  g = (0)_128
-  for i = 1 upto u
-     h = TBC_g[U[i]](h) ^ h
-     g = TBC_g[U[i]](h ^ (1)_128) ^ h ^ (1)_128
-     end
-
-  #if incomplete block
-  if |U*| != 0 then
-     U** &lt;- ozpad_256(U*)
-     h = TBC_g[U**](h) ^ h
-     g = TBC_g[U**](h ^ (1)_128) ^ h ^ (1)_128
-     end
-
-  #The length
-  tail = (|A| - 1)_128 || (|M| - 1)_128
-  h = TBC_g[tail](h) ^ h
-  g = TBC_g[tail](h ^ (1)_128) ^ h ^ (1)_128
-
-  # 3. Verification
-  h' = TBC_K-1[g || con4 || (0)_120](tag)
-  if h' == h then
-     return (M[1] || ... || M[m] || M*)
-  else
-     return invalid
-     end
-
 </pre><a href="#section-6.2-1" class="pilcrow">¶</a>
 </div>
 </section>
@@ -1762,7 +1769,52 @@ deoxys_AE3_decrypt(K, PK, N, A, C, tag):
         <h3 id="name-deoxys-ae3-test-vectors">
 <a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-deoxys-ae3-test-vectors" class="section-name selfRef">Deoxys-AE3 test vectors</a>
         </h3>
-<p id="section-6.3-1">TODO<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.3-1">We provide below some test vectors for Deoxys-AE3, in hexadecimal display.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-6.3-2">
+<pre>
+Key:        00000000 00000000 00000000 00000000
+Nonce:      00000000 00000000 00000000 00000000
+AD:
+plaintext:
+ciphertext:
+tag:        6589c196 48fe06f1 1d78636f 2134f5a8
+
+Key:        00000000 00000000 00000000 00000000
+Nonce:      00000000 00000000 00000000 00000000
+AD:         55ecdd23 867c4336 007893f7 2a381799
+plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
+ciphertext: c2d28d2c 05000e2b 359f4b5c 7d786d1d
+tag:        0c98bdce a58d14c0 0713ef37 a8fea714
+
+Key:        00000000 00000000 00000000 00000000
+Nonce:      00000000 00000000 00000000 00000000
+AD:         55ecdd23 867c4336 007893f7 2a381799 37
+plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94
+ciphertext: c2d28d2c 05000e2b 359f4b5c 7d786d1d 01
+tag:        898626e9 9f0be189 048fe6fa 9ed9a61f
+
+Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+AD:
+Plaintext:
+Ciphertext:
+Tag:        491b0520 00e0b331 a21af68e 12a1d0c0
+
+Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+AD:         55ecdd23 867c4336 007893f7 2a381799
+plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
+ciphertext: 4aab810c 1e02c509 f0817ba1 c1d94b2e
+tag:        53d5460f 470e7e78 5bc71365 15688e2f
+
+Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+AD:         55ecdd23 867c4336 007893f7 2a381799 37b3
+Plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f4
+Ciphertext: 4aab810c 1e02c509 f0817ba1 c1d94b2e f903
+Tag:        3a7ef930 db7247d7 cd4e9e84 564696b1
+</pre><a href="#section-6.3-2" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 </section>
@@ -1857,8 +1909,8 @@ deoxys_AE3_decrypt(K, PK, N, A, C, tag):
           <h4 id="name-deoxys-ae3">
 <a href="#section-8.1.3" class="section-number selfRef">8.1.3. </a><a href="#name-deoxys-ae3" class="section-name selfRef">Deoxys-AE3</a>
           </h4>
-<p id="section-8.1.3-1">In the nonce-respecting scenario, confidentiality and integrity are guaranteed as long as less than 2^112 blocks of data are processed and less than 2^112 computations are performed by the adversary.<a href="#section-8.1.3-1" class="pilcrow">¶</a></p>
-<p id="section-8.1.3-2">When nonce are reused, confidentiality for messages encrypted by reused nonces disappear, while confidentiality for messages encrypted by unique nonces remains up to 2^112 data and time complexities. On the other hand, integrity remains for all nonces, up to 2^112 data and time complexities.<a href="#section-8.1.3-2" class="pilcrow">¶</a></p>
+<p id="section-8.1.3-1">In the nonce-respecting scenario, the probability to break confidentiality and integrity is roughly D/2^112+T/2^112, where D is the number of processed data blocks and T is the amount of offline computations. The security guarantees depend on the underlying TBC being secure against chosen-tweakey attacks. Thus, it is safe to use Deoxys-AE3 with Deoxys-TBC-384. On the other hand, if Deoxys-AE3 is used with a TBC that is not chosen-tweakey secure, the security guarantees vanish.<a href="#section-8.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.1.3-2">For a certain message encrypted by a certain nonce, confidentiality disappears if this nonce got reused, while the probability to break integrity remains roughly D/2^112+T/2^112. However, when nonces are reused, the probability to break confidentiality (as well as integrity) of messages encrypted by unique (i.e., non-reused) nonces remains roughly D/2^112+T/2^112.<a href="#section-8.1.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1931,8 +1983,8 @@ deoxys_AE3_decrypt(K, PK, N, A, C, tag):
 </div>
 <div id="authors-addresses">
 <section id="section-appendix.b">
-      <h2 id="name-authors-address">
-<a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
 <address class="vcard">
         <div dir="auto" class="left"><span class="fn nameRole">Thomas Peyrin</span></div>
@@ -1940,6 +1992,14 @@ deoxys_AE3_decrypt(K, PK, N, A, C, tag):
 <div class="email">
 <span>Email:</span>
 <a href="mailto:thomas.peyrin@gmail.com" class="email">thomas.peyrin@gmail.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Chun Guo</span></div>
+<div dir="auto" class="left"><span class="org">School of Cyber Science and Technology, Shandong University, China</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:chun.guo.sc@gmail.com" class="email">chun.guo.sc@gmail.com</a>
 </div>
 </address>
 </section>
