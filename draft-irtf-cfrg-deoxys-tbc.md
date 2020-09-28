@@ -605,20 +605,20 @@ deoxys_AE3_encrypt(K, PK, N, A, M):
   
   
   for i = 1 upto m-1
-     C[i] = TBC_N[(0)_128 || con2 || (i-1)_120](S) ^ M[i]
-     S = TBC_N[(0)_128 || con1 || (i-1)_120](S)
+     C[i] = TBC_S[(0)_128 || con2 || (i-1)_120](N) ^ M[i]
+     S = TBC_S[(0)_128 || con1 || (i-1)_120](N)
      end
 
   #if incomplete block
   if |M*| == 0 then
-     C[i] = TBC_N[(0)_128 || con2 || (m-1)_120](S) ^ M[m]
+     C[i] = TBC_S[(0)_128 || con2 || (m-1)_120](N) ^ M[m]
      C* = epsilon
      end
   else
-     C[m] = TBC_N[(0)_128 || con2 || (m-1)_120](S) ^ M[m]
-     S = TBC_N[(0)_128 || con1 || (m-1)_120](S)
+     C[m] = TBC_S[(0)_128 || con2 || (m-1)_120](N) ^ M[m]
+     S = TBC_S[(0)_128 || con1 || (m-1)_120](N)
      len = |M*|
-     C* = trunc_len( TBC_N[(0)_128 || con2 || (m)_120](S) ) ^ M*
+     C* = trunc_len( TBC_S[(0)_128 || con2 || (m)_120](N) ) ^ M*
      end
 
   # 2. Hashing Associated Data & Ciphertext
@@ -696,20 +696,20 @@ deoxys_AE3_decrypt(K, PK, N, A, C, tag):
   S = TBC_K[P || con3 || (0)_120](N)
   
   for i = 1 upto m-1
-     M[i] = TBC_N[(0)_128 || con2 || (i-1)_120](S) ^ C[i]
-     S = TBC_N[(0)_128 || con1 || (i-1)_120](S)
+     M[i] = TBC_S[(0)_128 || con2 || (i-1)_120](N) ^ C[i]
+     S = TBC_S[(0)_128 || con1 || (i-1)_120](N)
      end
 
   #if incomplete block
   if |C*| == 0 then
-     M[m] = TBC_N[(0)_128 || con2 || (m-1)_120](S) ^ C[m]
+     M[m] = TBC_S[(0)_128 || con2 || (m-1)_120](N) ^ C[m]
      M* = epsilon
      end
   else
-     M[m] = TBC_N[(0)_128 || con2 || (m-1)_120](S) ^ C[m]
-     S = TBC_N[(0)_128 || con1 || (m-1)_120](S)
+     M[m] = TBC_S[(0)_128 || con2 || (m-1)_120](N) ^ C[m]
+     S = TBC_S[(0)_128 || con1 || (m-1)_120](N)
      len = |C*|
-     M* = trunc_len( TBC_N[(0)_128 || con2 || (m)_120](S) ) ^ C*
+     M* = trunc_len( TBC_S[(0)_128 || con2 || (m)_120](N) ) ^ C*
      end
 
 ~~~
@@ -730,36 +730,36 @@ Key:        00000000 00000000 00000000 00000000
 Nonce:      00000000 00000000 00000000 00000000
 AD:         55ecdd23 867c4336 007893f7 2a381799
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
-ciphertext: c2d28d2c 05000e2b 359f4b5c 7d786d1d
-tag:        0c98bdce a58d14c0 0713ef37 a8fea714
+ciphertext: 22e6e1be 10e406bc 1f12d193 87149254
+tag:        4aca706c f8a09c12 e6a27768 c9ff8434
 
 Key:        00000000 00000000 00000000 00000000
 Nonce:      00000000 00000000 00000000 00000000
 AD:         55ecdd23 867c4336 007893f7 2a381799 37
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94
-ciphertext: c2d28d2c 05000e2b 359f4b5c 7d786d1d 01
-tag:        898626e9 9f0be189 048fe6fa 9ed9a61f
+ciphertext: 22e6e1be 10e406bc 1f12d193 87149254 22
+tag:        edbd2890 77d4b48d 56e640f1 e76580c7
 
 Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 Nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:
-Plaintext:
-Ciphertext:
-Tag:        491b0520 00e0b331 a21af68e 12a1d0c0
+plaintext:
+ciphertext:
+tag:        491b0520 00e0b331 a21af68e 12a1d0c0
 
 Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 Nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
-ciphertext: 4aab810c 1e02c509 f0817ba1 c1d94b2e
-tag:        53d5460f 470e7e78 5bc71365 15688e2f
+ciphertext: 17865093 8e3b6be1 a7f55aca 4a07544c
+tag:        16685164 1cdbafef 62ac4b2d bca135d9
 
 Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 Nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799 37b3
-Plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f4
-Ciphertext: 4aab810c 1e02c509 f0817ba1 c1d94b2e f903
-Tag:        3a7ef930 db7247d7 cd4e9e84 564696b1
+plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f4
+ciphertext: 17865093 8e3b6be1 a7f55aca 4a07544c cf65
+tag:        53c1083c f0a6fc4f 9f9c2ca2 af829167
 ~~~~ 
 
 
