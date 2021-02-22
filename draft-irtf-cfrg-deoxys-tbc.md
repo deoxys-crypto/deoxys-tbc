@@ -135,7 +135,7 @@ The following notations are used throughout the document:
 * Nr: the number of rounds of the tweakable block cipher. In the case of Deoxys-TBC-256 we have Nr=14, while for Deoxys-TBC-384 we have Nr=16.
 * X\|\|Y: concatenation of bit strings X and Y.
 * \|X\|: bit length of a string X.
-* \|\|X\|\|: bytet length of a string X.
+* \|\|X\|\|: byte length of a string X.
 * epsilon: empty string.
 * trunc\_i(X): truncation of the bitstring X to the first i bits.
 * a ← b: replace the value of the variable a with the value of the variable b.
@@ -369,13 +369,13 @@ deoxys_AE1_encrypt(K, N, A, M):
   Auth = 0
   for i = 0 upto a-1
      A_L || A_R <- A[i+1] with |A_L|=|A_R|=128
-     Auth ^= TBC_K[A_L||(2)_8||(i)_120](A_R)       
+     Auth ^= TBC_K[(2)_8||(i)_120||A_L](A_R)       
      end
 
   #if padded block
   if |A*| != 0 then 
      A_L || A_R <- ozpad_256(A*) with |A_L|=|A_R|=128
-     Auth ^= TBC_K[A_L||(6)_8||(a)_120](A_R)
+     Auth ^= TBC_K[(6)_8||(a)_120||A_L](A_R)
      end
 
   # Message
@@ -384,18 +384,18 @@ deoxys_AE1_encrypt(K, N, A, M):
   Csum = 0
   for i = 0 upto m-1
      Csum ^= M[i+1]
-     C[i+1] = TBC_K[N||(0)_8||(i)_120](M[i+1])       
+     C[i+1] = TBC_K[(0)_8||(i)_120||N](M[i+1])       
      end
 
   #if padded block
   if |M*| == 0 then 
-     Final = TBC_K[N||(1)_8||(m)_120](Csum)
+     Final = TBC_K[(1)_8||(m)_120||N](Csum)
      C* = epsilon
   else
      Csum ^= ozpad_128(M*)
-     Pad = TBC_K[N||(4)_8||(m)_120]((0)_128)
+     Pad = TBC_K[(4)_8||(m)_120||N]((0)_128)
      C* = M* ^ trunc_|M*|(Pad)
-     Final = TBC_K[N||(5)_8||(m+1)_120](Csum)
+     Final = TBC_K[(5)_8||(m+1)_120||N](Csum)
      end
 
   # Tag Generation
@@ -414,13 +414,13 @@ deoxys_AE1_decrypt(K, N, A, C, tag):
   Auth = 0
   for i = 0 upto a-1
      A_L || A_R <- A[i+1] with |A_L|=|A_R|=128
-     Auth ^= TBC_K[A_L||(2)_8||(i)_120](A_R)       
+     Auth ^= TBC_K[(2)_8||(i)_120||A_L](A_R)       
      end
 
   #if padded block
   if |A*| != 0 then 
      A_L || A_R <- ozpad_256(A*) with |A_L|=|A_R|=128
-     Auth ^= TBC_K[A_L||(6)_8||(a)_120](A_R)
+     Auth ^= TBC_K[(6)_8||(a)_120||A_L](A_R)
      end
 
   # Ciphertext
@@ -428,19 +428,19 @@ deoxys_AE1_decrypt(K, N, A, C, tag):
 
   Csum = 0
   for i = 0 upto m-1
-     M[i+1] = TBC-1_K[N||(0)_8||(i)_120](C[i+1])
+     M[i+1] = TBC-1_K[(0)_8||(i)_120||N](C[i+1])
      Csum ^= M[i+1]       
      end
 
   #if padded block
   if |C*| == 0 then 
-     Final = TBC_K[N||(1)_8||(m)_120](Csum)
+     Final = TBC_K[(1)_8||(m)_120||N](Csum)
      M* = epsilon
   else     
-     Pad = TBC_K[N||(4)_8||(m)_120]((0)_128)
+     Pad = TBC_K[(4)_8||(m)_120||N]((0)_128)
      M* = C* ^ trunc_|C*|(Pad)
      Csum ^= ozpad_128(M*)
-     Final = TBC_K[N||(5)_8||(m+1)_120](Csum)
+     Final = TBC_K[(5)_8||(m+1)_120||N](Csum)
      end
 
   # Tag Verification
@@ -476,13 +476,13 @@ deoxys_AE2_encrypt(K, N, A, M):
   Auth = 0
   for i = 0 upto a-1
      A_L || A_R <- A[i+1] with |A_L|=|A_R|=128
-     Auth ^= TBC_K[A_L||(2)_8||(i)_120](A_R)       
+     Auth ^= TBC_K[(2)_8||(i)_120||A_L](A_R)       
      end
 
   #if padded block
   if |A*| != 0 then 
      A_L || A_R <- ozpad_256(A*) with |A_L|=|A_R|=128
-     Auth ^= TBC_K[A_L||(6)_8||(a)_120](A_R)
+     Auth ^= TBC_K[(6)_8||(a)_120||A_L](A_R)
      end
 
   # Message Authentication
@@ -490,28 +490,28 @@ deoxys_AE2_encrypt(K, N, A, M):
 
   for i = 0 upto m-1
      M_L || M_R <- M[i+1] with |M_L|=|M_R|=128
-     Auth ^= TBC_K[M_L||(0)_8||(i)_120](M_R)       
+     Auth ^= TBC_K[(0)_8||(i)_120||M_L](M_R)       
      end
 
   #if padded block
   if |M*| != 0 then 
      M_L || M_R <- ozpad_256(M*) with |M_L|=|M_R|=128
-     Auth ^= TBC_K[M_L||(4)_8||(m)_120](M_R)
+     Auth ^= TBC_K[(4)_8||(m)_120||M_L](M_R)
      end
 
   # Tag Generation
-  tag = TBC_K[N||(1)_8||(0)_120](Auth)
+  tag = TBC_K[(1)_8||(0)_120||N](Auth)
 
   # Message Encryption
   M[1] || ... || M[m'] || M* <- M with |M[i]|=128 and |M*|<128
 
   for i = 0 upto m'-1    
-     C[i+1] = M[i+1] ^ TBC_K[tag||(3)_8||(i)_120](N)       
+     C[i+1] = M[i+1] ^ TBC_K[(3)_8||(i)_120||tag](N)       
      end
 
   #if padded block
   if |M*| != 0 then      
-     C* = M* ^ trunc_|M*|(TBC_K[tag||(7)_8||(m')_120](N))
+     C* = M* ^ trunc_|M*|(TBC_K[(7)_8||(m')_120||tag](N))
      end
 
   return (C[1] || ... || C[m'] || C* , tag)
@@ -526,12 +526,12 @@ deoxys_AE2_decrypt(K, N, A, C, tag):
   C[1] || ... || C[m'] || C* <- C with |C[i]|=128 and |C*|<128
 
   for i = 0 upto m'-1
-     M[i+1] = C[i+1] ^ TBC_K[tag||(3)_8||(i)_120](N)          
+     M[i+1] = C[i+1] ^ TBC_K[(3)_8||(i)_120||tag](N)          
      end
 
   #if padded block
   if |C*| != 0 then      
-     M* = C* ^ trunc_|C*|(TBC_K[tag||(7)_8||(m')_120](N))
+     M* = C* ^ trunc_|C*|(TBC_K[(7)_8||(m')_120||tag](N))
      end
 
   # Associated Data
@@ -540,13 +540,13 @@ deoxys_AE2_decrypt(K, N, A, C, tag):
   Auth = 0
   for i = 0 upto a-1
      A_L || A_R <- A[i+1] with |A_L|=|A_R|=128
-     Auth ^= TBC_K[A_L||(2)_8||(i)_120](A_R)       
+     Auth ^= TBC_K[(2)_8||(i)_120||A_L](A_R)       
      end
 
   #if padded block
   if |A*| != 0 then 
      A_L || A_R <- ozpad_256(A*) with |A_L|=|A_R|=128
-     Auth ^= TBC_K[A_L||(6)_8||(a)_120](A_R)
+     Auth ^= TBC_K[(6)_8||(a)_120||A_L](A_R)
      end
 
   # Message Authentication
@@ -555,17 +555,17 @@ deoxys_AE2_decrypt(K, N, A, C, tag):
 
   for i = 0 upto m-1
      M_L || M_R <- M[i+1] with |M_L|=|M_R|=128
-     Auth ^= TBC_K[M_L||(0)_8||(i)_120](M_R)       
+     Auth ^= TBC_K[(0)_8||(i)_120||M_L](M_R)       
      end
 
   #if padded block
   if |M*| != 0 then 
      M_L || M_R <- ozpad_256(M*) with |M_L|=|M_R|=128
-     Auth ^= TBC_K[M_L||(4)_8||(m)_120](M_R)
+     Auth ^= TBC_K[(4)_8||(m)_120||M_L](M_R)
      end
 
   # Tag Verification
-  tag' = TBC_K[N||(1)_8||(0)_120](Auth)
+  tag' = TBC_K[(1)_8||(0)_120||N](Auth)
   if tag' == tag then 
      return M
   else 
