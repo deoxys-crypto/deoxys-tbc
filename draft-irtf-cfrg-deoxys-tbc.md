@@ -585,40 +585,59 @@ This mode is an adaptation of the TEDT AEAD operating mode from \[[BGPPS19](BGPP
 
 This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext and a tag of size tau=128.
 
+## Another LFSR-based Tweakey Encoding
+
+We use a 56-bit LFSR for counter. lfsr_56 is a one-to-one mapping lfsr_56:2^56-1 -> {0,1}^56\{0^56} defined as follows. Let F_56(x) be the lexicographically-first polynomial among the the irreducible degree 56 polynomials of a minimum number of coefficients. Specifically F_56(x) = x^56 + x^7 + x^4 + x^2 + 1 and lfsr_56(D) = 2^D mod F_56(x).
+
+Note that we use lfsr_56(D) as a block counter, so most of the time D changes incrementally
+with a step of 1, and this enables lfsr_56(D) to generate a sequence of 2^56-1 pairwise-distinct values. From an implementation point of view, it should be implemented in the sequence form, x_i+1 = 2  x_i mod F_56(x).
+
+Let (z_55 || z_54 k || ... || z_1 || z_0) denote the state of the 56-bit LFSR. In our modes, the LFSR is
+initialized to 1 mod F_56(x), i.e., (0^7 1 || 0^48), in little-endian format. Incrementation of the LFSR is defined as follows: ......
+
+
+
 ## Deoxys-AE3 encryption
 
 The mode is divided into two independant parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data.
 
 ~~~
 
-deoxys_AE3_encrypt(K, PK, N, A, M):
+deoxys_AE3_encrypt(K, N, A, M):
 
   P = (0)_128
-  con1 = (0)_8
-  con2 = (1)_8
-  con3 = (2)_8
-  con4 = (3)_8
+  con1 = (66)_8
+  con2 = (64)_8
+  con3 = (65)_8
+  con4 = (68)_8
+
+  # 1. Empty message
+  if M == epsilon then
+     C = epsilon
+     m = 0
+     end
+  
 
   # 1. Message Encryption
   M[1] || ... || M[m] || M* <- M with |M[i]|=128 and |M*|<128
-  S = TBC_K[P || con3 || (0)_120](N)
+  S = TBC_K[P || con1 || (0)_120](N)
   
   
   for i = 1 upto m-1
-     C[i] = TBC_S[(0)_128 || con2 || (i-1)_120](N) ^ M[i]
-     S = TBC_S[(0)_128 || con1 || (i-1)_120](N)
+     C[i] = TBC_S[P || con2 || LFSR(i-1) ](N) ^ M[i]
+     S = TBC_S[P || con3 || LFSR(i-1) ](N)
      end
 
   #if incomplete block
   if |M*| == 0 then
-     C[i] = TBC_S[(0)_128 || con2 || (m-1)_120](N) ^ M[m]
+     C[i] = TBC_S[P || con2 || LFSR(i-1) ](N) ^ M[i]
      C* = epsilon
      end
   else
-     C[m] = TBC_S[(0)_128 || con2 || (m-1)_120](N) ^ M[m]
-     S = TBC_S[(0)_128 || con1 || (m-1)_120](N)
+     C[m] = TBC_S[P || con2 || LFSR(m-1) ](N) ^ M[i]
+     S = TBC_S[P || con3 || LFSR(m-1) ](N)
      len = |M*|
-     C* = trunc_len( TBC_S[(0)_128 || con2 || (m)_120](N) ) ^ M*
+     C* = trunc_len( TBC_S[P || con2 || LFSR(m)  ](N) ) ^ M*
      end
 
   # 2. Hashing Associated Data & Ciphertext
