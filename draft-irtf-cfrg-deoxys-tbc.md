@@ -145,6 +145,10 @@ The following notations are used throughout the document:
 * TBC_K\[T\](P): encryption with a tweakable block cipher of plaintext P with tweak T and key K.
 * TBC-1_K\[T\](C): decryption with a tweakable block cipher of ciphertext C with tweak T and key K.
 * ozpad\_i(X): padding of the bitstring X (with 0<\|X\|≤i), such that ozpad\_i(X) = X if \|X\|=i, ozpad\_i(X) = X \|\| (1)\_1 \|\| (0)\_(i-\|X\|-1) otherwise.
+* ipad\_i(X): padding of the bitstring X (with 0<\|X\|≤i), such that ipad\_i(X) = X \|\| (0)\_(i-(\|X\| mod i)-8) \|\| c.
+* ipad*\_i(X): padding of the bitstring X (with 0<\|X\|≤i), such that ipad\_i(X) = X \|\| (0)\_(i-(\|X\| mod i)-8) \|\| c if \|X\| != epsilon, ipad\_i(X) = epsilon otherwise (i.e., X = epsilon).
+
+
 
 # The Deoxys-TBC Tweakable Block Ciphers
 
@@ -587,13 +591,18 @@ This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle
 
 ## Another LFSR-based Tweakey Encoding
 
-We use a 56-bit LFSR for counter. lfsr_56 is a one-to-one mapping lfsr_56:2^56-1 -> {0,1}^56\{0^56} defined as follows. Let F_56(x) be the lexicographically-first polynomial among the the irreducible degree 56 polynomials of a minimum number of coefficients. Specifically F_56(x) = x^56 + x^7 + x^4 + x^2 + 1 and lfsr_56(D) = 2^D mod F_56(x).
+We use a 56-bit LFSR4 for counter. lfsr\_56 is a one-to-one mapping lfsr\_56:2^56-1 -> {0,1}^56\{0^56} defined as follows. Let F\_56(x) be the lexicographically-first polynomial among the the irreducible degree 56 polynomials of a minimum number of coefficients. Specifically F\_56(x) = x^56 + x^7 + x^4 + x^2 + 1 and lfsr\_56(D) = 2^D mod F\_56(x).
 
-Note that we use lfsr_56(D) as a block counter, so most of the time D changes incrementally
-with a step of 1, and this enables lfsr_56(D) to generate a sequence of 2^56-1 pairwise-distinct values. From an implementation point of view, it should be implemented in the sequence form, x_i+1 = 2  x_i mod F_56(x).
+Note that we use lfsr\_56(D) as a block counter, so most of the time D changes incrementally
+with a step of 1, and this enables lfsr\_56(D) to generate a sequence of 2^56-1 pairwise-distinct values. From an implementation point of view, it should be implemented in the sequence form, x\_i+1 = 2  x\_i mod F\_56(x).
 
-Let (z_55 || z_54 k || ... || z_1 || z_0) denote the state of the 56-bit LFSR. In our modes, the LFSR is
-initialized to 1 mod F_56(x), i.e., (0^7 1 || 0^48), in little-endian format. Incrementation of the LFSR is defined as follows: ......
+Let (z\_55 \|\| z\_54 k \|\| ... \|\| z\_1 \|\| z\_0) denote the state of the 56-bit LFSR. In our modes, LFSR4 is initialized to 1 mod F\_56(x), i.e., ((0)_7 1 \|\| (0)_48), in little-endian format. Incrementation of LFSR4 is defined as follows:
+* z_i = z_i-1 for i in [0,1,...,55], i != 7,4,2,0
+* z_7 = z_6 ^ z_55
+* z_4 = z_3 ^ z_55
+* z_2 = z_1 ^ z_55
+* z_0 = z_55
+Below we write LFSR4(i) the state of LFSR4 when clocked i times.
 
 
 
@@ -605,11 +614,7 @@ The mode is divided into two independant parts: the first part handling the encr
 
 deoxys_AE3_encrypt(K, N, A, M):
 
-  P = (0)_128
-  con1 = (66)_8
-  con2 = (64)_8
-  con3 = (65)_8
-  con4 = (68)_8
+  P = (0)\_128
 
   # 1. Empty message
   if M == epsilon then
@@ -620,51 +625,42 @@ deoxys_AE3_encrypt(K, N, A, M):
 
   # 1. Message Encryption
   M[1] || ... || M[m] || M* <- M with |M[i]|=128 and |M*|<128
-  S = TBC_K[P || con1 || (0)_120](N)
-  
+  S = TBC_K[P || (66)_8 || (0)_120](N)
   
   for i = 1 upto m-1
-     C[i] = TBC_S[P || con2 || LFSR(i-1) ](N) ^ M[i]
-     S = TBC_S[P || con3 || LFSR(i-1) ](N)
+     C[i] = TBC_S[P || (64)_8 || LFSR4(i-1) ](N) ^ M[i]
+     S = TBC_S[P || (65)_8 || LFSR4(i-1) ](N)
      end
 
   #if incomplete block
   if |M*| == 0 then
-     C[i] = TBC_S[P || con2 || LFSR(i-1) ](N) ^ M[i]
+     C[i] = TBC_S[P || (64)_8 || LFSR4(i-1) ](N) ^ M[i]
      C* = epsilon
      end
   else
-     C[m] = TBC_S[P || con2 || LFSR(m-1) ](N) ^ M[i]
-     S = TBC_S[P || con3 || LFSR(m-1) ](N)
+     C[m] = TBC_S[P || (64)_8 || LFSR4(m-1) ](N) ^ M[i]
+     S = TBC_S[P || (65)_8 || LFSR4(m-1) ](N)
      len = |M*|
-     C* = trunc_len( TBC_S[P || con2 || LFSR(m)  ](N) ) ^ M*
+     C* = trunc_len( TBC_S[P || (64)_8 || LFSR4(m)  ](N) ) ^ M*
      end
 
   # 2. Hashing Associated Data & Ciphertext
-  U <- A || N || C
-  U[1] || ... || U[u] || U* <- U with |U[i]|=256 and |U*|<=256
-  h = (0)_128
-  g = (0)_128
+  U <- ipad*\_128(A) \|\| ipad*\_128(C) \|\| N \|\| LFSR4(m)
+  U[1] || ... || U[u] || U* <- U with |U[i]|=256
+  L = (0)_128
+  R = (0)_128
   theta = (1)_8 || (0)_120
-  for i = 1 upto u
-     h = TBC_g[U[i]](h) ^ h
-     g = TBC_g[U[i]](h ^ theta) ^ h ^ theta
+  for i = 1 upto u - 1
+     L = TBC_R[U[i]](L) ^ L
+     R = TBC_R[U[i]](L ^ theta) ^ L ^ theta
      end
-
-  #if incomplete block
-  if |U*| != 0 then
-     U** <- ozpad_256(U*)
-     h = TBC_g[U**](h) ^ h
-     g = TBC_g[U**](h ^ theta) ^ h ^ theta
-     end
-
-  #The byte length in little-endianness encoding
-  tail = (||A||)_128 || (||M||)_128
-  h = TBC_g[tail](h) ^ h
-  g = TBC_g[tail](h ^ theta) ^ h ^ theta
+     
+  L = L ^ (2)_128
+  L = TBC_R[U[i]](L) ^ L
+  R = TBC_R[U[i]](L ^ theta) ^ L ^ theta
 
   # 3. Tag Generation
-  tag = TBC_K[g || con4 || (0)_120](h)
+  tag = TBC_K[R || (68)_128 || (0)_120](L)
   return (C[1] || ... || C[m] || C* , tag)
 
 ~~~
@@ -673,64 +669,53 @@ deoxys_AE3_encrypt(K, N, A, M):
 ## Deoxys-AE3 decryption
 
 ~~~
-deoxys_AE3_decrypt(K, PK, N, A, C, tag):
+deoxys_AE3_decrypt(K, N, A, C, tag):
 
   P = (0)_128
-  con1 = (0)_8
-  con2 = (1)_8
-  con3 = (2)_8
-  con4 = (3)_8
   
   # 1. Hashing Associated Data & Ciphertext for verification
-  U <- A || N || C
-  U[1] || ... || U[u] || U* <- U with |U[i]|=256 and |U*|<256
-  h = (0)_128
-  g = (0)_128
+  U <- ipad*\_128(A) \|\| ipad*\_128(C) \|\| N \|\| LFSR4(m)
+  U[1] || ... || U[u] || U* <- U with |U[i]|=256
+  L = (0)_128
+  R = (0)_128
   theta = (1)_8 || (0)_120
-  for i = 1 upto u
-     h = TBC_g[U[i]](h) ^ h
-     g = TBC_g[U[i]](h ^ theta) ^ h ^ theta
+  for i = 1 upto u - 1
+     L = TBC_R[U[i]](L) ^ L
+     R = TBC_R[U[i]](L ^ theta) ^ L ^ theta
      end
-
-  #if incomplete block
-  if |U*| != 0 then
-     U** <- ozpad_256(U*)
-     h = TBC_g[U**](h) ^ h
-     g = TBC_g[U**](h ^ theta) ^ h ^ theta
-     end
-
-  #The length in little-endianness encoding
-  tail = (||A||)_128 || (||M||)_128
-  h = TBC_g[tail](h) ^ h
-  g = TBC_g[tail](h ^ theta) ^ h ^ theta
-
+     
+  L = L ^ (2)_128
+  L = TBC_R[U[i]](L) ^ L
+  R = TBC_R[U[i]](L ^ theta) ^ L ^ theta
+  
   # 2. Verification
-  h' = TBC_K-1[g || con4 || (0)_120](tag)
-  if h' != h then
+  L' = TBC_K-1[R || (68)_128 || (0)_120](tag)
+  if L' != L then
      return invalid
      end 
   
-  # 3. Decryption when h' == h
+  # 3. Decryption when L' == L
   C[1] || ... || C[m] || C* <- C with |C[i]|=128 and |C*|<128
-  S = TBC_K[P || con3 || (0)_120](N)
+  S = TBC_K[P || (66)_8 || (0)_120](N)
   
   for i = 1 upto m-1
-     M[i] = TBC_S[(0)_128 || con2 || (i-1)_120](N) ^ C[i]
-     S = TBC_S[(0)_128 || con1 || (i-1)_120](N)
+     M[i] = TBC_S[P || (64)_8 || LFSR4(i-1) ](N) ^ C[i]
+     S = TBC_S[P || (65)_8 || LFSR4(i-1) ](N)
      end
 
   #if incomplete block
   if |C*| == 0 then
-     M[m] = TBC_S[(0)_128 || con2 || (m-1)_120](N) ^ C[m]
+     M[i] = TBC_S[P || (64)_8 || LFSR4(i-1) ](N) ^ C[i]
      M* = epsilon
      end
   else
-     M[m] = TBC_S[(0)_128 || con2 || (m-1)_120](N) ^ C[m]
-     S = TBC_S[(0)_128 || con1 || (m-1)_120](N)
+     M[m] = TBC_S[P || (64)_8 || LFSR4(m-1) ](N) ^ C[i]
+     S = TBC_S[P || (65)_8 || LFSR4(m-1) ](N)
      len = |C*|
-     M* = trunc_len( TBC_S[(0)_128 || con2 || (m)_120](N) ) ^ C*
+     M* = trunc_len( TBC_S[P || (64)_8 || LFSR4(m)  ](N) ) ^ C*
      end
 
+  return (M[1] || ... || M[m] || M*)
 ~~~
 
 ## Deoxys-AE3 test vectors
