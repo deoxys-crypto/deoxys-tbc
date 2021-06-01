@@ -30,6 +30,21 @@ normative:
   RFC2119:
 
 informative:
+  ABF13:
+    target: https://eprint.iacr.org/2015/204.pdf
+    title: "Leakage-Resilient Symmetric Encryption via Re-keying"
+    author: 
+      -
+        name: Michel Abdalla
+      -  
+        name: Sonia Belaïd
+      -  
+        name: Pierre-Alain Fouque
+    seriesinfo: "Proceedings of the 15th International Workshop Cryptographic Hardware and Embedded Systems – CHES 2013, Lecture Notes in Computer Science 8086, pp.471-488"
+    date: 2013
+    PDF: https://eprint.iacr.org/2015/204.pdf
+  
+  
   BGPPS19:
     target: https://eprint.iacr.org/2019/137.pdf
     title: "TEDT, a Leakage-Resilient AEAD mode for High Physical Security Applications"
@@ -137,7 +152,7 @@ The following notations are used throughout the document:
 * \|X\|: bit length of a string X.
 * \|\|X\|\|: byte length of a string X.
 * epsilon: empty string.
-* trunc\_i(X): truncation of the bitstring X to the first i bits.
+* trunc\_i(X): truncation of the bitstring X to the least significant i bits.
 * a ← b: replace the value of the variable a with the value of the variable b.
 * XOR: bitwise exclusive-OR operation.
 * \[i, ... , j\]: sequence of integers starting from i included, ending at j included, with a step of 1.
@@ -586,22 +601,20 @@ TODO
 
 This mode is an adaptation of the TEDT AEAD operating mode from \[[BGPPS19](BGPPS19)\], the only difference being that Deoxys-TBC-384 is used instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, allowing longer nonce and longer maximum data size.  
 
-This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext and a tag of size tau=128.
+This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^59 bytes in total. It generates the corresponding ciphertext and a tag of size tau=128.
 
-## Another LFSR-based Tweakey Encoding
+## 56-bit LFSR4
 
 We use a 56-bit LFSR4 for counter. LFSR4 is a one-to-one mapping LFSR4:[0,...,2^56-2] -> {0,1}^56\{0^56} defined as follows. Let F\_56(x) be the lexicographically-first polynomial among the the irreducible degree 56 polynomials of a minimum number of coefficients. Specifically F\_56(x) = x^56 + x^7 + x^4 + x^2 + 1 and LFSR4(D) = 2^D mod F\_56(x).
 
 Note that we use LFSR4(D) as a block counter, so most of the time D changes incrementally with a step of 1, and this enables LFSR4(D) to generate a sequence of 2^56-1 pairwise-distinct values. From an implementation point of view, it should be implemented in the sequence form, x\_i+1 = 2x\_i mod F\_56(x).
 
-Let (z\_55 \|\| z\_54 k \|\| ... \|\| z\_1 \|\| z\_0) denote the state of the 56-bit LFSR. In our modes, LFSR4 is initialized to 1 mod F\_56(x), i.e., ((0)_7 1 \|\| (0)_48), in little-endian format. Incrementation of LFSR4 is defined as follows:
-
+Let (z\_55 \|\| z\_54 \|\| ... \|\| z\_1 \|\| z\_0) denote the state of the 56-bit LFSR. In our modes, LFSR4 is initialized to 1 mod F\_56(x), i.e., ((0)_7 1 \|\| (0)_48), in little-endian format. Incrementation of LFSR4 is defined as follows:
 * z\_i = z\_i-1 for i in [0,...,55], i != 7,4,2,0
 * z\_7 = z\_6 ^ z\_55
 * z\_4 = z\_3 ^ z\_55
 * z\_2 = z\_1 ^ z\_55
 * z\_0 = z\_55
-
 Below we write LFSR4(D) the state of LFSR4 when clocked D times.
 
 
@@ -614,7 +627,11 @@ The mode is divided into two independant parts: the first part handling the encr
 
 deoxys_AE3_encrypt(K, N, A, M):
 
-  P = (0)\_128
+  P = (0)_128
+  con1 = (66)_8
+  con2 = (64)_8
+  con3 = (65)_8
+  con4 = (68)_8
 
   # Handling empty message
   if M == epsilon then
@@ -624,27 +641,29 @@ deoxys_AE3_encrypt(K, N, A, M):
 
   # 1. Message Encryption
   M[1] || ... || M[m] || M* <- M with |M[i]|=128 and |M*|<128
-  S = TBC_K[P || (66)_8 || (0)_120](N)
+  S = TBC_K[(0)_56 || con1 || (0)_64 || P](N)
   
   for i = 1 upto m-1
-     C[i] = TBC_S[P || (64)_8 || LFSR4(i-1) ](N) ^ M[i]
-     S = TBC_S[P || (65)_8 || LFSR4(i-1) ](N)
+     C[i] = TBC_S[LFSR4(i-1) || con2 || (0)_64 || P](N) ^ M[i]
+     S = TBC_S[LFSR4(i-1) || con3 || (0)_64 || P](N)
      end
 
-  #if incomplete block
+  #the last block
   if |M*| == 0 then
-     C[i] = TBC_S[P || (64)_8 || LFSR4(i-1) ](N) ^ M[i]
+     #complete block M[m]
+     C[m] = TBC_S[LFSR4(m-1) || con2 || (0)_64 || P](N) ^ M[m]
      C* = epsilon
      end
   else
-     C[m] = TBC_S[P || (64)_8 || LFSR4(m-1) ](N) ^ M[i]
-     S = TBC_S[P || (65)_8 || LFSR4(m-1) ](N)
+     #inomplete block M^*
+     C[m] = TBC_S[LFSR4(m-1) || con2 || (0)_64 || P](N) ^ M[m]
+     S = TBC_S[LFSR4(m-1) || con3 || (0)_64 || P](N)
      len = |M*|
-     C* = trunc_len( TBC_S[P || (64)_8 || LFSR4(m)  ](N) ) ^ M*
+     C* = trunc_len( TBC_S[ LFSR4(m) || con3 || (0)_64 || P ](N) ) ^ M*
      end
 
   # 2. Hashing Associated Data & Ciphertext
-  U <- ipad*\_128(A) \|\| ipad*\_128(C) \|\| N \|\| LFSR4(m)
+  U <- ipad*_128(A) || ipad*_128(C) || N || LFSR4(m)
   U[1] || ... || U[u] || U* <- U with |U[i]|=256
   L = (0)_128
   R = (0)_128
@@ -659,7 +678,7 @@ deoxys_AE3_encrypt(K, N, A, M):
   R = TBC_R[U[i]](L ^ theta) ^ L ^ theta
 
   # 3. Tag Generation
-  tag = TBC_K[R || (68)_128 || (0)_120](L)
+  tag = TBC_K[ (0)_56 || con4 || (0)_64 || R ](L)
   return (C[1] || ... || C[m] || C* , tag)
 
 ~~~
@@ -671,9 +690,13 @@ deoxys_AE3_encrypt(K, N, A, M):
 deoxys_AE3_decrypt(K, N, A, C, tag):
 
   P = (0)_128
+  con1 = (66)_8
+  con2 = (64)_8
+  con3 = (65)_8
+  con4 = (68)_8
   
   # 1. Hashing Associated Data & Ciphertext for verification
-  U <- ipad*\_128(A) \|\| ipad*\_128(C) \|\| N \|\| LFSR4(m)
+  U <- ipad*_128(A) || ipad*_128(C) || N || LFSR4(m)
   U[1] || ... || U[u] || U* <- U with |U[i]|=256
   L = (0)_128
   R = (0)_128
@@ -688,30 +711,32 @@ deoxys_AE3_decrypt(K, N, A, C, tag):
   R = TBC_R[U[i]](L ^ theta) ^ L ^ theta
   
   # 2. Verification
-  L' = TBC_K-1[R || (68)_128 || (0)_120](tag)
+  L' = TBC_K-1[ (0)_56 || con4 || (0)_64 || R ](tag)
   if L' != L then
      return invalid
      end 
   
   # 3. Decryption when L' == L
   C[1] || ... || C[m] || C* <- C with |C[i]|=128 and |C*|<128
-  S = TBC_K[P || (66)_8 || (0)_120](N)
+  S = TBC_K[(0)_56 || con1 || (0)_64 || P](N)
   
   for i = 1 upto m-1
-     M[i] = TBC_S[P || (64)_8 || LFSR4(i-1) ](N) ^ C[i]
-     S = TBC_S[P || (65)_8 || LFSR4(i-1) ](N)
+     M[i] = TBC_S[LFSR4(i-1) || con2 || (0)_64 || P](N) ^ C[i]
+     S = TBC_S[LFSR4(i-1) || con3 || (0)_64 || P](N)
      end
 
-  #if incomplete block
+  #the last block
   if |C*| == 0 then
-     M[i] = TBC_S[P || (64)_8 || LFSR4(i-1) ](N) ^ C[i]
+     #complete block C[m]
+     M[m] = TBC_S[LFSR4(m-1) || con2 || (0)_64 || P](N) ^ C[m]
      M* = epsilon
      end
   else
-     M[m] = TBC_S[P || (64)_8 || LFSR4(m-1) ](N) ^ C[i]
-     S = TBC_S[P || (65)_8 || LFSR4(m-1) ](N)
-     len = |C*|
-     M* = trunc_len( TBC_S[P || (64)_8 || LFSR4(m)  ](N) ) ^ C*
+     #inomplete block C^*
+     M[m] = TBC_S[LFSR4(m-1) || con2 || (0)_64 || P](N) ^ C[m]
+     S = TBC_S[LFSR4(m-1) || con3 || (0)_64 || P](N)
+     len = |M*|
+     M* = trunc_len( TBC_S[ LFSR4(m) || con3 || (0)_64 || P ](N) ) ^ C*
      end
 
   return (M[1] || ... || M[m] || M*)
@@ -722,47 +747,47 @@ deoxys_AE3_decrypt(K, N, A, C, tag):
 We provide below some test vectors for Deoxys-AE3, in hexadecimal display.
 
 ~~~~ 
-Key:        00000000 00000000 00000000 00000000
-Nonce:      00000000 00000000 00000000 00000000
+Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+Nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:
 plaintext:
 ciphertext:
-tag:        6589c196 48fe06f1 1d78636f 2134f5a8
+tag:        6bd43609 7e75f2d4 e2b5b476 93094d7a
 
-Key:        00000000 00000000 00000000 00000000
-Nonce:      00000000 00000000 00000000 00000000
+Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+AD:         55ecdd23 867c43
+plaintext:  3aa1a9dc a69e75
+ciphertext: 675c73e1 157d40
+tag:        58bed416 b1746aaf 144c6802 5c939b6d
+
+Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+Nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
-ciphertext: 22e6e1be 10e406bc 1f12d193 87149254
-tag:        4aca706c f8a09c12 e6a27768 c9ff8434
+ciphertext: 675c73e1 157d4023 9bed96f6 55adb576
+tag:        f0fce3f3 6c9429b8 465adce1 098dd9b0
 
-Key:        00000000 00000000 00000000 00000000
-Nonce:      00000000 00000000 00000000 00000000
+Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+Nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799 37
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94
-ciphertext: 22e6e1be 10e406bc 1f12d193 87149254 22
-tag:        edbd2890 77d4b48d 56e640f1 e76580c7
-
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
-AD:
-plaintext:
-ciphertext:
-tag:        491b0520 00e0b331 a21af68e 12a1d0c0
-
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
-AD:         55ecdd23 867c4336 007893f7 2a381799
-plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
-ciphertext: 17865093 8e3b6be1 a7f55aca 4a07544c
-tag:        16685164 1cdbafef 62ac4b2d bca135d9
+ciphertext: 675c73e1 157d4023 9bed96f6 55adb576 f5
+tag:        2041c23f 1e8f88bd b6626a7d 056769f1
 
 Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 Nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799 37b3
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f4
-ciphertext: 17865093 8e3b6be1 a7f55aca 4a07544c cf65
-tag:        53c1083c f0a6fc4f 9f9c2ca2 af829167
+ciphertext: 675c73e1 157d4023 9bed96f6 55adb576 f525
+tag:        04fc6b1a a7fb7103 47eb5114 6a634090
+
+Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+AD:         55ecdd23 867c4336 007893f7 2a381799 37b33ee2 ab
+plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f49664 1c
+ciphertext: 675c73e1 157d4023 9bed96f6 55adb576 f5258b18 04
+tag:        84b73cc9 d82bac4b 57282712 dd1a4185
 ~~~~ 
 
 
@@ -770,7 +795,7 @@ tag:        53c1083c f0a6fc4f 9f9c2ca2 af829167
 
 ## Weak Leakage-Resilient Key Protection Mechanism
 
-For Deoxys-AE1 and Deoxys-AE2, one can simply first compute a temporary key K' = TBC\_K\[N \|\|(8)\_8\|\|(0)\_120 \] that will be used as secret key input for the AEAD mode. Note that the tweak input is ensured to be unique when the nonce is not repeating, as (8)\_8 is a domain separation reserved for that feature only. This precomputation allows a weak form of leakage resilience. TODO: give reference. 
+For Deoxys-AE1 and Deoxys-AE2, one can simply first compute a temporary key K' = TBC\_K\[N \|\|(8)\_8\|\|(0)\_120 \] that will be used as secret key input for the AEAD mode. Note that the tweak input is ensured to be unique when the nonce is not repeating, as (8)\_8 is a domain separation reserved for that feature only. This precomputation allows a weak form of leakage resilience\[[ABF13](ABF13)\].
 
 ## Increasing Multi-User Security
 
@@ -778,7 +803,7 @@ It is well known that, authenticated encryptions suffer from the so-called multi
 
 One can increase the multi-user security of Deoxys-AE1 and Deoxys-AE2 by randomly selecting an 128-bit public-key value PK and incorporating PK as tweak input to every call to the TBC during the encryption phase. This will effectivelly increase the multi-users security by approximately x/2 bits.
 
-One can increase the multi-user security of Deoxys-AE3 by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, con1 = (4)\_8, con2 = (5)\_8, con3 = (6)\_8, con4 = (7)\_8, and U = A \|\| N \|\| C \|\| PK. For a system using this Deoxys-III\* variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.
+One can increase the multi-user security of Deoxys-AE3 by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, con1 = (69)\_8, con2 = (70)\_8, con3 = (71)\_8, con4 = (72)\_8, and U = A \|\| N \|\| C \|\| PK. For a system using this Deoxys-III\* variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.
 
 
 ## Nonce-Protection Mechanism
@@ -819,9 +844,9 @@ TODO
 
 ### Deoxys-AE3
 
-In the nonce-respecting scenario, the probability to break confidentiality and integrity is roughly D/2^112+T/2^112, where D is the number of processed data blocks and T is the amount of offline computations. The security guarantees depend on the underlying TBC being secure against chosen-tweakey attacks. Thus, it is safe to use Deoxys-AE3 with Deoxys-TBC-384. On the other hand, if Deoxys-AE3 is used with a TBC that is not chosen-tweakey secure, the security guarantees vanish.
+In the nonce-respecting scenario, the probability to break confidentiality and integrity is roughly D/2^121+T/2^121, where D is the number of processed data blocks and T is the amount of offline computations. The security guarantees depend on the underlying TBC being secure against chosen-tweakey attacks. Thus, it is safe to use Deoxys-AE3 with Deoxys-TBC-384. On the other hand, if Deoxys-AE3 is used with a TBC that is not chosen-tweakey secure, the security guarantees vanish.
 
-For a certain message encrypted by a certain nonce, confidentiality disappears if this nonce got reused, while the probability to break integrity remains roughly D/2^112+T/2^112. However, when nonces are reused, the probability to break confidentiality (as well as integrity) of messages encrypted by unique (i.e., non-reused) nonces remains roughly D/2^112+T/2^112.
+For a certain message encrypted by a certain nonce, confidentiality disappears if this nonce got reused, while the probability to break integrity remains roughly D/2^121+T/2^121. However, when nonces are reused, the probability to break confidentiality (as well as integrity) of messages encrypted by unique (i.e., non-reused) nonces remains roughly D/2^121+T/2^121.
 
 
 ## Deoxys-TBC
