@@ -145,9 +145,8 @@ The following notations are used throughout the document:
 * TBC_K\[T\](P): encryption with a tweakable block cipher of plaintext P with tweak T and key K.
 * TBC-1_K\[T\](C): decryption with a tweakable block cipher of ciphertext C with tweak T and key K.
 * ozpad\_i(X): padding of the bitstring X (with 0<\|X\|≤i), such that ozpad\_i(X) = X if \|X\|=i, ozpad\_i(X) = X \|\| (1)\_1 \|\| (0)\_(i-\|X\|-1) otherwise.
-* ipad\_i(X): padding of the bitstring X (with 0<\|X\|≤i), such that ipad\_i(X) = X \|\| (0)\_(i-(\|X\| mod i)-8) \|\| c.
-* ipad*\_i(X): padding of the bitstring X (with 0<\|X\|≤i), such that ipad\_i(X) = X \|\| (0)\_(i-(\|X\| mod i)-8) \|\| c if \|X\| != epsilon, ipad\_i(X) = epsilon otherwise (i.e., X = epsilon).
-
+* ipad\_i(X): padding of the byte string X, such that ipad\_i(X) = X \|\| (0)\_(i-(\|X\| mod i)-8) \|\| ( (\|X\| mod i) / 8 )\_8.
+* ipad*\_i(X): padding of the byte string X, such that ipad*\_i(X) = X \|\| (0)\_(i-(\|X\| mod i)-8) \|\| ( (\|X\| mod i) / 8 )\_8 if \|X\| != epsilon, ipad*\_i(X) = epsilon otherwise (i.e., X = epsilon).
 
 
 # The Deoxys-TBC Tweakable Block Ciphers
@@ -591,18 +590,19 @@ This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle
 
 ## Another LFSR-based Tweakey Encoding
 
-We use a 56-bit LFSR4 for counter. lfsr\_56 is a one-to-one mapping lfsr\_56:2^56-1 -> {0,1}^56\{0^56} defined as follows. Let F\_56(x) be the lexicographically-first polynomial among the the irreducible degree 56 polynomials of a minimum number of coefficients. Specifically F\_56(x) = x^56 + x^7 + x^4 + x^2 + 1 and lfsr\_56(D) = 2^D mod F\_56(x).
+We use a 56-bit LFSR4 for counter. LFSR4 is a one-to-one mapping LFSR4:[0,...,2^56-2] -> {0,1}^56\{0^56} defined as follows. Let F\_56(x) be the lexicographically-first polynomial among the the irreducible degree 56 polynomials of a minimum number of coefficients. Specifically F\_56(x) = x^56 + x^7 + x^4 + x^2 + 1 and LFSR4(D) = 2^D mod F\_56(x).
 
-Note that we use lfsr\_56(D) as a block counter, so most of the time D changes incrementally
-with a step of 1, and this enables lfsr\_56(D) to generate a sequence of 2^56-1 pairwise-distinct values. From an implementation point of view, it should be implemented in the sequence form, x\_i+1 = 2  x\_i mod F\_56(x).
+Note that we use LFSR4(D) as a block counter, so most of the time D changes incrementally with a step of 1, and this enables LFSR4(D) to generate a sequence of 2^56-1 pairwise-distinct values. From an implementation point of view, it should be implemented in the sequence form, x\_i+1 = 2x\_i mod F\_56(x).
 
 Let (z\_55 \|\| z\_54 k \|\| ... \|\| z\_1 \|\| z\_0) denote the state of the 56-bit LFSR. In our modes, LFSR4 is initialized to 1 mod F\_56(x), i.e., ((0)_7 1 \|\| (0)_48), in little-endian format. Incrementation of LFSR4 is defined as follows:
-* z_i = z_i-1 for i in [0,1,...,55], i != 7,4,2,0
-* z_7 = z_6 ^ z_55
-* z_4 = z_3 ^ z_55
-* z_2 = z_1 ^ z_55
-* z_0 = z_55
-Below we write LFSR4(i) the state of LFSR4 when clocked i times.
+
+* z\_i = z\_i-1 for i in [0,...,55], i != 7,4,2,0
+* z\_7 = z\_6 ^ z\_55
+* z\_4 = z\_3 ^ z\_55
+* z\_2 = z\_1 ^ z\_55
+* z\_0 = z\_55
+
+Below we write LFSR4(D) the state of LFSR4 when clocked D times.
 
 
 
