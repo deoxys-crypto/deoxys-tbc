@@ -616,12 +616,11 @@ deoxys_AE3_encrypt(K, N, A, M):
 
   P = (0)\_128
 
-  # 1. Empty message
+  # Handling empty message
   if M == epsilon then
      C = epsilon
      m = 0
      end
-  
 
   # 1. Message Encryption
   M[1] || ... || M[m] || M* <- M with |M[i]|=128 and |M*|<128
