@@ -161,7 +161,7 @@ The following notations are used throughout the document:
 * TBC-1_K\[T\](C): decryption with a tweakable block cipher of ciphertext C with tweak T and key K.
 * ozpad\_i(X): padding of the bitstring X (with 0<\|X\|≤i), such that ozpad\_i(X) = X if \|X\|=i, ozpad\_i(X) = X \|\| (1)\_1 \|\| (0)\_(i-\|X\|-1) otherwise.
 * ipad\_i(X): padding of the byte string X, such that ipad\_i(X) = X \|\| (0)\_(i-(\|X\| mod i)-8) \|\| ( (\|X\| mod i) / 8 )\_8.
-* ipad*\_i(X): padding of the byte string X, such that ipad*\_i(X) = X \|\| (0)\_(i-(\|X\| mod i)-8) \|\| ( (\|X\| mod i) / 8 )\_8 if \|X\| != epsilon, ipad*\_i(X) = epsilon otherwise (i.e., X = epsilon).
+* ipad\*\_i(X): padding of the byte string X, such that ipad\*\_i(X) = X \|\| (0)\_(i-(\|X\| mod i)-8) \|\| ( (\|X\| mod i) / 8 )\_8 if \|X\| != epsilon, ipad\*\_i(X) = epsilon otherwise (i.e., X = epsilon).
 
 
 # The Deoxys-TBC Tweakable Block Ciphers
@@ -605,23 +605,25 @@ This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle
 
 ## 56-bit LFSR4
 
-We use a 56-bit LFSR4 for counter. LFSR4 is a one-to-one mapping LFSR4:[0,...,2^56-2] -> {0,1}^56\{0^56} defined as follows. Let F\_56(x) be the lexicographically-first polynomial among the the irreducible degree 56 polynomials of a minimum number of coefficients. Specifically F\_56(x) = x^56 + x^7 + x^4 + x^2 + 1 and LFSR4(D) = 2^D mod F\_56(x).
+We use a 56-bit LFSR4 for counter. LFSR4 is a one-to-one mapping LFSR4:[0,...,2^56-2] -> {0,1}^56\\{0^56} defined as follows. Let F\_56(x) be the lexicographically-first polynomial among the the irreducible degree 56 polynomials of a minimum number of coefficients. Specifically F\_56(x) = x^56 + x^7 + x^4 + x^2 + 1 and LFSR4(D) = 2^D mod F\_56(x).
 
-Note that we use LFSR4(D) as a block counter, so most of the time D changes incrementally with a step of 1, and this enables LFSR4(D) to generate a sequence of 2^56-1 pairwise-distinct values. From an implementation point of view, it should be implemented in the sequence form, x\_i+1 = 2x\_i mod F\_56(x).
+Note that we use LFSR4(D) as a block counter, so most of the time D changes incrementally with a step of 1, and this enables LFSR4(D) to generate a sequence of 2^56-1 pairwise-distinct values. From an implementation point of view, it should be implemented in the sequence form, x\_{i+1} = 2x\_i mod F\_56(x).
 
 Let (z\_55 \|\| z\_54 \|\| ... \|\| z\_1 \|\| z\_0) denote the state of the 56-bit LFSR. In our modes, LFSR4 is initialized to 1 mod F\_56(x), i.e., ((0)_7 1 \|\| (0)_48), in little-endian format. Incrementation of LFSR4 is defined as follows:
-* z\_i = z\_i-1 for i in [0,...,55], i != 7,4,2,0
+
+* z\_i = z\_{i-1} for i in [0,...,55], i != 7,4,2,0
 * z\_7 = z\_6 ^ z\_55
 * z\_4 = z\_3 ^ z\_55
 * z\_2 = z\_1 ^ z\_55
 * z\_0 = z\_55
+
 Below we write LFSR4(D) the state of LFSR4 when clocked D times.
 
 
 
 ## Deoxys-AE3 encryption
 
-The mode is divided into two independant parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data. We stress that a TBC call TBC_K[T](X) will invoke deoxys_tbc_384_encrypt(T \|\| K, X), i.e., the key K will take the most significant 16 bytes in the corresponding tweakey.
+The mode is divided into two independant parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data. We stress that a TBC call TBC_K\[T\](X) will invoke deoxys_tbc_384_encrypt(T \|\| K, X), i.e., the key K will take the most significant 16 bytes in the corresponding tweakey.
 
 ~~~
 deoxys_AE3_encrypt(K, N, A, M):
@@ -658,7 +660,7 @@ deoxys_AE3_encrypt(K, N, A, M):
      C[m] = TBC_S[LFSR4(m-1) || con2 || (0)_64 || P](N) ^ M[m]
      S = TBC_S[LFSR4(m-1) || con3 || (0)_64 || P](N)
      len = |M*|
-     C* = trunc_len( TBC_S[ LFSR4(m) || con3 || (0)_64 || P ](N) ) ^ M*
+     C* = trunc_len(TBC_S[LFSR4(m) || con3 || (0)_64 || P](N)) ^ M*
      end
 
   # 2. Hashing Associated Data & Ciphertext
@@ -735,7 +737,7 @@ deoxys_AE3_decrypt(K, N, A, C, tag):
      M[m] = TBC_S[LFSR4(m-1) || con2 || (0)_64 || P](N) ^ C[m]
      S = TBC_S[LFSR4(m-1) || con3 || (0)_64 || P](N)
      len = |M*|
-     M* = trunc_len( TBC_S[ LFSR4(m) || con3 || (0)_64 || P ](N) ) ^ C*
+     M* = trunc_len(TBC_S[LFSR4(m) || con3 || (0)_64 || P](N)) ^ C*
      end
 
   return (M[1] || ... || M[m] || M*)
