@@ -1654,7 +1654,7 @@ Below we write LFSR4(D) the state of LFSR4 when clocked D times.<a href="#sectio
         <h3 id="name-deoxys-ae3-encryption">
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-deoxys-ae3-encryption" class="section-name selfRef">Deoxys-AE3 encryption</a>
         </h3>
-<p id="section-6.2-1">The mode is divided into two independant parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.2-1">The mode is divided into two independant parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data. We stress that a TBC call TBC_K<a href="X">T</a> will invoke deoxys_tbc_384_encrypt(T || K, X), i.e., the key K will take the most significant 16 bytes in the corresponding tweakey.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-6.2-2">
 <pre>
 deoxys_AE3_encrypt(K, N, A, M):
