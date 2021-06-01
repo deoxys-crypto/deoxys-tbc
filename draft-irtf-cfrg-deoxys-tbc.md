@@ -621,10 +621,9 @@ Below we write LFSR4(D) the state of LFSR4 when clocked D times.
 
 ## Deoxys-AE3 encryption
 
-The mode is divided into two independant parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data.
+The mode is divided into two independant parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data. We stress that a TBC call TBC_K[T](X) will invoke deoxys_tbc_384_encrypt(T \|\| K, X), i.e., the key K will take the most significant 16 bytes in the corresponding tweakey.
 
 ~~~
-
 deoxys_AE3_encrypt(K, N, A, M):
 
   P = (0)_128
