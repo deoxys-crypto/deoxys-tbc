@@ -183,6 +183,8 @@ The following notations are used throughout the document:
 * (i)\_b: the encoding of the integer i on b bits.
 * TBC_K\[T\](P): encryption with a tweakable block cipher of plaintext P with tweak T and key K.
 * TBC-1_K\[T\](C): decryption with a tweakable block cipher of ciphertext C with tweak T and key K.
+* TBC\[TK\](P): encryption with a tweakable block cipher of plaintext P with tweakey TK.
+* TBC-1\[TK\](C): decryption with a tweakable block cipher of ciphertext C with tweakey TK.
 * ozpad\_i(X): padding of the bitstring X (with 0<\|X\|≤i), such that ozpad\_i(X) = X if \|X\|=i, ozpad\_i(X) = X \|\| (1)\_1 \|\| (0)\_(i-\|X\|-1) otherwise.
 * ipad\_i(X): padding of the byte string X, such that ipad\_i(X) = X \|\| (0)\_(i-(\|X\| mod i)-8) \|\| ( (\|X\| mod i) / 8 )\_8.
 * ipad\*\_i(X): padding of the byte string X, such that ipad\*\_i(X) = X \|\| (0)\_(i-(\|X\| mod i)-8) \|\| ( (\|X\| mod i) / 8 )\_8 if \|X\| != epsilon, ipad\*\_i(X) = epsilon otherwise (i.e., X = epsilon).
@@ -394,7 +396,7 @@ Ciphertext:  e94c5c6df7c19474bbdd292baa2555fd
 
 # The Deoxys-AE1 AEAD Operating Mode
 
-This single-pass nonce-based AEAD mode is an adaptation of the Deoxys-I AEAD operating mode from \[[JNPS14](JNPS14)\], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, allowing longer nonce and longer maximum data size. 
+This single-pass nonce-based AEAD mode is an adaptation of the Deoxys-I AEAD operating mode from \[[JNPS14](JNPS14)\], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication, allowing longer nonce and larger maximum data size. 
 
 This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext C and a tag of size tau≤128.
 
@@ -501,7 +503,7 @@ TODO
 
 # The Deoxys-AE2 AEAD Operating Mode
 
-This two-pass nonce-based AEAD mode is an adaptation of the Deoxys-II AEAD operating mode from \[[JNPS14](JNPS14)\], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, while getting better security bounds.  
+This two-pass nonce-based AEAD mode is an adaptation of the Deoxys-II AEAD operating mode from \[[JNPS14](JNPS14)\], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication, while getting better security bounds.  
 
 This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext C and a tag of size tau<=128.
 
@@ -623,19 +625,19 @@ TODO
 
 # The Deoxys-AE3 AEAD Operating Mode
 
-This mode is an adaptation of the Romulus-T AEAD scheme from \[[GIKMP21](GIKMP21)\] (which is further built upon the TEDT AEAD operating mode from \[[BGPPS19](BGPPS19)\]), the only difference being that Deoxys-TBC-384 is used instead of Skinny-128-384+ (in Romulus-T). Compared with the original TEDT \[[BGPPS19](BGPPS19)\], both Deoxys-AE3 and Romulus-T handle more data per TBC call during the authentication part and allow longer nonce and longer maximum data size.  
+This mode is an adaptation of the Romulus-T AEAD scheme from \[[GIKMP21](GIKMP21)\] (which is further built upon the TEDT AEAD operating mode from \[[BGPPS19](BGPPS19)\]), the only difference being that Deoxys-TBC-384 is used instead of Skinny-128-384+ (in Romulus-T). Compared with the original TEDT \[[BGPPS19](BGPPS19)\], both Deoxys-AE3 and Romulus-T handle more data per TBC call during the authentication and allow longer nonce and larger maximum data size.  
 
 This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^59 bytes in total. It generates the corresponding ciphertext and a tag of size tau=128.
 
 ## 56-bit LFSR56
 
-We use a 56-bit LFSR56 for counter in Deoxys-AE3. LFSR56 is a one-to-one mapping LFSR56:[0,...,2^56-2] -> {0,1}^56\\{(0)_56} defined as follows. Let F\_56(x) be the lexicographically-first polynomial among the the irreducible degree 56 polynomials of a minimum number of coefficients. Specifically F\_56(x) = x^56 + x^7 + x^4 + x^2 + 1 and LFSR56(D) = 2^D mod F\_56(x).
+We use a 56-bit LFSR56 for counter in Deoxys-AE3. LFSR56 is a one-to-one mapping LFSR56 : \[0, ... ,2^56-2\] -> {0,1}^56\\{(0)_56} defined as follows. Let F\_56(x) be the lexicographically-first polynomial among the the irreducible degree 56 polynomials of a minimum number of coefficients. Specifically F\_56(x) = x^56 + x^7 + x^4 + x^2 + 1 and LFSR56(D) = 2^D mod F\_56(x).
 
 Note that we use LFSR56(D) as a block counter, so most of the time D changes incrementally with a step of 1, and this enables LFSR56(D) to generate a sequence of 2^56-1 pairwise-distinct values. From an implementation point of view, it should be implemented in the sequence form, x\_{i+1} = 2x\_i mod F\_56(x).
 
 Let (z\_55 \|\| z\_54 \|\| ... \|\| z\_1 \|\| z\_0) denote the state of the 56-bit LFSR. In Deoxys-AE3, LFSR56 is initialized to 1 mod F\_56(x), i.e., ((0)_7 \|\| 1 \|\| (0)_48), in little-endian format. Incrementation of LFSR56 is defined as follows:
 
-* z\_i = z\_{i-1} for i in [0,...,55]\\{7,4,2,0}
+* z\_i = z\_{i-1} for i in [0, ... ,55]\\{7,4,2,0}
 * z\_7 = z\_6 ^ z\_55
 * z\_4 = z\_3 ^ z\_55
 * z\_2 = z\_1 ^ z\_55
@@ -647,7 +649,7 @@ Below we write LFSR56(D) the state of LFSR56 when clocked D times.
 
 ## Deoxys-AE3 encryption
 
-The mode is divided into two independant parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data. We stress that a TBC call TBC_K\[T\](X) will invoke deoxys_tbc_384_encrypt(T \|\| K, X), i.e., the key K will take the most significant 16 bytes in the corresponding tweakey. For clarify, we will denote the latter call by TBC\[T \|\| K\](X).
+The mode is divided into two independant parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data.
 
 ~~~
 deoxys_AE3_encrypt(K, N, A, M):
@@ -668,16 +670,16 @@ deoxys_AE3_encrypt(K, N, A, M):
 
   # 1. Message Encryption
   M[1] || ... || M[m] <- M with 0<|M[m]|<=128 and |M[i]|=128 for i=1,...,m-1
-  S = TBC_K[(0)_56||con1||(0)_64||P](N)
+  S = TBC[(0)_56||con1||(0)_64||P||K](N)
   
   for i = 1 upto m-1
-     C[i] = TBC_S[LFSR56(i-1)||con2||(0)_64||P](N) ^ M[i]
-     S = TBC_S[LFSR56(i-1)||con3||(0)_64||P](N)
+     C[i] = TBC[LFSR56(i-1)||con2||(0)_64||P||S](N) ^ M[i]
+     S = TBC[LFSR56(i-1)||con3||(0)_64||P||S](N)
      end
 
   #the last block
   len = |M[m]|
-  C[m] = trunc_len(TBC_S[LFSR56(m-1)||con2||(0)_64||P](N)) ^ M[m]
+  C[m] = trunc_len(TBC[LFSR56(m-1)||con2||(0)_64||P||S](N)) ^ M[m]
 
 
   # 2. Hashing Associated Data & Ciphertext
@@ -693,11 +695,11 @@ deoxys_AE3_encrypt(K, N, A, M):
      end
      
   L = L ^ con5
-  L = TBC_R[U[i]](L) ^ L
-  R = TBC_R[U[i]](L ^ theta) ^ L ^ theta
+  L = TBC[R || U[i]](L) ^ L
+  R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
 
   # 3. Tag Generation
-  tag = TBC_K[(0)_56||con4||(0)_64||R](L)
+  tag = TBC[(0)_56||con4||(0)_64||R||K](L)
   return (C[1] || ... || C[m] , tag)
 
 ~~~
@@ -731,26 +733,26 @@ deoxys_AE3_decrypt(K, N, A, C, tag):
      end
      
   L = L ^ con5
-  L = TBC_R[U[i]](L) ^ L
-  R = TBC_R[U[i]](L ^ theta) ^ L ^ theta
+  L = TBC[R || U[i]](L) ^ L
+  R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
   
   # 2. Verification
-  L' = TBC_K-1[(0)_56||con4||(0)_64||R](tag)
+  L' = TBC-1[(0)_56||con4||(0)_64||R||K](tag)
   if L' != L then
      return invalid
      end 
   
   # 3. Decryption when L' == L
-  S = TBC_K[(0)_56||con1||(0)_64||P](N)
+  S = TBC[(0)_56||con1||(0)_64||P||K](N)
   
   for i = 1 upto m-1
-     M[i] = TBC_S[LFSR56(i-1)||con2||(0)_64||P](N) ^ C[i]
-     S = TBC_S[LFSR56(i-1)||con3||(0)_64||P](N)
+     M[i] = TBC[LFSR56(i-1)||con2||(0)_64||P||S](N) ^ C[i]
+     S = TBC[LFSR56(i-1)||con3||(0)_64||P||S](N)
      end
 
   #the last block
   len = |C[m]|
-  M[m] = trunc_len(TBC_S[LFSR56(m-1)||con2||(0)_64||P](N)) ^ C[m]
+  M[m] = trunc_len(TBC[LFSR56(m-1)||con2||(0)_64||P||S](N)) ^ C[m]
 
   return (M[1] || ... || M[m] || M*)
 ~~~
@@ -780,20 +782,6 @@ AD:         55ecdd23 867c4336 007893f7 2a381799
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
 ciphertext: 675c73e1 157d4023 9bed96f6 55adb576
 tag:        f0fce3f3 6c9429b8 465adce1 098dd9b0
-
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
-AD:         55ecdd23 867c4336 007893f7 2a381799 37
-plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94
-ciphertext: 675c73e1 157d4023 9bed96f6 55adb576 f5
-tag:        2041c23f 1e8f88bd b6626a7d 056769f1
-
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
-AD:         55ecdd23 867c4336 007893f7 2a381799 37b3
-plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f4
-ciphertext: 675c73e1 157d4023 9bed96f6 55adb576 f525
-tag:        04fc6b1a a7fb7103 47eb5114 6a634090
 
 Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 Nonce:      56960683 4c0e8a32 877fd47f 241f926b
