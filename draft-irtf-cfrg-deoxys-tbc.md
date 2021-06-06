@@ -35,9 +35,6 @@ informative:
     title: "Leakage-Resilient Symmetric Encryption via Re-keying"
     author: 
       -
-
-----------
-
         name: Michel Abdalla
       -  
         name: Sonia Belaïd
@@ -65,8 +62,8 @@ informative:
     seriesinfo: "IACR Trans. Cryptogr. Hardw. Embed. Syst."
     date: 2020
     PDF: https://eprint.iacr.org/2019/137.pdf
-
-
+    
+    
   BT16:
     target: https://eprint.iacr.org/2016/564.pdf
     title: "The Multi-User Security of Authenticated Encryption: AES-GCM in TLS 1.3"
@@ -399,7 +396,7 @@ Ciphertext:  e94c5c6df7c19474bbdd292baa2555fd
 
 This single-pass nonce-based AEAD mode is an adaptation of the Deoxys-I AEAD operating mode from \[[JNPS14](JNPS14)\], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication part, allowing longer nonce and longer maximum data size. 
 
-This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext C and a tag of size tau<=128.
+This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext C and a tag of size tau≤128.
 
 
 ## Deoxys-AE1 encryption
