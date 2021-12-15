@@ -907,19 +907,21 @@ A 128-bit counter is used in the authentication part of Deoxys-AE1 and Deoxys-AE
 This can also be achieved by using a TBC version with a larger tweakey size. 
 
 
-## Nonce-Protection Mechanism
+<!-- ## Nonce-Protection Mechanism -->
 
-For Deoxys-AE1 and Deoxys-AE2, one can protect the nonce by two constructions (basically TBC-based variations of the schemes proposed by Bellare et al. at CRYPTO 2019). TODO
-
-This can be used to protect the public-key for increased multi-users security as well. 
+<!-- For Deoxys-AE1 and Deoxys-AE2, one can protect the nonce by two constructions (basically TBC-based variations of the schemes proposed by Bellare et al. at CRYPTO 2019). TODO -->
 
 
 # Security Considerations
 
 ## Deoxys AEAD Operating Modes
 
-We give below a table providing the bounds for all modes, in the various settings. TODO
+We give below a table providing the security bounds for all Deoxys modes, in the various settings. TODO
 
+|   | Deoxys-AE1 | Deoxys-AE2 | Deoxys-AE3 |
+|-------|-------|-------|-------|
+| bound | 1/2^128 | T/2^120 + D * (2µ+1)/2^127 + D * (q+T)/2^254 |  T/2^121 + D/2^121 |
+| 1 user, no nonce repetition, 2^64 data | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + D/2^57+ | 
 ### Deoxys-AE1
 
 Security of Deoxys-AE1 in the nonce-respecting scenario is very strong: confidentiality is perfectly guaranteed and the forgery probability is 2^(-tau), independently of the number of blocks of data in encryption/decryption queries made by the adversary. This is simply managed by ensuring that only unique tweaks are used as long at the nonce is not repeating. In the nonce-misuse scenario, no security is claimed for Deoxys-AE1.
@@ -938,9 +940,9 @@ One can observe that there is a graceful security degradation with Deoxys-AE2 as
 
 ### Deoxys-AE3
 
-In the nonce-respecting scenario, the probability to break confidentiality and integrity is roughly D/2^121+T/2^121, where D is the number of processed data blocks and T is the amount of offline computations. The security guarantees depend on the underlying TBC being secure against chosen-tweakey attacks. Thus, it is safe to use Deoxys-AE3 with Deoxys-TBC-384. On the other hand, if Deoxys-AE3 is used with a TBC that is not chosen-tweakey secure (e.g., see Appendix B in \[[BGPPS19](BGPPS19)\]), the security guarantees vanish.
+In the nonce-respecting scenario, the probability to break confidentiality and integrity is roughly T/2^121 + D/2^121, where T is the amount of offline computations and D is the number of processed data blocks. The security guarantees depend on the underlying TBC being secure against chosen-tweakey attacks. Thus, it is safe to use Deoxys-AE3 with Deoxys-TBC-384. On the other hand, if Deoxys-AE3 is used with a TBC that is not chosen-tweakey secure (e.g., see Appendix B in \[[BGPPS19](BGPPS19)\]), the security guarantees vanish.
 
-For a certain message encrypted by a certain nonce, confidentiality disappears if this nonce got reused, while the probability to break integrity remains roughly D/2^121+T/2^121. However, when nonces are reused, the probability to break confidentiality (as well as integrity) of messages encrypted by unique (i.e., non-reused) nonces remains roughly D/2^121+T/2^121.
+For a certain message encrypted by a certain nonce, confidentiality disappears if this nonce got reused, while the probability to break integrity remains roughly T/2^121 + D/2^121. However, when nonces are reused, the probability to break confidentiality (as well as integrity) of messages encrypted by unique (i.e., non-reused) nonces remains roughly T/2^121 + D/2^121.
 
 
 ## Deoxys-TBC
