@@ -920,8 +920,8 @@ We give below a table providing the security bounds for all Deoxys modes, in the
 
 |   | Deoxys-AE1 | Deoxys-AE2 | Deoxys-AE3 |
 |-------|-------|-------|-------|
-| bound | 1/2^128 | T/2^120 + D * (2µ+1)/2^127 + D * (q+T)/2^254 |  T/2^121 + D/2^121 |
-| 1 user, no nonce repetition, 2^64 data | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + D/2^57+ | 
+| general bound | 1/2^128 | T/2^120 + D * (2µ+1)/2^127 + D * (q+T)/2^254 |  T/2^121 + D/2^121 |
+| 1 user, no nonce repetition, <br> 2^64 data | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + D/2^57 | 
 ### Deoxys-AE1
 
 Security of Deoxys-AE1 in the nonce-respecting scenario is very strong: confidentiality is perfectly guaranteed and the forgery probability is 2^(-tau), independently of the number of blocks of data in encryption/decryption queries made by the adversary. This is simply managed by ensuring that only unique tweaks are used as long at the nonce is not repeating. In the nonce-misuse scenario, no security is claimed for Deoxys-AE1.
