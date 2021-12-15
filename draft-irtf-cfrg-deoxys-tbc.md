@@ -910,18 +910,19 @@ Security of Deoxys-AE1 in the nonce-respecting scenario is very strong: confiden
 
 ### Deoxys-AE2
 
-The security of Deoxys-AE2 is already very strong in the nonce-respecting setting, but provides in addition a very strong nonce-misuse resistance as well. Moreover, this is preserved in the multi-user scenario as well. More precisely, it is proven that the advantage of an adversary to break confidentiality or integrity of Deoxys-AE2 in the multi-user setting is roughly:
+The security of Deoxys-AE2 is already very strong in the nonce-respecting setting, but provides in addition a very strong nonce-misuse resistance. Moreover, this is preserved in the multi-user scenario as well. More precisely, it is proven that the advantage of an adversary to break confidentiality or integrity of Deoxys-AE2 in the multi-user setting is roughly:
 
-q_ic/2^120 + (µ -1)*q/2^129 + delta*(2µ +1)*q/2^128 + gamma*(q^2 + q*q_ic)/2^255 + sigma*q/2^257
+[//]: # ( T/2^120 + (µ-1)*q/2^129 + delta*(2µ+1)*q/2^128 + gamma*(q^2 + q*T)/2^255 + D*q/2^257 then we replace delta and gamma by 2*lmax)
+[//]: # (   T/2^120 + (µ-1)*q/2^129 + lmax*(2µ+1)*q/2^127 + lmax*(q^2 + q*T)/2^254 + D*q/2^257 then because D <= lmax*q)
+   T/2^120 + (µ-1)*q/2^129 + lmax*(2µ+1)*q/2^127 + lmax*(q^2 + q*T)/2^254             
+where µ is the maximal number of repetitions of nonces for any user, D is the number of processed data blocks (at most q queries, each composed of a maximum of lmax blocks) and T is the amount of offline computations. 
 
-T/2^120 + (µ -1)*q/2^129 + delta*(2µ +1)*q/2^128 + gamma*(q^2 + q*T)/2^255 + sigma*q/2^257
+Thus, in the case of a single user without nonce repetition, we get advantage:
+   T/2^120 + 3*lmax*q/2^127 + lmax*(q^2 + q*T)/2^254
 
-T/2^120 + (µ -1)*q/2^129 + lmax*(2µ +1)*q/2^128 + lmax*(q^2 + q*T)/2^255 + (1+lmax)*q^2/2^257
+For example, ciphering messages of size lmax=2^32 blocks each, the advantage becomes:
+   T/2^120 + 3*q/2^95 + (q^2 + q*T)/2^222
 
-Thus, in the case of a single user without nonce repetition, we get advantage 
-T/2^120 + delta*(3)*q/2^128 + gamma*(q^2 + q*T)/2^255 + sigma*q/2^257
-
-where µ is the maximal number of repetitions of nonces for any user
 
 ### Deoxys-AE3
 
