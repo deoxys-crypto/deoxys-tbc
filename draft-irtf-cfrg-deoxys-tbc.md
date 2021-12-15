@@ -920,16 +920,16 @@ We give below a table providing the security bounds for all Deoxys modes, in var
 
 |   | Deoxys-AE1 | Deoxys-AE2 | Deoxys-AE3 | AES-GCM-SIV | 
 |-------|-------|-------|-------|-------|
-| general bound | 1/2^128 | T/2^120 + D * (2µ+1)/2^127 + D * (q+T)/2^254 |  T/2^121 + D/2^121 | d(T+D)/2^128 + D*B/2^128  |
-| 1 user, no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + 1/2^57 | T/2^128 + 1/2^64  |
-| 1 user, 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  integrity only | none  |
-| 1 user, 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  integrity only | none  |
-| 2^32 users, no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + 1/2^57 | T/2^128 + 1/2^64  |
-| 2^32 users, 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  integrity only | none  |
-| 2^32 users, 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  integrity only | none  |
-| 1 user, no nonce repetition <br> 2^96 data in total | 1/2^128 | T/2^120 + 3/2^31 |  T/2^121 + 1/2^25 | T/2^128 + 1/2^32  |
-| 2^32 users, 1 nonce repetition <br> 2^96 data in total | none | T/2^120 + 5/2^31 |  integrity only | none  |
-| 2^32 users, 2^16 nonce repetitions <br> 2^96 data in total | none | T/2^120 + 1/2^15 |  integrity only | none  |
+| general bound | 1/2^128 | T/2^120 + D * (2µ+1)/2^127 <br> + D * (q+T)/2^254 |  T/2^121 + D/2^121 | d(T+D)/2^128 + D*B/2^128  |
+| 1 user <br> no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + 1/2^57 | T/2^128 + 1/2^64  |
+| 1 user <br> 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  integrity only | none  |
+| 1 user <br> 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  integrity only | none  |
+| 2^32 users <br> no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + 1/2^57 | T/2^128 + 1/2^64  |
+| 2^32 users <br> 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  integrity only | none  |
+| 2^32 users <br> 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  integrity only | none  |
+| 1 user <br> no nonce repetition <br> 2^96 data in total | 1/2^128 | T/2^120 + 3/2^31 |  T/2^121 + 1/2^25 | T/2^128 + 1/2^32  |
+| 2^32 users <br> 1 nonce repetition <br> 2^96 data in total | none | T/2^120 + 5/2^31 |  integrity only | none  |
+| 2^32 users <br>, 2^16 nonce repetitions <br> 2^96 data in total | none | T/2^120 + 1/2^15 |  integrity only | none  |
 
 ### Deoxys-AE1
 
