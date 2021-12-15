@@ -914,14 +914,14 @@ The security of Deoxys-AE2 is already very strong in the nonce-respecting settin
 
 <!-- T/2^120 + (µ-1)*q/2^129 + delta*(2µ+1)*q/2^128 + gamma*(q^2 + q*T)/2^255 + D*q/2^257 then we replace delta and gamma by 2*lmax -->
 <!--  T/2^120 + (µ-1)*q/2^129 + lmax*(2µ+1)*q/2^127 + lmax*(q^2 + q*T)/2^254 + D*q/2^257 then because D <= lmax*q -->
-   T/2^120 + (µ-1)*q/2^129 + lmax * (2µ+1)*q/2^127 + lmax * (q^2 + q*T)/2^254             
+   T/2^120 + (µ-1) * q/2^129 + lmax * (2µ+1) * q/2^127 + lmax * (q^2 + q * T)/2^254               
 where µ is the maximal number of repetitions of nonces for any user, D is the number of processed data blocks (at most q queries, each composed of a maximum of lmax blocks) and T is the amount of offline computations. 
 
-Thus, in the case of a single user without nonce repetition, we get advantage:
-   T/2^120 + 3*lmax*q/2^127 + lmax*(q^2 + q*T)/2^254
+Thus, in the case of a single user without nonce repetition, we get advantage:   
+   T/2^120 + 3 * lmax * q/2^127 + lmax * (q^2 + q * T)/2^254
 
-For example, ciphering messages of size lmax=2^32 blocks each, the advantage becomes:
-   T/2^120 + 3*q/2^95 + (q^2 + q*T)/2^222
+For example, ciphering messages of size lmax=2^32 blocks each, the advantage becomes:   
+   T/2^120 + 3 * q/2^95 + (q^2 + q * T)/2^222
 
 
 ### Deoxys-AE3
