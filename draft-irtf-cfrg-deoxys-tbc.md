@@ -916,19 +916,28 @@ This can also be achieved by using a TBC version with a larger tweakey size.
 
 ## Deoxys AEAD Operating Modes
 
-We give below a table providing the security bounds for all Deoxys modes, in the various settings. TODO
+We give below a table providing the security bounds for all Deoxys modes, in various settings.
 
-|   | Deoxys-AE1 | Deoxys-AE2 | Deoxys-AE3 |
-|-------|-------|-------|-------|
-| general bound | 1/2^128 | T/2^120 + D * (2µ+1)/2^127 + D * (q+T)/2^254 |  T/2^121 + D/2^121 |
-| 1 user, no nonce repetition, <br> 2^64 data | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + D/2^57 | 
+|   | Deoxys-AE1 | Deoxys-AE2 | Deoxys-AE3 | AES-GCM-SIV | 
+|-------|-------|-------|-------|-------|
+| general bound | 1/2^128 | T/2^120 + D * (2µ+1)/2^127 + D * (q+T)/2^254 |  T/2^121 + D/2^121 | d(T+D)/2^128 + D*B/2^128  |
+| 1 user, no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + 1/2^57 | T/2^128 + 1/2^64  |
+| 1 user, 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  integrity only | none  |
+| 1 user, 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  integrity only | none  |
+| 2^32 users, no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + 1/2^57 | T/2^128 + 1/2^64  |
+| 2^32 users, 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  integrity only | none  |
+| 2^32 users, 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  integrity only | none  |
+| 1 user, no nonce repetition <br> 2^96 data in total | 1/2^128 | T/2^120 + 3/2^31 |  T/2^121 + 1/2^25 | T/2^128 + 1/2^32  |
+| 2^32 users, 1 nonce repetition <br> 2^96 data in total | none | T/2^120 + 5/2^31 |  integrity only | none  |
+| 2^32 users, 2^16 nonce repetitions <br> 2^96 data in total | none | T/2^120 + 1/2^15 |  integrity only | none  |
+
 ### Deoxys-AE1
 
 Security of Deoxys-AE1 in the nonce-respecting scenario is very strong: confidentiality is perfectly guaranteed and the forgery probability is 2^(-tau), independently of the number of blocks of data in encryption/decryption queries made by the adversary. This is simply managed by ensuring that only unique tweaks are used as long at the nonce is not repeating. In the nonce-misuse scenario, no security is claimed for Deoxys-AE1.
 
 ### Deoxys-AE2
 
-The security of Deoxys-AE2 is already very strong in the nonce-respecting setting, but provides in addition a very strong nonce-misuse resistance. Moreover, this is preserved in the multi-user scenario as well. More precisely, it is proven \[[CJPS22](CJPS22)\] that the advantage of an adversary to break confidentiality or integrity of Deoxys-AE2 in the multi-user setting is roughly T/2^120 + D * (2µ+1)/2^127 + D * (q+T)/2^254, where µ is the maximal number of times a (user,nonce) pair is repeated, D is the total number of processed data blocks (with at most q queries) and T is the amount of offline computations. 
+The security of Deoxys-AE2 is already very strong in the nonce-respecting setting, but provides in addition a very strong nonce-misuse resistance. Moreover, this is preserved in the multi-user scenario as well. More precisely, it is proven \[[CJPS22](CJPS22)\] that the advantage of an adversary to break confidentiality or integrity of Deoxys-AE2 in the multi-user setting is roughly T/2^120 + D * (2µ+1)/2^127 + D * (q+T)/2^254, where µ is the maximal number of times a (user,nonce) pair can appear in the queries, D is the total number of processed data blocks (with at most q queries) and T is the amount of offline computations. 
 
 <!-- T/2^120 + (µ-1)*q/2^129 + delta*(2µ+1)*q/2^128 + gamma*(q^2+q*T)/2^255 + D*q/2^257 then we replace delta*q and gamma*q by 2*D -->
 <!-- T/2^120 + (µ-1)*q/2^129 + D*(2µ+1)/2^127 + D*(q+T)/2^254 + D*q/2^257 then reducing -->
