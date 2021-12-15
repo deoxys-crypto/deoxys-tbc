@@ -926,10 +926,13 @@ Security of Deoxys-AE1 in the nonce-respecting scenario is very strong: confiden
 
 ### Deoxys-AE2
 
-The security of Deoxys-AE2 is already very strong in the nonce-respecting setting, but provides in addition a very strong nonce-misuse resistance. Moreover, this is preserved in the multi-user scenario as well. More precisely, it is proven \[[CJPS22](CJPS22)\] that the advantage of an adversary to break confidentiality or integrity of Deoxys-AE2 in the multi-user setting is roughly: <!-- T/2^120 + (µ-1)*q/2^129 + delta*(2µ+1)*q/2^128 + gamma*(q^2 + q*T)/2^255 + D*q/2^257 then we replace delta*q and gamma*q by 2*D -->
-<!-- T/2^120 + (µ-1)*q/2^129 + D*(2µ+1)/2^127 + D*(q + T)/2^254 + D*q/2^257 then reducing --> T/2^120 + D * (2µ+1)/2^127 + D * (q + T)/2^254, where µ is the maximal number of times a (user,nonce) pair is repeated, D is the total number of processed data blocks (with at most q queries) and T is the amount of offline computations. 
+The security of Deoxys-AE2 is already very strong in the nonce-respecting setting, but provides in addition a very strong nonce-misuse resistance. Moreover, this is preserved in the multi-user scenario as well. More precisely, it is proven \[[CJPS22](CJPS22)\] that the advantage of an adversary to break confidentiality or integrity of Deoxys-AE2 in the multi-user setting is roughly T/2^120 + D * (2µ+1)/2^127 + D * (q+T)/2^254, where µ is the maximal number of times a (user,nonce) pair is repeated, D is the total number of processed data blocks (with at most q queries) and T is the amount of offline computations. 
 
-Thus, in the case of a single user without nonce repetition, µ=1 and we get advantage T/2^120 + 3 * D/2^127 + D * (q + T)/2^254. For example, in this scenario, even if the user ciphers D=2^64 data blocks, the advantage becomes T/2^120 + 3/2^63 + q/2^190. This remains the same with more users (say 2^32 users each processing 2^32 data blocks) as long as they do not repeat nonces, retaining µ=1.
+<!-- T/2^120 + (µ-1)*q/2^129 + delta*(2µ+1)*q/2^128 + gamma*(q^2+q*T)/2^255 + D*q/2^257 then we replace delta*q and gamma*q by 2*D -->
+<!-- T/2^120 + (µ-1)*q/2^129 + D*(2µ+1)/2^127 + D*(q+T)/2^254 + D*q/2^257 then reducing -->
+<!-- T/2^120 + D * (2µ+1)/2^127 + D * (q+T)/2^254 -->
+
+Thus, in the case of a single user without nonce repetition, µ=1 and we get advantage T/2^120 + 3 * D/2^127 + D * (q+T)/2^254. For example, in this scenario, even if the user ciphers D=2^64 data blocks, the advantage becomes T/2^120 + 3/2^63 + q/2^190. This remains the same with more users (say 2^32 users each processing 2^32 data blocks) as long as they do not repeat nonces, retaining µ=1.
 
 One can observe that there is a graceful security degradation with Deoxys-AE2 as nonces are repeated: security is guaranteed up to roughly 2^120 offline computations and 2^128 data blocks as long as µ remains small. When µ is allowed to grow as large as D, we hit the birthday bound and security vanishes at roughly 2^64 data blocks.
 
