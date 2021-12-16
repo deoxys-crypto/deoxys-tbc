@@ -531,33 +531,33 @@ deoxys_AE1_decrypt(K, N, A, C, tag):
 ## Deoxys-AE1 test vectors
 
 ~~~~ 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
-AD:
-plaintext:
-ciphertext:
-tag:        TODO TODO TODO TODO
+Key:        63654b32 7af27ee8 2eb8c9f7 654aadeb 
+Nonce:      28c7e917 837f573d 6083210f 69afaf4b 
+AD:         
+plaintext:  
+ciphertext: 
+tag:        70aeef79 88ed4230 9ae3d21f 084dd4b3 
 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
-AD:         55ecdd23 867c43
-plaintext:  3aa1a9dc a69e75
-ciphertext: TODO TODO
-tag:        TODO TODO TODO TODO
+Key:        63654b32 7af27ee8 2eb8c9f7 654aadeb 
+Nonce:      28c7e917 837f573d 6083210f 69afaf4b 
+AD:         f40b65ba ffa5e6
+plaintext:  784454cb 1631e9
+ciphertext: 81b37562 7d8095
+tag:        38c648c6 6b61c2da d8866299 5ab6dafc 
 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
-AD:         55ecdd23 867c4336 007893f7 2a381799
-plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
-ciphertext: TODO TODO TODO TODO
-tag:        TODO TODO TODO TODO
+Key:        63654b32 7af27ee8 2eb8c9f7 654aadeb 
+Nonce:      28c7e917 837f573d 6083210f 69afaf4b 
+AD:         f40b65ba ffa5e6c3 5ea0dd1a 66816c04 
+plaintext:  784454cb 1631e9f8 a2b30d6b 1f95eaba 
+ciphertext: 25ffeb32 3c00405b ffda119a 34f68365 
+tag:        f6adf5ca 1bd56e3c 53ca35e4 d8e83a47 
 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
-AD:         55ecdd23 867c4336 007893f7 2a381799 37b33ee2 ab
-plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f49664 1c
-ciphertext: TODO TODO TODO TODO TODO TODO
-tag:        TODO TODO TODO TODO
+Key:        63654b32 7af27ee8 2eb8c9f7 654aadeb 
+Nonce:      28c7e917 837f573d 6083210f 69afaf4b 
+AD:         f40b65ba ffa5e6c3 5ea0dd1a 66816c04 c0e824cd e6
+plaintext:  784454cb 1631e9f8 a2b30d6b 1f95eaba 5d100f20 b0
+ciphertext: 25ffeb32 3c00405b ffda119a 34f68365 18d836aa 5f
+tag:        9f2d7200 b555a808 54ab8878 8960795a 
 ~~~~ 
 
 
