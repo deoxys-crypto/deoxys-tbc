@@ -683,29 +683,29 @@ deoxys_AE2_decrypt(K, N, A, C, tag):
 We provide below some test vectors for Deoxys-AE3, in hexadecimal display.
 
 ~~~~ 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:
 plaintext:
 ciphertext:
 tag:        TODO TODO TODO TODO
 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c43
 plaintext:  3aa1a9dc a69e75
 ciphertext: TODO TODO
 tag:        TODO TODO TODO TODO
 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
 ciphertext: TODO TODO TODO TODO
 tag:        TODO TODO TODO TODO
 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799 37b33ee2 ab
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f49664 1c
 ciphertext: TODO TODO TODO TODO TODO TODO
