@@ -404,25 +404,25 @@ We provide below test vectors for both versions of Deoxys-TBC, in hexadecimal di
 ### Deoxys-TBC-256
 
 ~~~~ 
-Tweakey:     Key:   101112131415161718191a1b1c1d1e1f   
-             Tweak: 02021222324252627000000000000000
+tweakey:     key:   101112131415161718191a1b1c1d1e1f   
+             tweak: 02021222324252627000000000000000
 
-Plaintext:   1857d4edf080e8e2c83aa9e794ebf90d
+plaintext:   1857d4edf080e8e2c83aa9e794ebf90d
 
-Ciphertext:  f86ecad0d69d2c573cdeee96c90f37ac
+ciphertext:  f86ecad0d69d2c573cdeee96c90f37ac
 ~~~~ 
 
 
 ### Deoxys-TBC-384
 
 ~~~~ 
-Tweakey:     Key:   101112131415161718191a1b1c1d1e1f 
-             Tweak: 202122232425262728292a2b2c2d2e2f 
+tweakey:     key:   101112131415161718191a1b1c1d1e1f 
+             tweak: 202122232425262728292a2b2c2d2e2f 
                     00001020304050607000000000000000
 
-Plaintext:   d18db1b44ad16fe5623ccd73c250c272
+plaintext:   d18db1b44ad16fe5623ccd73c250c272
 
-Ciphertext:  e94c5c6df7c19474bbdd292baa2555fd
+ciphertext:  e94c5c6df7c19474bbdd292baa2555fd
 ~~~~ 
 
 
@@ -531,29 +531,29 @@ deoxys_AE1_decrypt(K, N, A, C, tag):
 ## Deoxys-AE1 test vectors
 
 ~~~~ 
-Key:        63654b32 7af27ee8 2eb8c9f7 654aadeb 
-Nonce:      28c7e917 837f573d 6083210f 69afaf4b 
+key:        63654b32 7af27ee8 2eb8c9f7 654aadeb 
+nonce:      28c7e917 837f573d 6083210f 69afaf4b 
 AD:         
 plaintext:  
 ciphertext: 
 tag:        70aeef79 88ed4230 9ae3d21f 084dd4b3 
 
-Key:        63654b32 7af27ee8 2eb8c9f7 654aadeb 
-Nonce:      28c7e917 837f573d 6083210f 69afaf4b 
+key:        63654b32 7af27ee8 2eb8c9f7 654aadeb 
+nonce:      28c7e917 837f573d 6083210f 69afaf4b 
 AD:         f40b65ba ffa5e6
 plaintext:  784454cb 1631e9
 ciphertext: 81b37562 7d8095
 tag:        38c648c6 6b61c2da d8866299 5ab6dafc 
 
-Key:        63654b32 7af27ee8 2eb8c9f7 654aadeb 
-Nonce:      28c7e917 837f573d 6083210f 69afaf4b 
+key:        63654b32 7af27ee8 2eb8c9f7 654aadeb 
+nonce:      28c7e917 837f573d 6083210f 69afaf4b 
 AD:         f40b65ba ffa5e6c3 5ea0dd1a 66816c04 
 plaintext:  784454cb 1631e9f8 a2b30d6b 1f95eaba 
 ciphertext: 25ffeb32 3c00405b ffda119a 34f68365 
 tag:        f6adf5ca 1bd56e3c 53ca35e4 d8e83a47 
 
-Key:        63654b32 7af27ee8 2eb8c9f7 654aadeb 
-Nonce:      28c7e917 837f573d 6083210f 69afaf4b 
+key:        63654b32 7af27ee8 2eb8c9f7 654aadeb 
+nonce:      28c7e917 837f573d 6083210f 69afaf4b 
 AD:         f40b65ba ffa5e6c3 5ea0dd1a 66816c04 c0e824cd e6
 plaintext:  784454cb 1631e9f8 a2b30d6b 1f95eaba 5d100f20 b0
 ciphertext: 25ffeb32 3c00405b ffda119a 34f68365 18d836aa 5f
@@ -852,29 +852,29 @@ deoxys_AE3_decrypt(K, N, A, C, tag):
 We provide below some test vectors for Deoxys-AE3, in hexadecimal display.
 
 ~~~~ 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:
 plaintext:
 ciphertext:
 tag:        6bd43609 7e75f2d4 e2b5b476 93094d7a
 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c43
 plaintext:  3aa1a9dc a69e75
 ciphertext: 675c73e1 157d40
 tag:        58bed416 b1746aaf 144c6802 5c939b6d
 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
 ciphertext: 675c73e1 157d4023 9bed96f6 55adb576
 tag:        f0fce3f3 6c9429b8 465adce1 098dd9b0
 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799 37b33ee2 ab
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f49664 1c
 ciphertext: 675c73e1 157d4023 9bed96f6 55adb576 f5258b18 04
