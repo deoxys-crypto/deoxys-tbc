@@ -907,6 +907,12 @@ A 128-bit counter is used in the authentication part of Deoxys-AE1 and Deoxys-AE
 This can also be achieved by using a TBC version with a larger tweakey size. 
 
 
+
+## Hardware-Friendly Alternative 
+
+For very hardware-constrained scenarios, one can simply replace Deoxys-TBC-384 by the lightweight TBC Skinny-128/384+ \[[GIKMP21](GIKMP21)\]. They have exactly the same block/tweakey sizes and security goals. They can be used interchangeably. 
+
+
 <!-- ## Nonce-Protection Mechanism -->
 
 <!-- For Deoxys-AE1 and Deoxys-AE2, one can protect the nonce by two constructions (basically TBC-based variations of the schemes proposed by Bellare et al. at CRYPTO 2019). TODO -->
