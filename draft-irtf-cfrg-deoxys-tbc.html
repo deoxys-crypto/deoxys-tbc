@@ -806,7 +806,7 @@ address div.right {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Peyrin &amp; Guo</td>
-<td class="center">Expires 28 June 2022</td>
+<td class="center">Expires 29 June 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -819,12 +819,12 @@ address div.right {
 <dd class="internet-draft">draft-irtf-cfrg-deoxys-tbc-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2021-12-25" class="published">25 December 2021</time>
+<time datetime="2021-12-26" class="published">26 December 2021</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-06-28">28 June 2022</time></dd>
+<dd class="expires"><time datetime="2022-06-29">29 June 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -874,7 +874,7 @@ address div.right {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 28 June 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 29 June 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1939,7 +1939,7 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
         <h3 id="name-deoxys-aead-operating-modes">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-deoxys-aead-operating-modes" class="section-name selfRef">Deoxys AEAD Operating Modes</a>
         </h3>
-<p id="section-8.1-1">We give below a table providing the security bounds for all Deoxys modes, in various settings.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-1">We give below a table providing the security bounds for all Deoxys modes, in various settings. Below T stands for time complexity (in the ideal cipher model T is reflected by the number of adversarial ideal cipher queries), while D stands for the total number of data blocks processed by both encryption and decryption. In AES-GCM-SIV's bounds, d denotes the maximal number of users that use the same nonce, lmax denotes the maximal length of a single to-be-encrypted message, while lmax^* denotes the total number of message blocks encrypted by a fixed nonce. We have lmax^* &gt;= lmax, and the equality holds in the nonce-respecting setting<a href="#section-8.1-1" class="pilcrow">¶</a></p>
 <table class="center" id="table-1">
           <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
 <thead>
@@ -1956,71 +1956,71 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
               <td class="text-left" rowspan="1" colspan="1">general bound</td>
               <td class="text-left" rowspan="1" colspan="1">1/2^128</td>
               <td class="text-left" rowspan="1" colspan="1">T/2^120 + D * (2[micro]+1)/2^127 <br> + D * (q+T)/2^254</td>
-              <td class="text-left" rowspan="1" colspan="1">T/2^121 + D/2^121</td>
-              <td class="text-left" rowspan="1" colspan="1">d(T+D)/2^128 + D<em>B/2^128 or  Q</em><br>B^2/2^128 + lmax * Q * R/2^128 + T/2^128</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^114 + D/2^114</td>
+              <td class="text-left" rowspan="1" colspan="1">d(T+D)/2^128 + D * lmax^<em>/2^128 or  Q</em><br>B^2/2^128 + lmax * Q * R/2^128 + T/2^128</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">1 user <br> no nonce repetition <br> 2^64 data in total</td>
               <td class="text-left" rowspan="1" colspan="1">1/2^128</td>
               <td class="text-left" rowspan="1" colspan="1">T/2^120 + 3/2^63</td>
-              <td class="text-left" rowspan="1" colspan="1">T/2^121 + 1/2^57</td>
-              <td class="text-left" rowspan="1" colspan="1">T/2^128 + 1/2^64</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^114 + 1/2^50</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^128 + lmax/2^64</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">1 user <br> 1 nonce repetition <br> 2^64 data in total</td>
               <td class="text-left" rowspan="1" colspan="1">none</td>
               <td class="text-left" rowspan="1" colspan="1">T/2^120 + 5/2^63</td>
               <td class="text-left" rowspan="1" colspan="1">none</td>
-              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^128 + lmax^*/2^64</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">1 user <br> 2^32 nonce repetitions <br> 2^64 data in total</td>
               <td class="text-left" rowspan="1" colspan="1">none</td>
               <td class="text-left" rowspan="1" colspan="1">T/2^120 + 1/2^31</td>
               <td class="text-left" rowspan="1" colspan="1">none</td>
-              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^128 + lmax^*/2^64</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">2^32 users <br> no nonce repetition <br> 2^64 data in total</td>
               <td class="text-left" rowspan="1" colspan="1">1/2^128</td>
               <td class="text-left" rowspan="1" colspan="1">T/2^120 + 3/2^63</td>
-              <td class="text-left" rowspan="1" colspan="1">T/2^121 + 1/2^57</td>
-              <td class="text-left" rowspan="1" colspan="1">T/2^128 + 1/2^64</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^114 + 1/2^50</td>
+              <td class="text-left" rowspan="1" colspan="1">dT/2^128 + d/2^64 + lmax/2^64</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">2^32 users <br> 1 nonce repetition <br> 2^64 data in total</td>
               <td class="text-left" rowspan="1" colspan="1">none</td>
               <td class="text-left" rowspan="1" colspan="1">T/2^120 + 5/2^63</td>
               <td class="text-left" rowspan="1" colspan="1">none</td>
-              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">dT/2^128 + d/2^64 + lmax^*/2^64</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">2^32 users <br> 2^32 nonce repetitions <br> 2^64 data in total</td>
               <td class="text-left" rowspan="1" colspan="1">none</td>
               <td class="text-left" rowspan="1" colspan="1">T/2^120 + 1/2^31</td>
               <td class="text-left" rowspan="1" colspan="1">none</td>
-              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">dT/2^128 + d/2^64 + lmax^*/2^64</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">1 user <br> no nonce repetition <br> 2^96 data in total</td>
               <td class="text-left" rowspan="1" colspan="1">1/2^128</td>
               <td class="text-left" rowspan="1" colspan="1">T/2^120 + 3/2^31</td>
-              <td class="text-left" rowspan="1" colspan="1">T/2^121 + 1/2^25</td>
-              <td class="text-left" rowspan="1" colspan="1">T/2^128 + 1/2^32</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^114 + 1/2^18</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^128 + lmax/2^32</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">2^32 users <br> 1 nonce repetition <br> 2^96 data in total</td>
               <td class="text-left" rowspan="1" colspan="1">none</td>
               <td class="text-left" rowspan="1" colspan="1">T/2^120 + 5/2^31</td>
               <td class="text-left" rowspan="1" colspan="1">none</td>
-              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">dT/2^128 + d/2^32 + lmax^*/2^32</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">2^32 users <br>, 2^16 nonce repetitions <br> 2^96 data in total</td>
               <td class="text-left" rowspan="1" colspan="1">none</td>
               <td class="text-left" rowspan="1" colspan="1">T/2^120 + 1/2^15</td>
               <td class="text-left" rowspan="1" colspan="1">none</td>
-              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">dT/2^128 + d/2^32 + lmax^*/2^32</td>
             </tr>
           </tbody>
         </table>
@@ -2063,15 +2063,15 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
 <a href="#section-8.1.3.2" class="section-number selfRef">8.1.3.2. </a><a href="#name-leakage-resilience" class="section-name selfRef">Leakage-resilience</a>
             </h5>
 <p id="section-8.1.3.2-1">Berti et al. proved leakage-resilience for TEDT w.r.t. to certain definitions and assumptions [<a href="BGPPS19">BGPPS19</a>]. Similar conclusions could be drawn on Deoxys-AE3. To ease understanding, we eschew the complicated definitions and leakage models in favor of less formal claims and interpretations.<a href="#section-8.1.3.2-1" class="pilcrow">¶</a></p>
-<p id="section-8.1.3.2-2">To ensure strong security against side-channel attacks, Deoxys-AE3 could be implemented in a "leveled" approach, i.e., two types of implementations of Deoxys-TBC-384 are used. On implementation has been added heavy protection, and is secure against side-channel attacks wit high data complexities (e.g., differential power analysis). The other implementation is only weakly protected and secure against side-channel attacks with very low-data complexity (e.g., simple power analysis). In addition, the number of calls to heavily protected (and inefficient) implementations is minimized. Concretely,<a href="#section-8.1.3.2-2" class="pilcrow">¶</a></p>
+<p id="section-8.1.3.2-2">To ensure strong security against side-channel attacks, Deoxys-AE3 could be implemented in a "leveled" approach, i.e., two types of implementations of Deoxys-TBC-384 are used. On implementation has been added heavy side-channelprotection, and is secure against side-channel attacks wit high data complexities (e.g., differential power analysis). The other implementation is only weakly protected and secure against side-channel attacks with very low-data complexity (e.g., simple power analysis). In addition, the number of calls to heavily protected (and inefficient) implementations is minimized. Concretely,<a href="#section-8.1.3.2-2" class="pilcrow">¶</a></p>
 <ul>
-<li id="section-8.1.3.2-3.1">To implement Deoxys-AE3 encryption, only line 6 and line 17 in Figure 2.9 have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384;<a href="#section-8.1.3.2-3.1" class="pilcrow">¶</a>
+<li id="section-8.1.3.2-3.1">To implement Deoxys-AE3 encryption, only the first execution S = TBC[(0)_56||con1||(0)_64||P||K](N) and the last execution tag = TBC[(0)_56||con4||(0)_64||R||K](L) have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384;<a href="#section-8.1.3.2-3.1" class="pilcrow">¶</a>
 </li>
-<li id="section-8.1.3.2-3.2">To implement Deoxys-AE3 decryption, only line 6 and line 10 in Figure 2.9 have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384.<a href="#section-8.1.3.2-3.2" class="pilcrow">¶</a>
+<li id="section-8.1.3.2-3.2">To implement Deoxys-AE3 decryption, only the execution L' = TBC-1[(0)_56||con4||(0)_64||R||K](tag) in verification and the first execution S = TBC[(0)_56||con1||(0)_64||P||K](N) in decryption have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384.<a href="#section-8.1.3.2-3.2" class="pilcrow">¶</a>
 </li>
 </ul>
 <p id="section-8.1.3.2-4">In the face of side-channel leakages, such a leveled implementation of Deoxys-AE3 ensures security as follows.<a href="#section-8.1.3.2-4" class="pilcrow">¶</a></p>
-<p id="section-8.1.3.2-5">First, as long as the side-channel attacker has not recovered the key K, integrity is ensured up to 2n=n computations, even if nonces are reused in arbitrary. Since a heavily protected Deoxys-TBC-384 modular is not expected to resist attacks with such high complexities, it determines the concrete side-channel security.<a href="#section-8.1.3.2-5" class="pilcrow">¶</a></p>
+<p id="section-8.1.3.2-5">First, as long as the side-channel attacker has not recovered the key K, integrity is ensured up to 2^121 computations, even if nonces are reused in arbitrary. Since a heavily protected Deoxys-TBC-384 modular is not expected to resist attacks with such high complexities, it determines the concrete side-channel security.<a href="#section-8.1.3.2-5" class="pilcrow">¶</a></p>
 <p id="section-8.1.3.2-6">Second, as long as:<a href="#section-8.1.3.2-6" class="pilcrow">¶</a></p>
 <ul>
 <li id="section-8.1.3.2-7.1">the side-channel attacker has not recovered the key K, and<a href="#section-8.1.3.2-7.1" class="pilcrow">¶</a>
@@ -2081,7 +2081,7 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
 <li id="section-8.1.3.2-7.3">nonces used for encrypting confidential messages are never reused,<a href="#section-8.1.3.2-7.3" class="pilcrow">¶</a>
 </li>
 </ul>
-<p id="section-8.1.3.2-8">confidentiality is ensured. Assume that the heavily protected Deoxys-TBC-384 modular is secure against side-channel attacks with less than D data, and the weakly protected Deoxys-TBC-384 implementation is secure against side-channel attacks with very few data (e.g., SPA attacks with 4 data), then the leveled Deoxys-AE3 implementation could securely encrypt D messages with no more than 2n=2 blocks.<a href="#section-8.1.3.2-8" class="pilcrow">¶</a></p>
+<p id="section-8.1.3.2-8">confidentiality is ensured. Assume that the heavily protected Deoxys-TBC-384 modular is secure against side-channel attacks with less than D data, and the weakly protected Deoxys-TBC-384 implementation is secure against side-channel attacks with very few data (e.g., simple power analysis-based  attacks with 4 data), then the leveled Deoxys-AE3 implementation could securely encrypt D messages with no more than 2^64 blocks.<a href="#section-8.1.3.2-8" class="pilcrow">¶</a></p>
 <p id="section-8.1.3.2-9">We stress again that, due to the informal nature of the above claims and the less immaturity of leakage-resilience, the concrete interpretations may not be fully accurate in practice.<a href="#section-8.1.3.2-9" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2131,6 +2131,9 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
 <dl class="references">
 <dt id="ABF13">[ABF13]</dt>
 <dd>
+<span class="refAuthor">Abdalla, M.</span><span class="refAuthor">, Belaïd, S.</span><span class="refAuthor">, and P. Fouque</span>, <span class="refTitle">"Leakage-Resilient Symmetric Encryption via Re-keying"</span>, <span class="seriesInfo">Proceedings of the 15th International Workshop Cryptographic Hardware and Embedded Systems - CHES 2013, Lecture Notes in Computer Science 8086, pp.471-488 </span>, <time datetime="2013">2013</time>, <span>&lt;<a href="https://eprint.iacr.org/2015/204.pdf">https://eprint.iacr.org/2015/204.pdf</a>&gt;</span>. </dd>
+<dt id="ADL17">[ADL17]</dt>
+<dd>
 <span class="refAuthor">Ashur, T.</span><span class="refAuthor">, Dunkelman, O.</span><span class="refAuthor">, and A. Luykx</span>, <span class="refTitle">"Boosting Authenticated Encryption Robustness with Minimal Modifications"</span>, <span class="seriesInfo">Proceedings of the 37th Annual International Cryptology Conference - CRYPTO 2017, Lecture Notes in Computer Science 10403, pp.3-33 </span>, <time datetime="2017">2017</time>, <span>&lt;<a href="https://eprint.iacr.org/2017/239.pdf">https://eprint.iacr.org/2017/239.pdf</a>&gt;</span>. </dd>
 <dt id="BGPPS19">[BGPPS19]</dt>
 <dd>
@@ -2151,6 +2154,9 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
 <dd>
 <span class="refAuthor">Jean, J.</span><span class="refAuthor">, Nikolić, I.</span><span class="refAuthor">, Peyrin, T.</span><span class="refAuthor">, and Y. Seurin</span>, <span class="refTitle">"Tweaks and Keys for Block Ciphers: the TWEAKEY Framework"</span>, <span class="seriesInfo">CAESAR: Competition for Authenticated Encryption: Security, Applicability, and Robustness </span>, <time datetime="2014">2014</time>, <span>&lt;<a href="https://competitions.cr.yp.to/round3/deoxysv14.pdf">https://competitions.cr.yp.to/round3/deoxysv14.pdf</a>&gt;</span>. </dd>
 <dt id="JNPS21">[JNPS21]</dt>
+<dd>
+<span class="refAuthor">Jean, J.</span><span class="refAuthor">, Nikolić, I.</span><span class="refAuthor">, Peyrin, T.</span><span class="refAuthor">, and Y. Seurin</span>, <span class="refTitle">"The Deoxys AEAD Family"</span>, <span class="seriesInfo">Journal of Cryptology 34(3): 31 </span>, <time datetime="2021">2021</time>, <span>&lt;<a href="https://doi.org/10.1007/s00145-021-09397-w">https://doi.org/10.1007/s00145-021-09397-w</a>&gt;</span>. </dd>
+<dt id="RS06">[RS06]</dt>
 <dd>
 <span class="refAuthor">Rogaway, P.</span><span class="refAuthor"> and T. Shrimpton</span>, <span class="refTitle">"Deterministic Authenticated-Encryption: A Provable-Security Treatment of the Key-Wrap Problem"</span>, <span class="seriesInfo">24th Annual International Conference on the Theory and Applications of Cryptographic Techniques - EUROCRYPT 2006, Lecture Notes in Computer Science 4004, pp.373-390 </span>, <time datetime="2006">2006</time>, <span>&lt;<a href="https://eprint.iacr.org/2006/221.pdf">https://eprint.iacr.org/2006/221.pdf</a>&gt;</span>. </dd>
 </dl>
