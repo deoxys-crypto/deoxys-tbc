@@ -802,11 +802,11 @@ address div.right {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Deoxys-TBC</td>
-<td class="right">June 2021</td>
+<td class="right">December 2021</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Peyrin &amp; Guo</td>
-<td class="center">Expires 8 December 2021</td>
+<td class="center">Expires 28 June 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -819,12 +819,12 @@ address div.right {
 <dd class="internet-draft">draft-irtf-cfrg-deoxys-tbc-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2021-06-06" class="published">6 June 2021</time>
+<time datetime="2021-12-25" class="published">25 December 2021</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-12-08">8 December 2021</time></dd>
+<dd class="expires"><time datetime="2022-06-28">28 June 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -874,7 +874,7 @@ address div.right {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 8 December 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 28 June 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1000,16 +1000,13 @@ address div.right {
                 <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="xref">7.2</a>.  <a href="#name-increasing-multi-user-secur" class="xref">Increasing Multi-User Security</a><a href="#section-toc.1-1.7.2.2.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.7.2.3">
-                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="xref">7.3</a>.  <a href="#name-nonce-protection-mechanism" class="xref">Nonce-Protection Mechanism</a><a href="#section-toc.1-1.7.2.3.1" class="pilcrow">¶</a></p>
+                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="xref">7.3</a>.  <a href="#name-forgery-reuse-protection-me" class="xref">Forgery-Reuse Protection Mechanism</a><a href="#section-toc.1-1.7.2.3.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.7.2.4">
-                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="xref">7.4</a>.  <a href="#name-forgery-reuse-protection-me" class="xref">Forgery-Reuse Protection Mechanism</a><a href="#section-toc.1-1.7.2.4.1" class="pilcrow">¶</a></p>
+                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="xref">7.4</a>.  <a href="#name-larger-keys-or-efficiency-i" class="xref">Larger Keys or Efficiency Improvements</a><a href="#section-toc.1-1.7.2.4.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.7.2.5">
-                <p id="section-toc.1-1.7.2.5.1"><a href="#section-7.5" class="xref">7.5</a>.  <a href="#name-maximum-input-length-effici" class="xref">Maximum Input Length / Efficiency Trade-off</a><a href="#section-toc.1-1.7.2.5.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.7.2.6">
-                <p id="section-toc.1-1.7.2.6.1"><a href="#section-7.6" class="xref">7.6</a>.  <a href="#name-larger-keys" class="xref">Larger Keys</a><a href="#section-toc.1-1.7.2.6.1" class="pilcrow">¶</a></p>
+                <p id="section-toc.1-1.7.2.5.1"><a href="#section-7.5" class="xref">7.5</a>.  <a href="#name-hardware-friendly-alternati" class="xref">Hardware-Friendly Alternative</a><a href="#section-toc.1-1.7.2.5.1" class="pilcrow">¶</a></p>
 </li>
 </ul>
 </li>
@@ -1340,12 +1337,12 @@ deoxys_tbc_384_decrypt(tweakey, ciphertext):
           </h4>
 <div class="artwork art-text alignLeft" id="section-3.5.1-1">
 <pre>
-Tweakey:     Key:   101112131415161718191a1b1c1d1e1f
-             Tweak: 02021222324252627000000000000000
+tweakey:     key:   101112131415161718191a1b1c1d1e1f
+             tweak: 02021222324252627000000000000000
 
-Plaintext:   1857d4edf080e8e2c83aa9e794ebf90d
+plaintext:   1857d4edf080e8e2c83aa9e794ebf90d
 
-Ciphertext:  f86ecad0d69d2c573cdeee96c90f37ac
+ciphertext:  f86ecad0d69d2c573cdeee96c90f37ac
 </pre><a href="#section-3.5.1-1" class="pilcrow">¶</a>
 </div>
 </section>
@@ -1357,13 +1354,13 @@ Ciphertext:  f86ecad0d69d2c573cdeee96c90f37ac
           </h4>
 <div class="artwork art-text alignLeft" id="section-3.5.2-1">
 <pre>
-Tweakey:     Key:   101112131415161718191a1b1c1d1e1f
-             Tweak: 202122232425262728292a2b2c2d2e2f
+tweakey:     key:   101112131415161718191a1b1c1d1e1f
+             tweak: 202122232425262728292a2b2c2d2e2f
                     00001020304050607000000000000000
 
-Plaintext:   d18db1b44ad16fe5623ccd73c250c272
+plaintext:   d18db1b44ad16fe5623ccd73c250c272
 
-Ciphertext:  e94c5c6df7c19474bbdd292baa2555fd
+ciphertext:  e94c5c6df7c19474bbdd292baa2555fd
 </pre><a href="#section-3.5.2-1" class="pilcrow">¶</a>
 </div>
 </section>
@@ -1377,7 +1374,7 @@ Ciphertext:  e94c5c6df7c19474bbdd292baa2555fd
       <h2 id="name-the-deoxys-ae1-aead-operati">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-the-deoxys-ae1-aead-operati" class="section-name selfRef">The Deoxys-AE1 AEAD Operating Mode</a>
       </h2>
-<p id="section-4-1">This single-pass nonce-based AEAD mode is an adaptation of the Deoxys-I AEAD operating mode from [<a href="JNPS14">JNPS14</a>], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication, allowing longer nonce and larger maximum data size.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-1">This single-pass nonce-based AEAD mode is a slight adaptation of the Deoxys-I AEAD operating mode from [<a href="JNPS14">JNPS14</a>], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication, allowing longer nonce and larger maximum data size.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext C and a tag of size tau&lt;=128.<a href="#section-4-2" class="pilcrow">¶</a></p>
 <div id="deoxys-ae1-encryption">
 <section id="section-4.1">
@@ -1489,7 +1486,37 @@ deoxys_AE1_decrypt(K, N, A, C, tag):
         <h3 id="name-deoxys-ae1-test-vectors">
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-deoxys-ae1-test-vectors" class="section-name selfRef">Deoxys-AE1 test vectors</a>
         </h3>
-<p id="section-4.3-1">TODO<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-4.3-1">
+<pre>
+key:        63654b32 7af27ee8 2eb8c9f7 654aadeb
+nonce:      28c7e917 837f573d 6083210f 69afaf4b
+AD:
+plaintext:
+ciphertext:
+tag:        70aeef79 88ed4230 9ae3d21f 084dd4b3
+
+key:        63654b32 7af27ee8 2eb8c9f7 654aadeb
+nonce:      28c7e917 837f573d 6083210f 69afaf4b
+AD:         f40b65ba ffa5e6
+plaintext:  784454cb 1631e9
+ciphertext: 81b37562 7d8095
+tag:        38c648c6 6b61c2da d8866299 5ab6dafc
+
+key:        63654b32 7af27ee8 2eb8c9f7 654aadeb
+nonce:      28c7e917 837f573d 6083210f 69afaf4b
+AD:         f40b65ba ffa5e6c3 5ea0dd1a 66816c04
+plaintext:  784454cb 1631e9f8 a2b30d6b 1f95eaba
+ciphertext: 25ffeb32 3c00405b ffda119a 34f68365
+tag:        f6adf5ca 1bd56e3c 53ca35e4 d8e83a47
+
+key:        63654b32 7af27ee8 2eb8c9f7 654aadeb
+nonce:      28c7e917 837f573d 6083210f 69afaf4b
+AD:         f40b65ba ffa5e6c3 5ea0dd1a 66816c04 c0e824cd e6
+plaintext:  784454cb 1631e9f8 a2b30d6b 1f95eaba 5d100f20 b0
+ciphertext: 25ffeb32 3c00405b ffda119a 34f68365 18d836aa 5f
+tag:        9f2d7200 b555a808 54ab8878 8960795a
+</pre><a href="#section-4.3-1" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 </section>
@@ -1499,7 +1526,7 @@ deoxys_AE1_decrypt(K, N, A, C, tag):
       <h2 id="name-the-deoxys-ae2-aead-operati">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-the-deoxys-ae2-aead-operati" class="section-name selfRef">The Deoxys-AE2 AEAD Operating Mode</a>
       </h2>
-<p id="section-5-1">This two-pass nonce-based AEAD mode is an adaptation of the Deoxys-II AEAD operating mode from [<a href="JNPS14">JNPS14</a>], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication, while getting better security bounds.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">This two-pass nonce-based AEAD mode is a slight adaptation of the Deoxys-II AEAD operating mode from [<a href="JNPS14">JNPS14</a>], the only difference being that Deoxys-TBC-384 is used internally instead of Deoxys-TBC-256, in order to handle more data per TBC call during the authentication, while getting better security bounds.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^127 bits. It generates the corresponding ciphertext C and a tag of size tau&lt;=128.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <p id="section-5-3">Note that the decryption is actually one-pass.<a href="#section-5-3" class="pilcrow">¶</a></p>
 <div id="deoxys-ae2-encryption">
@@ -1625,7 +1652,38 @@ deoxys_AE2_decrypt(K, N, A, C, tag):
         <h3 id="name-deoxys-ae2-test-vectors">
 <a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-deoxys-ae2-test-vectors" class="section-name selfRef">Deoxys-AE2 test vectors</a>
         </h3>
-<p id="section-5.3-1">TODO<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-1">We provide below some test vectors for Deoxys-AE3, in hexadecimal display.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-5.3-2">
+<pre>
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
+AD:
+plaintext:
+ciphertext:
+tag:        TODO TODO TODO TODO
+
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
+AD:         55ecdd23 867c43
+plaintext:  3aa1a9dc a69e75
+ciphertext: TODO TODO
+tag:        TODO TODO TODO TODO
+
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
+AD:         55ecdd23 867c4336 007893f7 2a381799
+plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
+ciphertext: TODO TODO TODO TODO
+tag:        TODO TODO TODO TODO
+
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
+AD:         55ecdd23 867c4336 007893f7 2a381799 37b33ee2 ab
+plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f49664 1c
+ciphertext: TODO TODO TODO TODO TODO TODO
+tag:        TODO TODO TODO TODO
+</pre><a href="#section-5.3-2" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 </section>
@@ -1635,7 +1693,7 @@ deoxys_AE2_decrypt(K, N, A, C, tag):
       <h2 id="name-the-deoxys-ae3-aead-operati">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-the-deoxys-ae3-aead-operati" class="section-name selfRef">The Deoxys-AE3 AEAD Operating Mode</a>
       </h2>
-<p id="section-6-1">This mode is an adaptation of the Romulus-T AEAD scheme from [<a href="GIKMP21">GIKMP21</a>] (which is further built upon the TEDT AEAD operating mode from [<a href="BGPPS19">BGPPS19</a>]), the only difference being that Deoxys-TBC-384 is used instead of Skinny-128-384+ (in Romulus-T). Compared with the original TEDT [<a href="BGPPS19">BGPPS19</a>], both Deoxys-AE3 and Romulus-T handle more data per TBC call during the authentication and allow longer nonce and larger maximum data size.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">This mode is a slight adaptation of the Romulus-T AEAD scheme from [<a href="GIKMP21">GIKMP21</a>] (which is further built upon the TEDT AEAD operating mode from [<a href="BGPPS19">BGPPS19</a>]), the only difference being that Deoxys-TBC-384 is used instead of Skinny-128-384+ (in Romulus-T). Compared with the original TEDT [<a href="BGPPS19">BGPPS19</a>], both Deoxys-AE3 and Romulus-T handle more data per TBC call during the authentication and allow longer nonce and larger maximum data size.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <p id="section-6-2">This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^59 bytes in total. It generates the corresponding ciphertext and a tag of size tau=128.<a href="#section-6-2" class="pilcrow">¶</a></p>
 <div id="bit-lfsr56">
 <section id="section-6.1">
@@ -1788,29 +1846,29 @@ deoxys_AE3_decrypt(K, N, A, C, tag):
 <p id="section-6.4-1">We provide below some test vectors for Deoxys-AE3, in hexadecimal display.<a href="#section-6.4-1" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-6.4-2">
 <pre>
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:
 plaintext:
 ciphertext:
 tag:        6bd43609 7e75f2d4 e2b5b476 93094d7a
 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c43
 plaintext:  3aa1a9dc a69e75
 ciphertext: 675c73e1 157d40
 tag:        58bed416 b1746aaf 144c6802 5c939b6d
 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
 ciphertext: 675c73e1 157d4023 9bed96f6 55adb576
 tag:        f0fce3f3 6c9429b8 465adce1 098dd9b0
 
-Key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
-Nonce:      56960683 4c0e8a32 877fd47f 241f926b
+key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
+nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799 37b33ee2 ab
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f49664 1c
 ciphertext: 675c73e1 157d4023 9bed96f6 55adb576 f5258b18 04
@@ -1831,7 +1889,7 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
         <h3 id="name-weak-leakage-resilient-key-">
 <a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-weak-leakage-resilient-key-" class="section-name selfRef">Weak Leakage-Resilient Key Protection Mechanism</a>
         </h3>
-<p id="section-7.1-1">For Deoxys-AE1 and Deoxys-AE2, one can simply first compute a temporary key K' = TBC_K[N ||(8)_8||(0)_120 ] that will be used as secret key input for the AEAD mode. Note that the tweak input is ensured to be unique when the nonce is not repeating, as (8)_8 is a domain separation reserved for that feature only. This precomputation allows a weak form of leakage resilience [<a href="ABF13">ABF13</a>].<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.1-1">In order to obtain some leakage-resilience feature for Deoxys-AE1 and Deoxys-AE2, one can simply first compute a temporary key K' = TBC_K[N ||(8)_8||(0)_120 ] that will be used as secret key input for the AEAD mode. Note that the tweak input is ensured to be unique when the nonce is not repeating, as (8)_8 is a domain separation reserved for that feature only. This precomputation allows a weak form of leakage resilience [<a href="ABF13">ABF13</a>].<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="increasing-multi-user-security">
@@ -1839,42 +1897,34 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
         <h3 id="name-increasing-multi-user-secur">
 <a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-increasing-multi-user-secur" class="section-name selfRef">Increasing Multi-User Security</a>
         </h3>
-<p id="section-7.2-1">It is well known that, authenticated encryptions suffer from the so-called multi-user security degradation [<a href="BT16">BT16</a>]. The concrete interpretation is that, in a security system maintaining u encrypted session using different keys, one needs around 2^128/u data and times complexities to break the confidentiality and authenticity for one of the u sessions. Note that this does not contradict the single-user interpretation, that is, to break the confidentiality and authenticity for a specific encrypted session, one needs around 2^128 data and times complexities. Therefore, to select an encryption algorithm for a security protocol, one may want to consider variants with better multi-user security.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
-<p id="section-7.2-2">One can increase the multi-user security of Deoxys-AE1 and Deoxys-AE2 by randomly selecting an 128-bit public-key value PK and incorporating PK as tweak input to every call to the TBC during the encryption phase. This will effectivelly increase the multi-users security by approximately x/2 bits.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
+<p id="section-7.2-1">It is well known that, authenticated encryptions suffer from the so-called multi-user security degradation [<a href="BT16">BT16</a>]. The concrete interpretation is that, in a security system maintaining u encrypted session using independently chosen 128-bit keys, one needs around 2^128/u data and time complexities to break the confidentiality and authenticity for one of the u sessions. Note that this does not contradict the single-user interpretation, that is, to break the confidentiality and authenticity for a specific encrypted session, one needs around 2^128 data and times complexities. Therefore, to select an encryption algorithm for a security protocol, one may want to consider variants with better multi-user security.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<p id="section-7.2-2">One can further increase the multi-user security of Deoxys-AE1 and Deoxys-AE2 by randomly selecting an 128-bit public-key value PK and incorporating PK as tweak input to every call to the TBC during the encryption phase. This will effectivelly increase the multi-users security by approximately x/2 bits.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
 <p id="section-7.2-3">One can increase the multi-user security of Deoxys-AE3 by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, con1 = (69)_8, con2 = (70)_8, con3 = (71)_8, con4 = (72)_8, and U = ipad<em>_128(A) || ipad</em>_128(C) || N || PK || LFSR56(m). For a system using this Deoxys-AE3 variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="nonce-protection-mechanism">
-<section id="section-7.3">
-        <h3 id="name-nonce-protection-mechanism">
-<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-nonce-protection-mechanism" class="section-name selfRef">Nonce-Protection Mechanism</a>
-        </h3>
-<p id="section-7.3-1">For Deoxys-AE1 and Deoxys-AE2, one can protect the nonce by two constructions (basically TBC-based variations of the schemes proposed by Bellare et al. at CRYPTO 2019). TODO<a href="#section-7.3-1" class="pilcrow">¶</a></p>
-<p id="section-7.3-2">This can be used to protect the public-key for increased multi-users security as well.<a href="#section-7.3-2" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="forgery-reuse-protection-mechanism">
-<section id="section-7.4">
+<section id="section-7.3">
         <h3 id="name-forgery-reuse-protection-me">
-<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-forgery-reuse-protection-me" class="section-name selfRef">Forgery-Reuse Protection Mechanism</a>
+<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-forgery-reuse-protection-me" class="section-name selfRef">Forgery-Reuse Protection Mechanism</a>
         </h3>
-<p id="section-7.4-1">In the very unlikely event where a forgery is found, this forgery could be reused to directly create new forgeries in the case of Deoxys-AE1 and Deoxys-AE2. One can tame this effect by using the nonce in the tweak inputs of each TBC calls in the authentication part (this can be viewed as a layer on top of Deoxys-AE1 and Deoxys-AE2, where we simply take the nonce N as associated data or message input every two 128-bit block). With this protection enabled, a forgery for a given nonce will not provide any advantage in creating a forgery for a different nonce, as all TBC calls will be totally new and independent. Of course, in the nonce-misuse scenario, this protection does not improve the situation. The disadvantage is that the authentication part would become slower as less associated data or message blocks can be handled per TBC call.<a href="#section-7.4-1" class="pilcrow">¶</a></p>
+<p id="section-7.3-1">In the very unlikely event where a forgery is found, this forgery could be reused to directly create new forgeries in the case of Deoxys-AE1 and Deoxys-AE2. One can tame this effect by using the nonce in the tweak inputs of each TBC calls in the authentication part (this can be viewed as a layer on top of Deoxys-AE1 and Deoxys-AE2, where we simply take the nonce N as associated data or message input every two 128-bit block). With this protection enabled, a forgery for a given nonce will not provide any advantage in creating a forgery for a different nonce, as all TBC calls will be totally new and independent. Of course, in the nonce-misuse scenario, this protection does not improve the situation. The disadvantage is that the authentication part would become slower as less associated data or message blocks can be handled per TBC call.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="maximum-input-length-efficiency-trade-off">
+<div id="larger-keys-or-efficiency-improvements">
+<section id="section-7.4">
+        <h3 id="name-larger-keys-or-efficiency-i">
+<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-larger-keys-or-efficiency-i" class="section-name selfRef">Larger Keys or Efficiency Improvements</a>
+        </h3>
+<p id="section-7.4-1">A 128-bit counter is used in the authentication part of Deoxys-AE1 and Deoxys-AE2. If for an application, the user is ensured that the associated data and message inputs are limited to at most 2^x blocks, then the 128-x most significant bits from the counter can be reclaimed. It can then be used to handle more AD/M input in the authentication part, which provide efficiency improvement, or to handle larger keys than 128 bits.<a href="#section-7.4-1" class="pilcrow">¶</a></p>
+<p id="section-7.4-2">This can also be achieved by using a TBC version with a larger tweakey size.<a href="#section-7.4-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="hardware-friendly-alternative">
 <section id="section-7.5">
-        <h3 id="name-maximum-input-length-effici">
-<a href="#section-7.5" class="section-number selfRef">7.5. </a><a href="#name-maximum-input-length-effici" class="section-name selfRef">Maximum Input Length / Efficiency Trade-off</a>
+        <h3 id="name-hardware-friendly-alternati">
+<a href="#section-7.5" class="section-number selfRef">7.5. </a><a href="#name-hardware-friendly-alternati" class="section-name selfRef">Hardware-Friendly Alternative</a>
         </h3>
-<p id="section-7.5-1">A 128-bit counter is used in the authentication part of Deoxys-AE1 and Deoxys-AE2. If for an application, the user is ensured that the associated data and message inputs are limited to at most 2^x blocks, then the 128-x most significant bits from the counter can be reclaimed to handle more AD/M input in the authentication part, which provide efficiency improvement.<a href="#section-7.5-1" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="larger-keys">
-<section id="section-7.6">
-        <h3 id="name-larger-keys">
-<a href="#section-7.6" class="section-number selfRef">7.6. </a><a href="#name-larger-keys" class="section-name selfRef">Larger Keys</a>
-        </h3>
-<p id="section-7.6-1">One can use larger keys than 128 bits for Deoxys-AE1 and Deoxys-AE2 by using a TBC version with a larger tweakey size.<a href="#section-7.6-1" class="pilcrow">¶</a></p>
+<p id="section-7.5-1">For very hardware-constrained scenarios, one can simply replace Deoxys-TBC-384 by the lightweight TBC Skinny-128/384+ [<a href="GIKMP21">GIKMP21</a>]. They have exactly the same block/tweakey sizes and security goals. They can be used interchangeably.<a href="#section-7.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1889,7 +1939,91 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
         <h3 id="name-deoxys-aead-operating-modes">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-deoxys-aead-operating-modes" class="section-name selfRef">Deoxys AEAD Operating Modes</a>
         </h3>
-<p id="section-8.1-1">We give below a table providing the bounds for all modes, in the various settings. TODO<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-1">We give below a table providing the security bounds for all Deoxys modes, in various settings.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-1">
+          <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1"> </th>
+              <th class="text-left" rowspan="1" colspan="1">Deoxys-AE1</th>
+              <th class="text-left" rowspan="1" colspan="1">Deoxys-AE2</th>
+              <th class="text-left" rowspan="1" colspan="1">Deoxys-AE3</th>
+              <th class="text-left" rowspan="1" colspan="1">AES-GCM-SIV</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">general bound</td>
+              <td class="text-left" rowspan="1" colspan="1">1/2^128</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^120 + D * (2[micro]+1)/2^127 <br> + D * (q+T)/2^254</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^121 + D/2^121</td>
+              <td class="text-left" rowspan="1" colspan="1">d(T+D)/2^128 + D<em>B/2^128 or  Q</em><br>B^2/2^128 + lmax * Q * R/2^128 + T/2^128</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">1 user <br> no nonce repetition <br> 2^64 data in total</td>
+              <td class="text-left" rowspan="1" colspan="1">1/2^128</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^120 + 3/2^63</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^121 + 1/2^57</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^128 + 1/2^64</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">1 user <br> 1 nonce repetition <br> 2^64 data in total</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^120 + 5/2^63</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">1 user <br> 2^32 nonce repetitions <br> 2^64 data in total</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^120 + 1/2^31</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">2^32 users <br> no nonce repetition <br> 2^64 data in total</td>
+              <td class="text-left" rowspan="1" colspan="1">1/2^128</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^120 + 3/2^63</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^121 + 1/2^57</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^128 + 1/2^64</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">2^32 users <br> 1 nonce repetition <br> 2^64 data in total</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^120 + 5/2^63</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">2^32 users <br> 2^32 nonce repetitions <br> 2^64 data in total</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^120 + 1/2^31</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">1 user <br> no nonce repetition <br> 2^96 data in total</td>
+              <td class="text-left" rowspan="1" colspan="1">1/2^128</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^120 + 3/2^31</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^121 + 1/2^25</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^128 + 1/2^32</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">2^32 users <br> 1 nonce repetition <br> 2^96 data in total</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^120 + 5/2^31</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">2^32 users <br>, 2^16 nonce repetitions <br> 2^96 data in total</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">T/2^120 + 1/2^15</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+              <td class="text-left" rowspan="1" colspan="1">none</td>
+            </tr>
+          </tbody>
+        </table>
 <div id="deoxys-ae1">
 <section id="section-8.1.1">
           <h4 id="name-deoxys-ae1">
@@ -1903,7 +2037,9 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
           <h4 id="name-deoxys-ae2">
 <a href="#section-8.1.2" class="section-number selfRef">8.1.2. </a><a href="#name-deoxys-ae2" class="section-name selfRef">Deoxys-AE2</a>
           </h4>
-<p id="section-8.1.2-1">TODO<a href="#section-8.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.1.2-1">The security of Deoxys-AE2 is already very strong in the nonce-respecting setting, but provides in addition a very strong nonce-misuse resistance. Moreover, this is preserved in the multi-user scenario as well. More precisely, it is proven [<a href="CJPS22">CJPS22</a>] that the advantage of an adversary to break confidentiality or integrity of Deoxys-AE2 in the multi-user setting is roughly T/2^120 + D * (2[micro]+1)/2^127 + D * (q+T)/2^254, where [micro] is the maximal number of times a (user,nonce) pair can appear in the queries, D is the total number of processed data blocks (with at most q queries) and T is the amount of offline computations.<a href="#section-8.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.1.2-2">Thus, in the case of a single user without nonce repetition, [micro]=1 and we get advantage T/2^120 + 3 * D/2^127 + D * (q+T)/2^254. For example, in this scenario, even if the user ciphers D=2^64 data blocks, the advantage becomes T/2^120 + 3/2^63 + q/2^190. This remains the same with more users (say 2^32 users each processing 2^32 data blocks) as long as they do not repeat nonces, retaining [micro]=1.<a href="#section-8.1.2-2" class="pilcrow">¶</a></p>
+<p id="section-8.1.2-3">One can observe that there is a graceful security degradation with Deoxys-AE2 as nonces are repeated: security is guaranteed up to roughly 2^120 offline computations and 2^128 data blocks as long as [micro] remains small. When [micro] is allowed to grow as large as D, we hit the birthday bound and security vanishes at roughly 2^64 data blocks.<a href="#section-8.1.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="deoxys-ae3">
@@ -1911,8 +2047,44 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
           <h4 id="name-deoxys-ae3">
 <a href="#section-8.1.3" class="section-number selfRef">8.1.3. </a><a href="#name-deoxys-ae3" class="section-name selfRef">Deoxys-AE3</a>
           </h4>
-<p id="section-8.1.3-1">In the nonce-respecting scenario, the probability to break confidentiality and integrity is roughly D/2^121+T/2^121, where D is the number of processed data blocks and T is the amount of offline computations. The security guarantees depend on the underlying TBC being secure against chosen-tweakey attacks. Thus, it is safe to use Deoxys-AE3 with Deoxys-TBC-384. On the other hand, if Deoxys-AE3 is used with a TBC that is not chosen-tweakey secure (e.g., see Appendix B in [<a href="BGPPS19">BGPPS19</a>]), the security guarantees vanish.<a href="#section-8.1.3-1" class="pilcrow">¶</a></p>
-<p id="section-8.1.3-2">For a certain message encrypted by a certain nonce, confidentiality disappears if this nonce got reused, while the probability to break integrity remains roughly D/2^121+T/2^121. However, when nonces are reused, the probability to break confidentiality (as well as integrity) of messages encrypted by unique (i.e., non-reused) nonces remains roughly D/2^121+T/2^121.<a href="#section-8.1.3-2" class="pilcrow">¶</a></p>
+<p id="section-8.1.3-1">In the nonce-respecting scenario, the probability to break confidentiality and integrity is roughly T/2^121 + D/2^121, where T is the amount of offline computations and D is the number of processed data blocks. The security guarantees depend on the underlying TBC being secure against chosen-tweakey attacks. Thus, it is safe to use Deoxys-AE3 with Deoxys-TBC-384. On the other hand, if Deoxys-AE3 is used with a TBC that is not chosen-tweakey secure (e.g., see Appendix B in [<a href="BGPPS19">BGPPS19</a>]), the security guarantees vanish.<a href="#section-8.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.1.3-2">For a certain message encrypted by a certain nonce, confidentiality disappears if this nonce got reused, while the probability to break integrity remains roughly T/2^121 + D/2^121. However, when nonces are reused, the probability to break confidentiality (as well as integrity) of messages encrypted by unique (i.e., non-reused) nonces remains roughly T/2^121 + D/2^121.<a href="#section-8.1.3-2" class="pilcrow">¶</a></p>
+<div id="nonce-misuse-resilience">
+<section id="section-8.1.3.1">
+            <h5 id="name-nonce-misuse-resilience">
+<a href="#section-8.1.3.1" class="section-number selfRef">8.1.3.1. </a><a href="#name-nonce-misuse-resilience" class="section-name selfRef">Nonce-misuse resilience</a>
+            </h5>
+<p id="section-8.1.3.1-1">Deoxys-AE3 provides a limited form of security against nonce reuse, which was named misuse resilience [<a href="ADL17">ADL17</a>] (in contrast to misuse resistance [<a href="RS06">RS06</a>]). In detail, a message encrypted with a nonce N remains safe even if the other nonces N'!=N are reused in arbitrary, as long as this nonce N was used only once during encrypting. Though, the most attractive feature of Deoxys-AE3 is leakage-resilience or model-level side-channel security guarantee: see below.<a href="#section-8.1.3.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="leakage-resilience">
+<section id="section-8.1.3.2">
+            <h5 id="name-leakage-resilience">
+<a href="#section-8.1.3.2" class="section-number selfRef">8.1.3.2. </a><a href="#name-leakage-resilience" class="section-name selfRef">Leakage-resilience</a>
+            </h5>
+<p id="section-8.1.3.2-1">Berti et al. proved leakage-resilience for TEDT w.r.t. to certain definitions and assumptions [<a href="BGPPS19">BGPPS19</a>]. Similar conclusions could be drawn on Deoxys-AE3. To ease understanding, we eschew the complicated definitions and leakage models in favor of less formal claims and interpretations.<a href="#section-8.1.3.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.1.3.2-2">To ensure strong security against side-channel attacks, Deoxys-AE3 could be implemented in a "leveled" approach, i.e., two types of implementations of Deoxys-TBC-384 are used. On implementation has been added heavy protection, and is secure against side-channel attacks wit high data complexities (e.g., differential power analysis). The other implementation is only weakly protected and secure against side-channel attacks with very low-data complexity (e.g., simple power analysis). In addition, the number of calls to heavily protected (and inefficient) implementations is minimized. Concretely,<a href="#section-8.1.3.2-2" class="pilcrow">¶</a></p>
+<ul>
+<li id="section-8.1.3.2-3.1">To implement Deoxys-AE3 encryption, only line 6 and line 17 in Figure 2.9 have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384;<a href="#section-8.1.3.2-3.1" class="pilcrow">¶</a>
+</li>
+<li id="section-8.1.3.2-3.2">To implement Deoxys-AE3 decryption, only line 6 and line 10 in Figure 2.9 have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384.<a href="#section-8.1.3.2-3.2" class="pilcrow">¶</a>
+</li>
+</ul>
+<p id="section-8.1.3.2-4">In the face of side-channel leakages, such a leveled implementation of Deoxys-AE3 ensures security as follows.<a href="#section-8.1.3.2-4" class="pilcrow">¶</a></p>
+<p id="section-8.1.3.2-5">First, as long as the side-channel attacker has not recovered the key K, integrity is ensured up to 2n=n computations, even if nonces are reused in arbitrary. Since a heavily protected Deoxys-TBC-384 modular is not expected to resist attacks with such high complexities, it determines the concrete side-channel security.<a href="#section-8.1.3.2-5" class="pilcrow">¶</a></p>
+<p id="section-8.1.3.2-6">Second, as long as:<a href="#section-8.1.3.2-6" class="pilcrow">¶</a></p>
+<ul>
+<li id="section-8.1.3.2-7.1">the side-channel attacker has not recovered the key K, and<a href="#section-8.1.3.2-7.1" class="pilcrow">¶</a>
+</li>
+<li id="section-8.1.3.2-7.2">the side-channel attacker has not recovered the internal state that appeared during encrypting the confidential messages,<a href="#section-8.1.3.2-7.2" class="pilcrow">¶</a>
+</li>
+<li id="section-8.1.3.2-7.3">nonces used for encrypting confidential messages are never reused,<a href="#section-8.1.3.2-7.3" class="pilcrow">¶</a>
+</li>
+</ul>
+<p id="section-8.1.3.2-8">confidentiality is ensured. Assume that the heavily protected Deoxys-TBC-384 modular is secure against side-channel attacks with less than D data, and the weakly protected Deoxys-TBC-384 implementation is secure against side-channel attacks with very few data (e.g., SPA attacks with 4 data), then the leveled Deoxys-AE3 implementation could securely encrypt D messages with no more than 2n=2 blocks.<a href="#section-8.1.3.2-8" class="pilcrow">¶</a></p>
+<p id="section-8.1.3.2-9">We stress again that, due to the informal nature of the above claims and the less immaturity of leakage-resilience, the concrete interpretations may not be fully accurate in practice.<a href="#section-8.1.3.2-9" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 </section>
@@ -1922,7 +2094,7 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
         <h3 id="name-deoxys-tbc">
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-deoxys-tbc" class="section-name selfRef">Deoxys-TBC</a>
         </h3>
-<p id="section-8.2-1">The AES and AES-type ciphers have already been the subject of extensive analysis. As a result, the security of these ciphers against the most popular forms of cryptanalysis, the differential and the linear attacks (as well as their more advanced variants), is well understood. Deoxys-TBC naturally leverages these cryptanalysis efforts (see Deoxys-JoC article TODO) and the new analysis conducted on Deoxys-TBC concentrated on the main difference between AES and Deoxys-TBC: the tweakey schedule. The best attack at time of writing could only reach 11 of the 14 rounds of Deoxys-TBC-256 and 14 of the 16 rounds of Deoxys-TBC-384. If we consider a time complexity upper limit of 2^128 (since 128-bit keys are used), only 10 of the 14 rounds of Deoxys-TBC-256 can be attacked and only 12 of the 16 rounds of Deoxys-TBC-384. These attacks only consider the internal TBC primitive and even less rounds can be reached if one considers the entire AEAD scheme. This leaves a very confortable security margin for all AEAD modes proposed here.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.2-1">The AES and AES-type ciphers have already been the subject of extensive analysis. As a result, the security of these ciphers against the most popular forms of cryptanalysis, the differential and the linear attacks (as well as their more advanced variants), is well understood. Deoxys-TBC naturally leverages these cryptanalysis efforts (see [<a href="JNPS21">JNPS21</a>].) and the new analysis conducted on Deoxys-TBC concentrated on the main difference between AES and Deoxys-TBC: the tweakey schedule. The best attack at time of writing could only reach 11 of the 14 rounds of Deoxys-TBC-256 and 14 of the 16 rounds of Deoxys-TBC-384. If we consider a time complexity upper limit of 2^128 (since 128-bit keys are used), only 10 of the 14 rounds of Deoxys-TBC-256 can be attacked and only 12 of the 16 rounds of Deoxys-TBC-384. These attacks only consider the internal TBC primitive and even less rounds can be reached if one considers the entire AEAD scheme. This leaves a very confortable security margin for all AEAD modes proposed here.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1959,13 +2131,16 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
 <dl class="references">
 <dt id="ABF13">[ABF13]</dt>
 <dd>
-<span class="refAuthor">Abdalla, M.</span><span class="refAuthor">, Belaïd, S.</span><span class="refAuthor">, and P. Fouque</span>, <span class="refTitle">"Leakage-Resilient Symmetric Encryption via Re-keying"</span>, <span class="seriesInfo">Proceedings of the 15th International Workshop Cryptographic Hardware and Embedded Systems - CHES 2013, Lecture Notes in Computer Science 8086, pp.471-488 </span>, <time datetime="2013">2013</time>, <span>&lt;<a href="https://eprint.iacr.org/2015/204.pdf">https://eprint.iacr.org/2015/204.pdf</a>&gt;</span>. </dd>
+<span class="refAuthor">Ashur, T.</span><span class="refAuthor">, Dunkelman, O.</span><span class="refAuthor">, and A. Luykx</span>, <span class="refTitle">"Boosting Authenticated Encryption Robustness with Minimal Modifications"</span>, <span class="seriesInfo">Proceedings of the 37th Annual International Cryptology Conference - CRYPTO 2017, Lecture Notes in Computer Science 10403, pp.3-33 </span>, <time datetime="2017">2017</time>, <span>&lt;<a href="https://eprint.iacr.org/2017/239.pdf">https://eprint.iacr.org/2017/239.pdf</a>&gt;</span>. </dd>
 <dt id="BGPPS19">[BGPPS19]</dt>
 <dd>
 <span class="refAuthor">Berti, F.</span><span class="refAuthor">, Guo, C.</span><span class="refAuthor">, Pereira, O.</span><span class="refAuthor">, Peters, T.</span><span class="refAuthor">, and F. Standaert</span>, <span class="refTitle">"TEDT, a Leakage-Resilient AEAD mode for High Physical Security Applications"</span>, <span class="seriesInfo">IACR Trans. Cryptogr. Hardw. Embed. Syst. </span>, <time datetime="2020">2020</time>, <span>&lt;<a href="https://eprint.iacr.org/2019/137.pdf">https://eprint.iacr.org/2019/137.pdf</a>&gt;</span>. </dd>
 <dt id="BT16">[BT16]</dt>
 <dd>
 <span class="refAuthor">Bellare, M.</span><span class="refAuthor"> and B. Tackmann</span>, <span class="refTitle">"The Multi-User Security of Authenticated Encryption: AES-GCM in TLS 1.3"</span>, <span class="seriesInfo">Proceedings of the 36th Annual International Cryptology Conference - CRYPTO 2016, Lecture Notes in Computer Science 9814, pp.247-276 </span>, <time datetime="2020">2020</time>, <span>&lt;<a href="https://eprint.iacr.org/2016/564.pdf">https://eprint.iacr.org/2016/564.pdf</a>&gt;</span>. </dd>
+<dt id="CJPS22">[CJPS22]</dt>
+<dd>
+<span class="refAuthor">Cogliati, B.</span><span class="refAuthor">, Jean, J.</span><span class="refAuthor">, Peyrin, T.</span><span class="refAuthor">, and Y. Seurin</span>, <span class="refTitle">"A Long Tweak Goes a Long Way: High Multi-user Security Authenticated Encryption from Tweakable Block Ciphers"</span>, <span class="seriesInfo">TODO </span>, <time datetime="2022">2022</time>, <span>&lt;<a href="TODO">TODO</a>&gt;</span>. </dd>
 <dt id="FIPS-197">[FIPS-197]</dt>
 <dd>
 <span class="refAuthor">National Institute of Standards and Technology</span>, <span class="refTitle">"Advanced Encryption Standard (AES)"</span>, <span class="seriesInfo">FIPS PUB 197 </span>, <time datetime="2001">2001</time>, <span>&lt;<a href="http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf">http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf</a>&gt;</span>. </dd>
@@ -1975,6 +2150,9 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
 <dt id="JNPS14">[JNPS14]</dt>
 <dd>
 <span class="refAuthor">Jean, J.</span><span class="refAuthor">, Nikolić, I.</span><span class="refAuthor">, Peyrin, T.</span><span class="refAuthor">, and Y. Seurin</span>, <span class="refTitle">"Tweaks and Keys for Block Ciphers: the TWEAKEY Framework"</span>, <span class="seriesInfo">CAESAR: Competition for Authenticated Encryption: Security, Applicability, and Robustness </span>, <time datetime="2014">2014</time>, <span>&lt;<a href="https://competitions.cr.yp.to/round3/deoxysv14.pdf">https://competitions.cr.yp.to/round3/deoxysv14.pdf</a>&gt;</span>. </dd>
+<dt id="JNPS21">[JNPS21]</dt>
+<dd>
+<span class="refAuthor">Rogaway, P.</span><span class="refAuthor"> and T. Shrimpton</span>, <span class="refTitle">"Deterministic Authenticated-Encryption: A Provable-Security Treatment of the Key-Wrap Problem"</span>, <span class="seriesInfo">24th Annual International Conference on the Theory and Applications of Cryptographic Techniques - EUROCRYPT 2006, Lecture Notes in Computer Science 4004, pp.373-390 </span>, <time datetime="2006">2006</time>, <span>&lt;<a href="https://eprint.iacr.org/2006/221.pdf">https://eprint.iacr.org/2006/221.pdf</a>&gt;</span>. </dd>
 </dl>
 </section>
 </section>
@@ -1983,7 +2161,7 @@ tag:        84b73cc9 d82bac4b 57282712 dd1a4185
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="section-appendix.a-1">TODO acknowledge.<a href="#section-appendix.a-1" class="pilcrow">¶</a></p>
+<p id="section-appendix.a-1">We would like to thanks the Deoxys team and the TEDT team for their valuable comments on this proposal.<a href="#section-appendix.a-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
