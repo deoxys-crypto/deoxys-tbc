@@ -43,7 +43,21 @@ informative:
     seriesinfo: "Proceedings of the 15th International Workshop Cryptographic Hardware and Embedded Systems – CHES 2013, Lecture Notes in Computer Science 8086, pp.471-488"
     date: 2013
     PDF: https://eprint.iacr.org/2015/204.pdf
-  
+    
+    
+    ADL17:
+    target: https://eprint.iacr.org/2017/239.pdf
+    title: "Boosting Authenticated Encryption Robustness with Minimal Modifications"
+    author: 
+      -
+        name: Tomer Ashur
+      -
+        name: Orr Dunkelman
+      -
+        name: Atul Luykx
+    seriesinfo: "Proceedings of the 37th Annual International Cryptology Conference – CRYPTO 2017, Lecture Notes in Computer Science 10403, pp.3-33"
+    date: 2017
+    PDF: https://eprint.iacr.org/2017/239.pdf
   
   BGPPS19:
     target: https://eprint.iacr.org/2019/137.pdf
@@ -173,6 +187,18 @@ informative:
         name: Y. Seurin
     seriesinfo: "Journal of Cryptology 34(3): 31"
     date: 2021
+    
+    RS06:
+    target: https://eprint.iacr.org/2006/221.pdf
+    title: "Deterministic Authenticated-Encryption: A Provable-Security Treatment of the Key-Wrap Problem"
+    author:
+      -
+        name: Phillip Rogaway
+      -
+        name: Thomas Shrimpton
+    seriesinfo: "24th Annual International Conference on the Theory and Applications of Cryptographic Techniques – EUROCRYPT 2006, Lecture Notes in Computer Science 4004, pp.373-390"
+    date: 2006
+    PDF: https://eprint.iacr.org/2006/221.pdf
 
 
 --- abstract
@@ -890,7 +916,7 @@ In order to obtain some leakage-resilience feature for Deoxys-AE1 and Deoxys-AE2
 
 ## Increasing Multi-User Security
 
-It is well known that, authenticated encryptions suffer from the so-called multi-user security degradation \[[BT16](BT16)\]. The concrete interpretation is that, in a security system maintaining u encrypted session using different keys, one needs around 2^128/u data and times complexities to break the confidentiality and authenticity for one of the u sessions. Note that this does not contradict the single-user interpretation, that is, to break the confidentiality and authenticity for a specific encrypted session, one needs around 2^128 data and times complexities. Therefore, to select an encryption algorithm for a security protocol, one may want to consider variants with better multi-user security.
+It is well known that, authenticated encryptions suffer from the so-called multi-user security degradation \[[BT16](BT16)\]. The concrete interpretation is that, in a security system maintaining u encrypted session using independently chosen 128-bit keys, one needs around 2^128/u data and time complexities to break the confidentiality and authenticity for one of the u sessions. Note that this does not contradict the single-user interpretation, that is, to break the confidentiality and authenticity for a specific encrypted session, one needs around 2^128 data and times complexities. Therefore, to select an encryption algorithm for a security protocol, one may want to consider variants with better multi-user security.
 
 One can further increase the multi-user security of Deoxys-AE1 and Deoxys-AE2 by randomly selecting an 128-bit public-key value PK and incorporating PK as tweak input to every call to the TBC during the encryption phase. This will effectivelly increase the multi-users security by approximately x/2 bits.
 
@@ -958,6 +984,39 @@ One can observe that there is a graceful security degradation with Deoxys-AE2 as
 In the nonce-respecting scenario, the probability to break confidentiality and integrity is roughly T/2^121 + D/2^121, where T is the amount of offline computations and D is the number of processed data blocks. The security guarantees depend on the underlying TBC being secure against chosen-tweakey attacks. Thus, it is safe to use Deoxys-AE3 with Deoxys-TBC-384. On the other hand, if Deoxys-AE3 is used with a TBC that is not chosen-tweakey secure (e.g., see Appendix B in \[[BGPPS19](BGPPS19)\]), the security guarantees vanish.
 
 For a certain message encrypted by a certain nonce, confidentiality disappears if this nonce got reused, while the probability to break integrity remains roughly T/2^121 + D/2^121. However, when nonces are reused, the probability to break confidentiality (as well as integrity) of messages encrypted by unique (i.e., non-reused) nonces remains roughly T/2^121 + D/2^121.
+
+#### Nonce-misuse resilience
+
+Deoxys-AE3 provides a limited form of security against nonce reuse, which was named misuse resilience \[[ADL17](ADL17)\] (in contrast to misuse resistance \[[RS06](RS06)\]). In detail, a message encrypted with a nonce N remains safe even if the other nonces N'!=N are reused in arbitrary, as long as this nonce N was used only once during encrypting. Though, the most attractive feature of Deoxys-AE3 is leakage-resilience or model-level side-channel security guarantee: see below.
+
+#### Leakage-resilience
+
+Berti et al. proved leakage-resilience for TEDT w.r.t. to certain definitions and assumptions \[[BGPPS19](BGPPS19)\]. Similar conclusions could be drawn on Deoxys-AE3. To ease understanding, we eschew the complicated definitions and leakage models in favor of less formal claims and interpretations.
+
+To ensure strong security against side-channel attacks, Deoxys-AE3 could be implemented in a "leveled" approach, i.e., two types of implementations of Deoxys-TBC-384 are used. On implementation has been added heavy protection, and is secure against side-channel attacks wit high data complexities (e.g., differential power analysis). The other implementation is only weakly protected and secure against side-channel attacks with very low-data complexity (e.g., simple power analysis). In addition, the number of calls to heavily protected (and inefficient) implementations is minimized. Concretely,
+
+* To implement Deoxys-AE3 encryption, only line 6 and line 17 in Figure 2.9 have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384;
+* To implement Deoxys-AE3 decryption, only line 6 and line 10 in Figure 2.9 have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384.
+
+
+In the face of side-channel leakages, such a leveled implementation of Deoxys-AE3 ensures security as follows.
+
+First, as long as the side-channel attacker has not recovered the key K, integrity is ensured up to 2n=n computations, even if nonces are reused in arbitrary. Since a heavily protected Deoxys-TBC-384 modular is not expected to resist attacks with such high complexities, it determines the concrete side-channel security.
+
+Second, as long as:
+
+* the side-channel attacker has not recovered the key K, and
+* the side-channel attacker has not recovered the internal state that appeared during encrypting the confidential messages,
+* nonces used for encrypting confidential messages are never reused,
+
+confidentiality is ensured. Assume that the heavily protected Deoxys-TBC-384 modular is secure against side-channel attacks with less than D data, and the weakly protected Deoxys-TBC-384 implementation is secure against side-channel attacks with very few data (e.g., SPA attacks with 4 data), then the leveled Deoxys-AE3 implementation could securely encrypt D messages with no more than 2n=2 blocks.
+
+
+We stress again that, due to the informal nature of the above claims and the less immaturity of leakage-resilience, the concrete interpretations may not be fully accurate in practice.
+
+
+
+
 
 
 ## Deoxys-TBC
