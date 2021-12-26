@@ -1011,7 +1011,7 @@ Second, as long as:
 
 confidentiality is ensured. Assume that the heavily protected Deoxys-TBC-384 modular is secure against side-channel attacks with less than D data, and the weakly protected Deoxys-TBC-384 implementation is secure against side-channel attacks with very few data (e.g., simple power analysis-based  attacks with 4 data), then the leveled Deoxys-AE3 implementation could securely encrypt D messages with no more than 2^64 blocks.
 
-We stress again that, due to the informal nature of the above claims and the less immaturity of leakage-resilience, the concrete interpretations may not be fully accurate in practice.
+We stress again that, due to the informal nature of the above claims and the lesser maturity of leakage-resilience, the concrete interpretations may not be fully accurate in practice.
 
 
 
