@@ -987,13 +987,13 @@ For a certain message encrypted by a certain nonce, confidentiality disappears i
 
 #### Nonce-misuse resilience
 
-Deoxys-AE3 provides a limited form of security against nonce reuse, which was named misuse resilience \[[ADL17](ADL17)\] (in contrast to misuse resistance \[[RS06](RS06)\]). In detail, a message encrypted with a nonce N remains safe even if the other nonces N'!=N are reused in arbitrary, as long as this nonce N was used only once during encrypting. Though, the most attractive feature of Deoxys-AE3 is leakage-resilience or model-level side-channel security guarantee: see below.
+Deoxys-AE3 provides a limited form of security against nonce reuse, which was named misuse resilience \[[ADL17](ADL17)\] (in contrast to misuse resistance \[[RS06](RS06)\]). In detail, a message encrypted with a nonce N remains safe even if the other nonces N'!=N are reused arbitrarily, as long as this nonce N was used only once during encrypting. Though, the most attractive feature of Deoxys-AE3 is leakage-resilience or model-level side-channel security guarantee: see below.
 
 #### Leakage-resilience
 
 Berti et al. proved leakage-resilience for TEDT w.r.t. to certain definitions and assumptions \[[BGPPS19](BGPPS19)\]. Similar conclusions could be drawn on Deoxys-AE3. To ease understanding, we eschew the complicated definitions and leakage models in favor of less formal claims and interpretations.
 
-To ensure strong security against side-channel attacks, Deoxys-AE3 could be implemented in a "leveled" approach, i.e., two types of implementations of Deoxys-TBC-384 are used. On implementation has been added heavy side-channelprotection, and is secure against side-channel attacks wit high data complexities (e.g., differential power analysis). The other implementation is only weakly protected and secure against side-channel attacks with very low-data complexity (e.g., simple power analysis). In addition, the number of calls to heavily protected (and inefficient) implementations is minimized. Concretely,
+To ensure strong security against side-channel attacks, Deoxys-AE3 could be implemented in a "leveled" approach, i.e., two types of implementations of Deoxys-TBC-384 are used. On implementation has been added heavy side-channel protection, and is secure against side-channel attacks wit high data complexities (e.g., differential power analysis). The other implementation is only weakly protected and secure against side-channel attacks with very low-data complexity (e.g., simple power analysis). In addition, the number of calls to heavily protected (and inefficient) implementations is minimized. Concretely,
 
 * To implement Deoxys-AE3 encryption, only the first execution S = TBC\[(0)_56\|\|con1\|\|(0)_64\|\|P\|\|K\](N) and the last execution tag = TBC\[(0)_56\|\|con4\|\|(0)_64\|\|R\|\|K\](L) have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384;
 * To implement Deoxys-AE3 decryption, only the execution L' = TBC-1\[(0)_56\|\|con4\|\|(0)_64\|\|R\|\|K\](tag) in verification and the first execution S = TBC\[(0)_56\|\|con1\|\|(0)_64\|\|P\|\|K\](N) in decryption have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384.
@@ -1001,7 +1001,7 @@ To ensure strong security against side-channel attacks, Deoxys-AE3 could be impl
 
 In the face of side-channel leakages, such a leveled implementation of Deoxys-AE3 ensures security as follows.
 
-First, as long as the side-channel attacker has not recovered the key K, integrity is ensured up to 2^121 computations, even if nonces are reused in arbitrary. Since a heavily protected Deoxys-TBC-384 modular is not expected to resist attacks with such high complexities, it determines the concrete side-channel security.
+First, as long as the side-channel attacker has not recovered the key K, integrity is ensured up to 2^121 computations, even if nonces are reused arbitrarily. Since a heavily protected Deoxys-TBC-384 modular is not expected to resist attacks with such high complexities, it determines the concrete side-channel security.
 
 Second, as long as:
 
