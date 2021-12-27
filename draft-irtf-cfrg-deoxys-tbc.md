@@ -947,21 +947,21 @@ For very hardware-constrained scenarios, one can simply replace Deoxys-TBC-384 b
 
 ## Deoxys AEAD Operating Modes
 
-We give below a table providing the security bounds for all Deoxys modes, in various settings. Below T stands for time complexity (in the ideal cipher model T is reflected by the number of adversarial ideal cipher queries), while D stands for the total number of data blocks processed by both encryption and decryption. In AES-GCM-SIV's bounds, d denotes the maximal number of users that use the same nonce, lmax denotes the maximal length of a single to-be-encrypted message, while lmax^* denotes the total number of message blocks encrypted by a fixed nonce. We have lmax^* >= lmax, and the equality holds in the nonce-respecting setting
+We give below a table providing the security bounds for all Deoxys modes, in various settings. Below T stands for time complexity (in the ideal cipher model T is reflected by the number of adversarial ideal cipher queries), while D stands for the total number of data blocks processed by both encryption and decryption. In Deoxys-AE2's bounds, µ denotes the maximal number of times a (user,nonce) pair can appear in the queries, while q denotes the number of queries. In AES-GCM-SIV's bounds, d denotes the maximal number of users that use the same nonce, lmax denotes the maximal length of a single to-be-encrypted message, while B denotes the total number of message blocks encrypted by a fixed nonce. We have B >= lmax, and the equality holds in the nonce-respecting setting.
 
 
 |   | Deoxys-AE1 | Deoxys-AE2 | Deoxys-AE3 | AES-GCM-SIV | 
 |-------|-------|-------|-------|-------|
-| general bound | 1/2^128 | T/2^120 + D * (2µ+1)/2^127 <br> + D * (q+T)/2^254 |  T/2^114 + D/2^114 | d(T+D)/2^128 + D * lmax^*/2^128 or <br> Q*B^2/2^128 + lmax * Q * R/2^128 + T/2^128 |
-| 1 user <br> no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^114 + 1/2^50 | T/2^128 + lmax/2^64  |
-| 1 user <br> 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  none | T/2^128 + lmax^*/2^64  |
-| 1 user <br> 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  none | T/2^128 + lmax^*/2^64  |
-| 2^32 users <br> no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^114 + 1/2^50 | dT/2^128 + d/2^64 + lmax/2^64  |
-| 2^32 users <br> 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  none | dT/2^128 + d/2^64 + lmax^*/2^64  |
-| 2^32 users <br> 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  none | dT/2^128 + d/2^64 + lmax^*/2^64  |
-| 1 user <br> no nonce repetition <br> 2^96 data in total | 1/2^128 | T/2^120 + 3/2^31 |  T/2^114 + 1/2^18 | T/2^128 + lmax/2^32  |
-| 2^32 users <br> 1 nonce repetition <br> 2^96 data in total | none | T/2^120 + 5/2^31 |  none | dT/2^128 + d/2^32 + lmax^*/2^32  |
-| 2^32 users <br>, 2^16 nonce repetitions <br> 2^96 data in total | none | T/2^120 + 1/2^15 |  none | dT/2^128 + d/2^32 + lmax^*/2^32  |
+| general bound | 1/2^128 | T/2^120 + D * (2µ+1)/2^127 <br> + D * (q+T)/2^254 |  T/2^114 + D/2^114 | d(T+D)/2^128 + D * B/2^128 or <br> Q*B^2/2^128 + lmax * Q * R/2^128 + T/2^128 |
+| 1 user <br> no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + 1/2^57 | T/2^128 + lmax/2^64  |
+| 1 user <br> 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  none | T/2^128 + B/2^64  |
+| 1 user <br> 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  none | T/2^128 + B/2^64  |
+| 2^32 users <br> no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^89 + 1/2^25 (T/2^114 + 1/2^50 once mu enhancements are added) | dT/2^128 + d/2^64 + lmax/2^64  |
+| 2^32 users <br> 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  none | dT/2^128 + d/2^64 + B/2^64  |
+| 2^32 users <br> 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  none | dT/2^128 + d/2^64 + B/2^64  |
+| 1 user <br> no nonce repetition <br> 2^96 data in total | 1/2^128 | T/2^120 + 3/2^31 |  T/2^121 + 1/2^25 | T/2^128 + lmax/2^32  |
+| 2^32 users <br> 1 nonce repetition <br> 2^96 data in total | none | T/2^120 + 5/2^31 |  none | dT/2^128 + d/2^32 + B/2^32  |
+| 2^32 users <br>, 2^16 nonce repetitions <br> 2^96 data in total | none | T/2^120 + 1/2^15 |  none | dT/2^128 + d/2^32 + B/2^32  |
 
 ### Deoxys-AE1
 
@@ -991,9 +991,9 @@ Deoxys-AE3 provides a limited form of security against nonce reuse, which was na
 
 #### Leakage-resilience
 
-Berti et al. proved leakage-resilience for TEDT w.r.t. to certain definitions and assumptions \[[BGPPS19](BGPPS19)\]. Similar conclusions could be drawn on Deoxys-AE3. To ease understanding, we eschew the complicated definitions and leakage models in favor of less formal claims and interpretations.
+Berti et al. proved leakage-resilience for TEDT w.r.t. to certain definitions and assumptions \[[BGPPS19](BGPPS19)\]. Similar conclusions can be drawn on Deoxys-AE3. To ease understanding, we eschew the complicated definitions and leakage models in favor of less formal claims and interpretations.
 
-To ensure strong security against side-channel attacks, Deoxys-AE3 could be implemented in a "leveled" approach, i.e., two types of implementations of Deoxys-TBC-384 are used. On implementation has been added heavy side-channel protection, and is secure against side-channel attacks wit high data complexities (e.g., differential power analysis). The other implementation is only weakly protected and secure against side-channel attacks with very low-data complexity (e.g., simple power analysis). In addition, the number of calls to heavily protected (and inefficient) implementations is minimized. Concretely,
+To ensure strong security against side-channel attacks, Deoxys-AE3 can be implemented in a "leveled" approach, i.e., two types of implementations of Deoxys-TBC-384 are used. On implementation has been added heavy side-channel protection, and is secure against side-channel attacks wit high data complexities (e.g., differential power analysis). The other implementation is only weakly protected and secure against side-channel attacks with very low-data complexity (e.g., simple power analysis). In addition, the number of calls to heavily protected (and inefficient) implementations is minimized. Concretely,
 
 * To implement Deoxys-AE3 encryption, only the first execution S = TBC\[(0)_56\|\|con1\|\|(0)_64\|\|P\|\|K\](N) and the last execution tag = TBC\[(0)_56\|\|con4\|\|(0)_64\|\|R\|\|K\](L) have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384;
 * To implement Deoxys-AE3 decryption, only the execution L' = TBC-1\[(0)_56\|\|con4\|\|(0)_64\|\|R\|\|K\](tag) in verification and the first execution S = TBC\[(0)_56\|\|con1\|\|(0)_64\|\|P\|\|K\](N) in decryption have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384.
@@ -1009,7 +1009,7 @@ Second, as long as:
 * the side-channel attacker has not recovered the internal state that appeared during encrypting the confidential messages,
 * nonces used for encrypting confidential messages are never reused,
 
-confidentiality is ensured. Assume that the heavily protected Deoxys-TBC-384 modular is secure against side-channel attacks with less than D data, and the weakly protected Deoxys-TBC-384 implementation is secure against side-channel attacks with very few data (e.g., simple power analysis-based  attacks with 4 data), then the leveled Deoxys-AE3 implementation could securely encrypt D messages with no more than 2^64 blocks.
+confidentiality is ensured. Assume that the heavily protected Deoxys-TBC-384 modular is secure against side-channel attacks with less than D data, and the weakly protected Deoxys-TBC-384 implementation is secure against side-channel attacks with very few data (e.g., simple power analysis-based  attacks with 4 data), then the leveled Deoxys-AE3 implementation can securely encrypt D messages with no more than 2^64 blocks in total.
 
 We stress again that, due to the informal nature of the above claims and the lesser maturity of leakage-resilience, the concrete interpretations may not be fully accurate in practice.
 
