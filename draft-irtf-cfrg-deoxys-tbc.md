@@ -744,24 +744,6 @@ This mode is a slight adaptation of the Romulus-T AEAD scheme from \[[GIKMP21](G
 
 This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle associated data A and message M inputs of size up to 2^59 bytes in total. It generates the corresponding ciphertext and a tag of size tau=128.
 
-## 56-bit LFSR56
-
-We use a 56-bit LFSR56 for counter in Deoxys-AE3. LFSR56 is a one-to-one mapping LFSR56 : \[0, ... ,2^56-2\] -> {0,1}^56\\{(0)_56} defined as follows. Let F\_56(x) be the lexicographically-first polynomial among the the irreducible degree 56 polynomials of a minimum number of coefficients. Specifically F\_56(x) = x^56 + x^7 + x^4 + x^2 + 1 and LFSR56(D) = 2^D mod F\_56(x).
-
-Note that we use LFSR56(D) as a block counter, so most of the time D changes incrementally with a step of 1, and this enables LFSR56(D) to generate a sequence of 2^56-1 pairwise-distinct values. From an implementation point of view, it should be implemented in the sequence form, x\_{i+1} = 2x\_i mod F\_56(x).
-
-Let (z\_55 \|\| z\_54 \|\| ... \|\| z\_1 \|\| z\_0) denote the state of the 56-bit LFSR. In Deoxys-AE3, LFSR56 is initialized to 1 mod F\_56(x), i.e., ((0)_7 \|\| 1 \|\| (0)_48), in little-endian format. Incrementation of LFSR56 is defined as follows:
-
-* z\_i = z\_{i-1} for i in [0, ... ,55]\\{7,4,2,0}
-* z\_7 = z\_6 ^ z\_55
-* z\_4 = z\_3 ^ z\_55
-* z\_2 = z\_1 ^ z\_55
-* z\_0 = z\_55
-
-Below we write LFSR56(D) the state of LFSR56 when clocked D times.
-
-
-
 ## Deoxys-AE3 encryption
 
 The mode is divided into two independant parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data.
@@ -770,10 +752,10 @@ The mode is divided into two independant parts: the first part handling the encr
 deoxys_AE3_encrypt(K, N, A, M):
 
   P = (0)_128
-  con1 = (66)_8
-  con2 = (64)_8
-  con3 = (65)_8
-  con4 = (68)_8
+  con1 = (1)_8
+  con2 = (2)_8
+  con3 = (3)_8
+  con4 = (4)_8
   theta = (1)_8 || (0)_120
   con5 = (2)_8 || (0)_120
 
@@ -785,25 +767,24 @@ deoxys_AE3_encrypt(K, N, A, M):
 
   # 1. Message Encryption
   M[1] || ... || M[m] <- M with 0<|M[m]|<=128 and |M[i]|=128 for i=1,...,m-1
-  S = TBC[(0)_56||con1||(0)_64||P||K](N)
+  S = TBC[con1||(0)_120||P||K](N)
   
   for i = 1 upto m-1
-     C[i] = TBC[LFSR56(i-1)||con2||(0)_64||P||S](N) ^ M[i]
-     S = TBC[LFSR56(i-1)||con3||(0)_64||P||S](N)
+     C[i] = TBC[con2||(i-1)_120||P||S](N) ^ M[i]
+     S = TBC[con3||(i-1)_120||P||S](N)
      end
 
   #the last block
   len = |M[m]|
-  C[m] = trunc_len(TBC[LFSR56(m-1)||con2||(0)_64||P||S](N)) ^ M[m]
+  C[m] = trunc_len(TBC[con2||(m-1)_120||P||S](N)) ^ M[m]
 
 
   # 2. Hashing Associated Data & Ciphertext
-  U <- ipad*_128(A) || ipad*_128(C) || N || LFSR56(m)
+  U <- ipad*_128(A) || ipad*_128(C) || N || (m)_120
   U <- ipad_256(U)
   U[1] || ... || U[u] <- U with |U[i]|=256
   L = (0)_128
   R = (0)_128
-  theta = (1)_8 || (0)_120
   for i = 1 upto u - 1
      L = TBC[R || U[i]](L) ^ L
      R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
@@ -814,7 +795,7 @@ deoxys_AE3_encrypt(K, N, A, M):
   R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
 
   # 3. Tag Generation
-  tag = TBC[(0)_56||con4||(0)_64||R||K](L)
+  tag = TBC[con4||(0)_120||R||K](L)
   return (C[1] || ... || C[m] , tag)
 
 ~~~
@@ -826,22 +807,21 @@ deoxys_AE3_encrypt(K, N, A, M):
 deoxys_AE3_decrypt(K, N, A, C, tag):
 
   P = (0)_128
-  con1 = (66)_8
-  con2 = (64)_8
-  con3 = (65)_8
-  con4 = (68)_8
+  con1 = (1)_8
+  con2 = (2)_8
+  con3 = (3)_8
+  con4 = (4)_8
   theta = (1)_8 || (0)_120
   con5 = (2)_8 || (0)_120
   
   C[1] || ... || C[m] <- C with 0<|C[m]|<=128 and |C[i]|=128 for i=1,...,m-1
 
   # 1. Hashing Associated Data & Ciphertext for verification
-  U <- ipad*_128(A) || ipad*_128(C) || N || LFSR56(m)
+  U <- ipad*_128(A) || ipad*_128(C) || N || (m)_120
   U <- ipad_256(U)
   U[1] || ... || U[u] <- U with |U[i]|=256
   L = (0)_128
   R = (0)_128
-  theta = (1)_8 || (0)_120
   for i = 1 upto u - 1
      L = TBC[R || U[i]](L) ^ L
      R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
@@ -852,22 +832,22 @@ deoxys_AE3_decrypt(K, N, A, C, tag):
   R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
   
   # 2. Verification
-  L' = TBC-1[(0)_56||con4||(0)_64||R||K](tag)
+  L' = TBC-1[con4||(0)_120||R||K](tag)
   if L' != L then
      return invalid
      end 
   
   # 3. Decryption when L' == L
-  S = TBC[(0)_56||con1||(0)_64||P||K](N)
+  S = TBC[con1||(0)_120||P||K](N)
   
   for i = 1 upto m-1
-     M[i] = TBC[LFSR56(i-1)||con2||(0)_64||P||S](N) ^ C[i]
-     S = TBC[LFSR56(i-1)||con3||(0)_64||P||S](N)
+     M[i] = TBC[con2||(i-1)_120||P||S](N) ^ C[i]
+     S = TBC[con3||(i-1)_120||P||S](N)
      end
 
   #the last block
   len = |C[m]|
-  M[m] = trunc_len(TBC[LFSR56(m-1)||con2||(0)_64||P||S](N)) ^ C[m]
+  M[m] = trunc_len(TBC[con2||(m-1)_120||P||S](N)) ^ C[m]
 
   return (M[1] || ... || M[m] || M*)
 ~~~
@@ -882,28 +862,28 @@ nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:
 plaintext:
 ciphertext:
-tag:        6bd43609 7e75f2d4 e2b5b476 93094d7a
+tag:        89c093a0 7ef7e660 59e977c5 0f162d71
 
 key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c43
 plaintext:  3aa1a9dc a69e75
-ciphertext: 675c73e1 157d40
-tag:        58bed416 b1746aaf 144c6802 5c939b6d
+ciphertext: 7c969092 37f7a2
+tag:        3df21fdf c7f45d8a 677adc3e 09d63983
 
 key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
-ciphertext: 675c73e1 157d4023 9bed96f6 55adb576
-tag:        f0fce3f3 6c9429b8 465adce1 098dd9b0
+ciphertext: 7c969092 37f7a286 04b8fbe7 e51fbd89
+tag:        38d4cf57 da10b86b c53cf5a6 513f6007
 
 key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799 37b33ee2 ab
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f49664 1c
-ciphertext: 675c73e1 157d4023 9bed96f6 55adb576 f5258b18 04
-tag:        84b73cc9 d82bac4b 57282712 dd1a4185
+ciphertext: 7c969092 37f7a286 04b8fbe7 e51fbd89 3cc482b3 52
+tag:        41fdb87b eaaa3451 d72d37b1 377861c5
 ~~~~ 
 
 
@@ -919,7 +899,7 @@ It is well known that, authenticated encryptions suffer from the so-called multi
 
 One can further increase the multi-user security of Deoxys-AE1 and Deoxys-AE2 by randomly selecting an 128-bit public-key value PK and incorporating PK as tweak input to every call to the TBC during the encryption phase. This will effectivelly increase the multi-users security by approximately x/2 bits.
 
-One can increase the multi-user security of Deoxys-AE3 by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, con1 = (69)\_8, con2 = (70)\_8, con3 = (71)\_8, con4 = (72)\_8, and U = ipad*_128(A) \|\| ipad*_128(C) \|\| N \|\| PK \|\| LFSR56(m). For a system using this Deoxys-AE3 variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.
+One can increase the multi-user security of Deoxys-AE3 by randomly selecting a 128-bit public-key value PK and modify the internal variables to P = PK, con1 = (5)\_8, con2 = (6)\_8, con3 = (7)\_8, con4 = (8)\_8, and U = ipad*_128(A) \|\| ipad*_128(C) \|\| N \|\| PK \|\| (m)\_120. For a system using this Deoxys-AE3 variant, one needs around 2^112 data and times complexities to break a session among about 2^126 different sessions.
 
 ## Forgery-Reuse Protection Mechanism
 
