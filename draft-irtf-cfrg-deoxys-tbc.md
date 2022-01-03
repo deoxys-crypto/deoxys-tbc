@@ -705,7 +705,7 @@ deoxys_AE2_decrypt(K, N, A, C, tag):
 
 ## Deoxys-AE2 test vectors
 
-We provide below some test vectors for Deoxys-AE3, in hexadecimal display.
+We provide below some test vectors for Deoxys-AE2, in hexadecimal display.
 
 ~~~~ 
 key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
