@@ -460,7 +460,7 @@ This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle
 
 ## Deoxys-AE1 encryption
 
-The mode is divided into two independant parts: one part handling the authentication of the associated data and one part handling the authentication and encryption of the message blocks. The mode is created in such a way that all TBC calls will use a different tweak.
+The mode is divided into two independent parts: one part handling the authentication of the associated data and one part handling the authentication and encryption of the message blocks. The mode is created in such a way that all TBC calls will use a different tweak.
 
 ~~~
 deoxys_AE1_encrypt(K, N, A, M):
@@ -746,12 +746,12 @@ This mode takes a secret key K of 128 bits, a nonce N of 128 bits and can handle
 
 ## Deoxys-AE3 encryption
 
-The mode is divided into two independant parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data.
+The mode is divided into two independent parts: the first part handling the encryption of the message, and the second part handing the authentication of the ciphertext and the associated data.
 
 ~~~
 deoxys_AE3_encrypt(K, N, A, M):
 
-  P = (0)_128
+  P = (0)_128		// Can be used as "public key": see Section 7.2
   con1 = (1)_8
   con2 = (2)_8
   con3 = (3)_8
@@ -770,13 +770,13 @@ deoxys_AE3_encrypt(K, N, A, M):
   S = TBC[con1||(0)_120||P||K](N)
   
   for i = 1 upto m-1
-     C[i] = TBC[con2||(i-1)_120||P||S](N) ^ M[i]
-     S = TBC[con3||(i-1)_120||P||S](N)
+     S = TBC[con2||(i-1)_120||P||S](N)
+     C[i] = TBC[con3||(i-1)_120||P||S](N) ^ M[i]
      end
 
   #the last block
   len = |M[m]|
-  C[m] = trunc_len(TBC[con2||(m-1)_120||P||S](N)) ^ M[m]
+  C[m] = trunc_len(TBC[con3||(m-1)_120||P||S](N)) ^ M[m]
 
 
   # 2. Hashing Associated Data & Ciphertext
@@ -806,7 +806,7 @@ deoxys_AE3_encrypt(K, N, A, M):
 ~~~
 deoxys_AE3_decrypt(K, N, A, C, tag):
 
-  P = (0)_128
+  P = (0)_128		// Can be used as "public key": see Section 7.2
   con1 = (1)_8
   con2 = (2)_8
   con3 = (3)_8
@@ -841,13 +841,13 @@ deoxys_AE3_decrypt(K, N, A, C, tag):
   S = TBC[con1||(0)_120||P||K](N)
   
   for i = 1 upto m-1
-     M[i] = TBC[con2||(i-1)_120||P||S](N) ^ C[i]
-     S = TBC[con3||(i-1)_120||P||S](N)
+     S = TBC[con2||(i-1)_120||P||S](N)
+     M[i] = TBC[con3||(i-1)_120||P||S](N) ^ C[i]
      end
 
   #the last block
   len = |C[m]|
-  M[m] = trunc_len(TBC[con2||(m-1)_120||P||S](N)) ^ C[m]
+  M[m] = trunc_len(TBC[con3||(m-1)_120||P||S](N)) ^ C[m]
 
   return (M[1] || ... || M[m] || M*)
 ~~~
@@ -927,21 +927,21 @@ For very hardware-constrained scenarios, one can simply replace Deoxys-TBC-384 b
 
 ## Deoxys AEAD Operating Modes
 
-We give below a table providing the security bounds for all Deoxys modes, in various settings. Below T stands for time complexity (in the ideal cipher model T is reflected by the number of adversarial ideal cipher queries), while D stands for the total number of data blocks processed by both encryption and decryption. In Deoxys-AE2's bounds, µ denotes the maximal number of times a (user,nonce) pair can appear in the queries, while q denotes the number of queries. In AES-GCM-SIV's bounds, d denotes the maximal number of users that use the same nonce, lmax denotes the maximal length of a single to-be-encrypted message, while B denotes the total number of message blocks encrypted by a fixed nonce. We have B >= lmax, and the equality holds in the nonce-respecting setting.
+We give below a table providing the security bounds for all Deoxys modes, in various settings. Below T stands for time complexity (in the ideal cipher model T is reflected by the number of adversarial ideal cipher queries), while D stands for the total number of data blocks processed by both encryption and decryption. In Deoxys-AE2's bounds, µ denotes the maximal number of times a (user,nonce) pair can appear in the queries, while q denotes the number of queries. In Deoxys-AE3's (multi-user security) bounds, u denotes the number of users. In AES-GCM-SIV's bounds, d denotes the maximal number of users that use the same nonce, lmax denotes the maximal length of a single to-be-encrypted message, while B denotes the total number of message blocks encrypted by a fixed nonce. We have B >= lmax, and the equality holds in the nonce-respecting setting.
 
 
 |   | Deoxys-AE1 | Deoxys-AE2 | Deoxys-AE3 | AES-GCM-SIV | 
 |-------|-------|-------|-------|-------|
-| general bound | 1/2^128 | T/2^120 + D * (2µ+1)/2^127 <br> + D * (q+T)/2^254 |  T/2^114 + D/2^114 | d(T+D)/2^128 + D * B/2^128 or <br> Q*B^2/2^128 + lmax * Q * R/2^128 + T/2^128 |
-| 1 user <br> no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + 1/2^57 | T/2^128 + lmax/2^64  |
-| 1 user <br> 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  none | T/2^128 + B/2^64  |
-| 1 user <br> 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  none | T/2^128 + B/2^64  |
-| 2^32 users <br> no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^89 + 1/2^25 (T/2^114 + 1/2^50 once mu enhancements are added) | dT/2^128 + d/2^64 + lmax/2^64  |
-| 2^32 users <br> 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  none | dT/2^128 + d/2^64 + B/2^64  |
-| 2^32 users <br> 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  none | dT/2^128 + d/2^64 + B/2^64  |
-| 1 user <br> no nonce repetition <br> 2^96 data in total | 1/2^128 | T/2^120 + 3/2^31 |  T/2^121 + 1/2^25 | T/2^128 + lmax/2^32  |
-| 2^32 users <br> 1 nonce repetition <br> 2^96 data in total | none | T/2^120 + 5/2^31 |  none | dT/2^128 + d/2^32 + B/2^32  |
-| 2^32 users <br>, 2^16 nonce repetitions <br> 2^96 data in total | none | T/2^120 + 1/2^15 |  none | dT/2^128 + d/2^32 + B/2^32  |
+| general bound | 1/2^128 | T/2^120 + D * (2µ+1)/2^127 <br> + D * (q+T)/2^254 |  uT/2^121 + uD/2^121 | d(T+D)/2^128 + D * B/2^128 or <br> Q*B^2/2^128 + lmax * Q * R/2^128 + T/2^128 |
+| 1 user <br> no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^121 + 1/2^57 | T/2^128 + 1/2^32  |
+| 1 user <br> 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  none |  T/2^128 + 1/2^31 |
+| 1 user <br> 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  none |  none |
+| 2^32 users <br> no nonce repetition <br> 2^64 data in total | 1/2^128 | T/2^120 + 3/2^63 |  T/2^89 + 1/2^25 (T/2^114 + 1/2^50 once public-keys are added, see Section 7.2) | T/2^96 + 1/2^32  |
+| 2^32 users <br> 1 nonce repetition <br> 2^64 data in total | none | T/2^120 + 5/2^63 |  none |  T/2^96 + 1/2^31 |
+| 2^32 users <br> 2^32 nonce repetitions <br> 2^64 data in total | none | T/2^120 + 1/2^31 |  none |  none |
+| 1 user <br> no nonce repetition <br> 2^96 data in total | 1/2^128 | T/2^120 + 3/2^31 |  T/2^121 + 1/2^25 |  none |
+| 2^32 users <br> 1 nonce repetition <br> 2^96 data in total | none | T/2^120 + 5/2^31 |  none |  none |
+| 2^32 users <br>, 2^16 nonce repetitions <br> 2^96 data in total | none | T/2^120 + 1/2^15 |  none |  none |
 
 ### Deoxys-AE1
 
@@ -975,8 +975,8 @@ Berti et al. proved leakage-resilience for TEDT w.r.t. to certain definitions an
 
 To ensure strong security against side-channel attacks, Deoxys-AE3 can be implemented in a "leveled" approach, i.e., two types of implementations of Deoxys-TBC-384 are used. On implementation has been added heavy side-channel protection, and is secure against side-channel attacks wit high data complexities (e.g., differential power analysis). The other implementation is only weakly protected and secure against side-channel attacks with very low-data complexity (e.g., simple power analysis). In addition, the number of calls to heavily protected (and inefficient) implementations is minimized. Concretely,
 
-* To implement Deoxys-AE3 encryption, only the first execution S = TBC\[(0)_56\|\|con1\|\|(0)_64\|\|P\|\|K\](N) and the last execution tag = TBC\[(0)_56\|\|con4\|\|(0)_64\|\|R\|\|K\](L) have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384;
-* To implement Deoxys-AE3 decryption, only the execution L' = TBC-1\[(0)_56\|\|con4\|\|(0)_64\|\|R\|\|K\](tag) in verification and the first execution S = TBC\[(0)_56\|\|con1\|\|(0)_64\|\|P\|\|K\](N) in decryption have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384.
+* To implement Deoxys-AE3 encryption, only the first execution S = TBC\[con1\|\|(0)_120\|\|P\|\|K\](N) and the last execution tag = TBC\[con4\|\|(0)_120\|\|R\|\|K\](L) have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384;
+* To implement Deoxys-AE3 decryption, only the execution L' = TBC-1\[con4\|\|(0)_120\|\|R\|\|K\](tag) in verification and the first execution S = TBC\[con1\|\|(0)_120\|\|P\|\|K\](N) in decryption have to invoke the heavily protected Deoxys-TBC-384 function/modular. The other operations can simply invoke the weakly protected Deoxys-TBC-384.
 
 
 In the face of side-channel leakages, such a leveled implementation of Deoxys-AE3 ensures security as follows.
@@ -991,8 +991,7 @@ Second, as long as:
 
 confidentiality is ensured. Assume that the heavily protected Deoxys-TBC-384 modular is secure against side-channel attacks with less than D data, and the weakly protected Deoxys-TBC-384 implementation is secure against side-channel attacks with very few data (e.g., simple power analysis-based  attacks with 4 data), then the leveled Deoxys-AE3 implementation can securely encrypt D messages with no more than 2^64 blocks in total.
 
-We stress again that, due to the informal nature of the above claims and the lesser maturity of leakage-resilience, the concrete interpretations may not be fully accurate in practice.
-
+Please see \[[BGPPS19](BGPPS19)\] for formal models, assumptions, and results. We remark that the above is an informal interpretation of the proven result.
 
 
 
