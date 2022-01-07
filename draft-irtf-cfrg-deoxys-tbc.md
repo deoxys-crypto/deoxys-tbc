@@ -767,16 +767,16 @@ deoxys_AE3_encrypt(K, N, A, M):
 
   # 1. Message Encryption
   M[1] || ... || M[m] <- M with 0<|M[m]|<=128 and |M[i]|=128 for i=1,...,m-1
-  S = TBC[con1||(0)_120||P||K](N)
+  S = TBC[P||con1||(0)_120||K](N)
   
   for i = 1 upto m-1
-     S = TBC[con2||(i-1)_120||P||S](N)
-     C[i] = TBC[con3||(i-1)_120||P||S](N) ^ M[i]
+     S = TBC[P||con2||(i-1)_120||S](N)
+     C[i] = TBC[P||con3||(i-1)_120||S](N) ^ M[i]
      end
 
   #the last block
   len = |M[m]|
-  C[m] = trunc_len(TBC[con3||(m-1)_120||P||S](N)) ^ M[m]
+  C[m] = trunc_len(TBC[P||con3||(m-1)_120||S](N)) ^ M[m]
 
 
   # 2. Hashing Associated Data & Ciphertext
@@ -786,16 +786,17 @@ deoxys_AE3_encrypt(K, N, A, M):
   L = (0)_128
   R = (0)_128
   for i = 1 upto u - 1
-     L = TBC[R || U[i]](L) ^ L
-     R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
+     T = L
+     L = TBC[R || U[i]](T) ^ T
+     R = TBC[R || U[i]](T ^ theta) ^ T ^ theta
      end
      
-  L = L ^ con5
-  L = TBC[R || U[i]](L) ^ L
-  R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
+  T = L ^ con5
+  L = TBC[R || U[i]](T) ^ T
+  R = TBC[R || U[i]](T ^ theta) ^ T ^ theta
 
   # 3. Tag Generation
-  tag = TBC[con4||(0)_120||R||K](L)
+  tag = TBC[R||con4||(0)_120||K](L)
   return (C[1] || ... || C[m] , tag)
 
 ~~~
@@ -823,31 +824,32 @@ deoxys_AE3_decrypt(K, N, A, C, tag):
   L = (0)_128
   R = (0)_128
   for i = 1 upto u - 1
-     L = TBC[R || U[i]](L) ^ L
-     R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
+     T = L
+     L = TBC[R || U[i]](T) ^ T
+     R = TBC[R || U[i]](T ^ theta) ^ T ^ theta
      end
      
-  L = L ^ con5
-  L = TBC[R || U[i]](L) ^ L
-  R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
+  T = L ^ con5
+  L = TBC[R || U[i]](T) ^ T
+  R = TBC[R || U[i]](T ^ theta) ^ T ^ theta
   
   # 2. Verification
-  L' = TBC-1[con4||(0)_120||R||K](tag)
+  L' = TBC-1[R||con4||(0)_120||K](tag)
   if L' != L then
      return invalid
      end 
   
   # 3. Decryption when L' == L
-  S = TBC[con1||(0)_120||P||K](N)
+  S = TBC[P||con1||(0)_120||K](N)
   
   for i = 1 upto m-1
-     S = TBC[con2||(i-1)_120||P||S](N)
-     M[i] = TBC[con3||(i-1)_120||P||S](N) ^ C[i]
+     S = TBC[P||con2||(i-1)_120||S](N)
+     M[i] = TBC[P||con3||(i-1)_120||S](N) ^ C[i]
      end
 
   #the last block
   len = |C[m]|
-  M[m] = trunc_len(TBC[con3||(m-1)_120||P||S](N)) ^ C[m]
+  M[m] = trunc_len(TBC[P||con3||(m-1)_120||S](N)) ^ C[m]
 
   return (M[1] || ... || M[m] || M*)
 ~~~
