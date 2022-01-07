@@ -864,28 +864,28 @@ nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:
 plaintext:
 ciphertext:
-tag:        89c093a0 7ef7e660 59e977c5 0f162d71
+tag:        c4e39ddb 8c30685d 58415d15 0bdc3615
 
 key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c43
 plaintext:  3aa1a9dc a69e75
-ciphertext: 7c969092 37f7a2
-tag:        3df21fdf c7f45d8a 677adc3e 09d63983
+ciphertext: 561b770e c800ec
+tag:        ff508783 939e0d1a e1fb17e2 9c6afc56
 
 key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
-ciphertext: 7c969092 37f7a286 04b8fbe7 e51fbd89
-tag:        38d4cf57 da10b86b c53cf5a6 513f6007
+ciphertext: 561b770e c800ec42 89463fd0 e3ccc544
+tag:        b3fdd7fb 803c3c46 16c89ba2 3231a683
 
 key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799 37b33ee2 ab
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f49664 1c
-ciphertext: 7c969092 37f7a286 04b8fbe7 e51fbd89 3cc482b3 52
-tag:        41fdb87b eaaa3451 d72d37b1 377861c5
+ciphertext: 561b770e c800ec42 89463fd0 e3ccc544 1369031a 9a
+tag:        299a394c 06052ab0 ece4fff9 e2adec98
 ~~~~ 
 
 
