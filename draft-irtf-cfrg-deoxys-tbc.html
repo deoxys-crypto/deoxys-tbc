@@ -806,7 +806,7 @@ address div.right {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Peyrin &amp; Guo</td>
-<td class="center">Expires 8 July 2022</td>
+<td class="center">Expires 11 July 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -819,12 +819,12 @@ address div.right {
 <dd class="internet-draft">draft-irtf-cfrg-deoxys-tbc-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-01-04" class="published">4 January 2022</time>
+<time datetime="2022-01-07" class="published">7 January 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-07-08">8 July 2022</time></dd>
+<dd class="expires"><time datetime="2022-07-11">11 July 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -874,7 +874,7 @@ address div.right {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 8 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 11 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1718,16 +1718,16 @@ deoxys_AE3_encrypt(K, N, A, M):
 
   # 1. Message Encryption
   M[1] || ... || M[m] &lt;- M with 0&lt;|M[m]|&lt;=128 and |M[i]|=128 for i=1,...,m-1
-  S = TBC[con1||(0)_120||P||K](N)
+  S = TBC[P||con1||(0)_120||K](N)
 
   for i = 1 upto m-1
-     S = TBC[con2||(i-1)_120||P||S](N)
-     C[i] = TBC[con3||(i-1)_120||P||S](N) ^ M[i]
+     S = TBC[P||con2||(i-1)_120||S](N)
+     C[i] = TBC[P||con3||(i-1)_120||S](N) ^ M[i]
      end
 
   #the last block
   len = |M[m]|
-  C[m] = trunc_len(TBC[con3||(m-1)_120||P||S](N)) ^ M[m]
+  C[m] = trunc_len(TBC[P||con3||(m-1)_120||S](N)) ^ M[m]
 
 
   # 2. Hashing Associated Data &amp; Ciphertext
@@ -1737,16 +1737,17 @@ deoxys_AE3_encrypt(K, N, A, M):
   L = (0)_128
   R = (0)_128
   for i = 1 upto u - 1
-     L = TBC[R || U[i]](L) ^ L
-     R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
+     T = L
+     L = TBC[R || U[i]](T) ^ T
+     R = TBC[R || U[i]](T ^ theta) ^ T ^ theta
      end
 
-  L = L ^ con5
-  L = TBC[R || U[i]](L) ^ L
-  R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
+  T = L ^ con5
+  L = TBC[R || U[i]](T) ^ T
+  R = TBC[R || U[i]](T ^ theta) ^ T ^ theta
 
   # 3. Tag Generation
-  tag = TBC[con4||(0)_120||R||K](L)
+  tag = TBC[R||con4||(0)_120||K](L)
   return (C[1] || ... || C[m] , tag)
 
 </pre><a href="#section-6.1-2" class="pilcrow">¶</a>
@@ -1779,31 +1780,32 @@ deoxys_AE3_decrypt(K, N, A, C, tag):
   L = (0)_128
   R = (0)_128
   for i = 1 upto u - 1
-     L = TBC[R || U[i]](L) ^ L
-     R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
+     T = L
+     L = TBC[R || U[i]](T) ^ T
+     R = TBC[R || U[i]](T ^ theta) ^ T ^ theta
      end
 
-  L = L ^ con5
-  L = TBC[R || U[i]](L) ^ L
-  R = TBC[R || U[i]](L ^ theta) ^ L ^ theta
+  T = L ^ con5
+  L = TBC[R || U[i]](T) ^ T
+  R = TBC[R || U[i]](T ^ theta) ^ T ^ theta
 
   # 2. Verification
-  L' = TBC-1[con4||(0)_120||R||K](tag)
+  L' = TBC-1[R||con4||(0)_120||K](tag)
   if L' != L then
      return invalid
      end
 
   # 3. Decryption when L' == L
-  S = TBC[con1||(0)_120||P||K](N)
+  S = TBC[P||con1||(0)_120||K](N)
 
   for i = 1 upto m-1
-     S = TBC[con2||(i-1)_120||P||S](N)
-     M[i] = TBC[con3||(i-1)_120||P||S](N) ^ C[i]
+     S = TBC[P||con2||(i-1)_120||S](N)
+     M[i] = TBC[P||con3||(i-1)_120||S](N) ^ C[i]
      end
 
   #the last block
   len = |C[m]|
-  M[m] = trunc_len(TBC[con3||(m-1)_120||P||S](N)) ^ C[m]
+  M[m] = trunc_len(TBC[P||con3||(m-1)_120||S](N)) ^ C[m]
 
   return (M[1] || ... || M[m] || M*)
 </pre><a href="#section-6.2-1" class="pilcrow">¶</a>
@@ -1823,28 +1825,28 @@ nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:
 plaintext:
 ciphertext:
-tag:        89c093a0 7ef7e660 59e977c5 0f162d71
+tag:        c4e39ddb 8c30685d 58415d15 0bdc3615
 
 key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c43
 plaintext:  3aa1a9dc a69e75
-ciphertext: 7c969092 37f7a2
-tag:        3df21fdf c7f45d8a 677adc3e 09d63983
+ciphertext: 561b770e c800ec
+tag:        ff508783 939e0d1a e1fb17e2 9c6afc56
 
 key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f
-ciphertext: 7c969092 37f7a286 04b8fbe7 e51fbd89
-tag:        38d4cf57 da10b86b c53cf5a6 513f6007
+ciphertext: 561b770e c800ec42 89463fd0 e3ccc544
+tag:        b3fdd7fb 803c3c46 16c89ba2 3231a683
 
 key:        85d6fd59 34703792 d0cb9ff2 f0ad3582
 nonce:      56960683 4c0e8a32 877fd47f 241f926b
 AD:         55ecdd23 867c4336 007893f7 2a381799 37b33ee2 ab
 plaintext:  3aa1a9dc a69e75ba cb769cb1 1e55f05f 94f49664 1c
-ciphertext: 7c969092 37f7a286 04b8fbe7 e51fbd89 3cc482b3 52
-tag:        41fdb87b eaaa3451 d72d37b1 377861c5
+ciphertext: 561b770e c800ec42 89463fd0 e3ccc544 1369031a 9a
+tag:        299a394c 06052ab0 ece4fff9 e2adec98
 </pre><a href="#section-6.3-2" class="pilcrow">¶</a>
 </div>
 </section>
